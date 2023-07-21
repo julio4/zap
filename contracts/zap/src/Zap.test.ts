@@ -65,14 +65,15 @@ describe('Zap', () => {
     it('emits a `statementId` event containing the statement id if the provided signature is valid (TODO add statement verification)', async () => {
       const oracleResult: OracleResult = await oracle.generateStatementId(
         Field(1),
-        true  // will return a high result (true for holder, big balance, etc.)
+        true // will return a high result (true for holder, big balance, etc.), statement is valid
       );
 
       const txn = await Mina.transaction(user.publicKey, () => {
         zap.verify(
           oracleResult.data.statementId,
           oracleResult.data.privateData,
-          oracleResult.signature ?? fail('something is wrong with the signature')
+          oracleResult.signature ??
+            fail('something is wrong with the signature')
         );
       });
       await txn.prove();
@@ -84,39 +85,40 @@ describe('Zap', () => {
       expect(verifiedEventValue).toEqual(oracleResult.data.statementId);
     });
 
-    it.skip('TODO: throws an error if the statement is invalid even if the provided signature is valid', async () => {
-      const statementId = Field(2);
-      const privateData = Field(0);
-      const signature = Signature.create(zapKeys.privateKey, [
-        statementId,
-        privateData,
-      ]);
-
+    it('throws an error if the statement is invalid even if the provided signature is valid', async () => {
+      const oracleResult: OracleResult = await oracle.generateStatementId(
+        Field(1),
+        false // will return a low result (true for holder, big balance, etc.), statement is invalid
+      );
       expect(async () => {
         await Mina.transaction(user.publicKey, () => {
           zap.verify(
-            statementId,
-            privateData,
-            signature ?? fail('something is wrong with the signature')
+            oracleResult.data.statementId,
+            oracleResult.data.privateData,
+            oracleResult.signature ??
+              fail('something is wrong with the signature')
           );
         });
       }).rejects;
     });
 
     it('throws an error if the statement is valid but the provided signature is invalid', async () => {
-      const statementId = Field(1);
-      const privateData = Field(500);
+      const oracleResult: OracleResult = await oracle.generateStatementId(
+        Field(1),
+        true // will return a high result (true for holder, big balance, etc.)
+      );
+
       const signature = Signature.create(zapKeys.privateKey, [
-        statementId,
-        privateData,
+        oracleResult.data.statementId,
+        oracleResult.data.privateData,
         Field(0), // <- this is the invalid part
       ]);
 
       expect(async () => {
         await Mina.transaction(user.publicKey, () => {
           zap.verify(
-            statementId,
-            privateData,
+            oracleResult.data.statementId,
+            oracleResult.data.privateData,
             signature ?? fail('something is wrong with the signature')
           );
         });

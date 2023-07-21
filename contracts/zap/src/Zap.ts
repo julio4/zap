@@ -8,6 +8,7 @@ import {
   Permissions,
   PublicKey,
   Signature,
+  Bool,
 } from 'snarkyjs';
 
 // The public key of our trusted data provider
@@ -61,8 +62,16 @@ export class Zap extends SmartContract {
     // STATEMENT VERIFICATION: START
 
     // TODO: based on the statementId, verify that the privateData attest the statement
-    // WARNING: fixed for now!
+    // WARNING: fixed for now! Statement is: balance (=private data) > 500
 
+    const isPrivateDataValid: Bool = privateData.greaterThan(500);
+
+    // const whichStatementId: Bool[] = [1, 2, 3].map((i) =>
+    //   statementId.equals(i)
+    // );
+    // const isPrivateDataValid = switch?
+
+    isPrivateDataValid.assertTrue();
     // STATEMENT VERIFICATION: END
 
     // Emit an event containing the verified statement id
