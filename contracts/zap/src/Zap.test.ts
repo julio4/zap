@@ -1,12 +1,7 @@
 import { MockedZap } from './MockedZap';
-import {
-  Field,
-  Mina,
-  PrivateKey,
-  AccountUpdate,
-  Signature,
-} from 'snarkyjs';
-import { KeyPair } from './types';
+import { Field, Mina, PrivateKey, AccountUpdate, Signature } from 'snarkyjs';
+import { KeyPair, OracleResult } from './types';
+import { MockedOracle } from './utils/mockOracle';
 
 // Speed up testing by disabling proofs for unit tests
 let proofsEnabled = false;
@@ -35,6 +30,7 @@ async function localDeploy(
 
 describe('Zap', () => {
   let zap: MockedZap,
+    oracle: MockedOracle,
     deployer: KeyPair,
     zapKeys: KeyPair,
     user: KeyPair;
@@ -56,6 +52,9 @@ describe('Zap', () => {
     // Deploy the zap contract
     zap = new MockedZap(zapKeys.publicKey);
     await localDeploy(zap, zapKeys, deployer);
+
+    // Create a mock oracle
+    oracle = new MockedOracle(zapKeys);
   });
 
   it('generates and deploys the `Zap` smart contract', async () => {
@@ -64,18 +63,16 @@ describe('Zap', () => {
 
   describe('attestations', () => {
     it('emits a `statementId` event containing the statement id if the provided signature is valid (TODO add statement verification)', async () => {
-      const statementId = Field(2);
-      const privateData = Field(500);
-      const signature = Signature.create(zapKeys.privateKey, [
-        statementId,
-        privateData,
-      ]);
+      const oracleResult: OracleResult = await oracle.generateStatementId(
+        Field(1),
+        true  // will return a high result (true for holder, big balance, etc.)
+      );
 
       const txn = await Mina.transaction(user.publicKey, () => {
         zap.verify(
-          statementId,
-          privateData,
-          signature ?? fail('something is wrong with the signature')
+          oracleResult.data.statementId,
+          oracleResult.data.privateData,
+          oracleResult.signature ?? fail('something is wrong with the signature')
         );
       });
       await txn.prove();
@@ -84,7 +81,7 @@ describe('Zap', () => {
       const events = await zap.fetchEvents();
       const verifiedEventValue = events[0].event.data.toFields(null)[0];
       expect(events[0].type).toEqual('verified');
-      expect(verifiedEventValue).toEqual(statementId);
+      expect(verifiedEventValue).toEqual(oracleResult.data.statementId);
     });
 
     it.skip('TODO: throws an error if the statement is invalid even if the provided signature is valid', async () => {

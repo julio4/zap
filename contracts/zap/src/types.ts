@@ -1,4 +1,4 @@
-import { PublicKey, PrivateKey } from 'snarkyjs';
+import { PublicKey, PrivateKey, Signature, Field } from 'snarkyjs';
 
 // Represents a key pair to sign transactions.
 type KeyPair = {
@@ -6,4 +6,15 @@ type KeyPair = {
   privateKey: PrivateKey; // The private key of the key pair.
 };
 
-export type { KeyPair };
+type DataObject = {
+  statementId: Field;
+  privateData: Field;
+};
+
+type OracleResult = {
+  data: DataObject;
+  signature: Signature;
+  publicKey: PublicKey;
+};
+
+export type { KeyPair, OracleResult, DataObject };
