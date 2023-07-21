@@ -1,3 +1,3 @@
-import { Add } from './Add.js';
+import { Zap } from './Zap.js';
 
-export { Add };
+export { Zap };
