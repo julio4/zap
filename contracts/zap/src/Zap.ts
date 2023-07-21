@@ -11,8 +11,7 @@ import {
 } from 'snarkyjs';
 
 // The public key of our trusted data provider
-const ORACLE_PUBLIC_KEY =
-  '';
+const ORACLE_PUBLIC_KEY = 'B62qoAE4rBRuTgC42vqvEyUqCGhaZsW58SKVW4Ht8aYqP9UTvxFWBgy';
 
 /**
  * ZAP: Zero-knowledge Attestation Protocol
