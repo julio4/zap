@@ -1,4 +1,4 @@
-import "../styles/globals.css";
+import "@/styles/globals.css";
 // include styles from the ui package
 import "@packages/ui/styles.css";
 

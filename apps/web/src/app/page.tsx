@@ -1,29 +1,29 @@
-import { Metadata } from "next";
-import { Button, Card } from "@packages/ui";
-
-const CARD_CONTENT = [
-  {
-    title: "Caching Tasks",
-    href: "https://turbo.build/repo/docs/core-concepts/caching",
-    cta: "Read More",
-  },
-  {
-    title: "Running Tasks",
-    href: "https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks",
-    cta: "Read More",
-  },
-  {
-    title: "Configuration Options",
-    href: "https://turbo.build/repo/docs/reference/configuration",
-    cta: "Read More",
-  },
-];
-
-export const metadata: Metadata = {
-  title: "Web - Turborepo Example",
-};
+"use client";
+import { useEffect } from "react";
 
 export default function Home() {
+  useEffect(() => {
+    (async () => {
+      console.log("Loading snarkyjs and zkApp");
+      const { Mina, PublicKey } = await import("snarkyjs");
+      const { Add } = await import("@contracts/zap/build/src/");
+
+      // Update this to use the address (public key) for your zkApp account.
+      // To try it out, you can try this address for an example "Add" smart contract that we've deployed to
+      // Berkeley Testnet B62qkwohsqTBPsvhYE8cPZSpzJMgoKn4i1LQRuBAtVXWpaT4dgH6WoA.
+      const zkAppAddress =
+        "B62qkwohsqTBPsvhYE8cPZSpzJMgoKn4i1LQRuBAtVXWpaT4dgH6WoA";
+      // This should be removed once the zkAppAddress is updated.
+      if (!zkAppAddress) {
+        console.error(
+          'The following error is caused because the zkAppAddress has an empty string as the public key. Update the zkAppAddress with the public key for your zkApp account, or try this address for an example "Add" smart contract that we deployed to Berkeley Testnet: B62qkwohsqTBPsvhYE8cPZSpzJMgoKn4i1LQRuBAtVXWpaT4dgH6WoA'
+        );
+      }
+      //const zkApp = new Add(PublicKey.fromBase58(zkAppAddress))
+      console.log("zkAppAddress", zkAppAddress);
+    })();
+  }, []);
+
   return (
     <div className="flex min-h-screen flex-col items-center justify-center py-2">
       <main className="mx-auto w-auto px-4 pt-16 pb-8 sm:pt-24 lg:px-8">
@@ -33,14 +33,9 @@ export default function Home() {
             Turborepo Example
           </span>
         </h1>
-        <div className="mx-auto mt-5 max-w-xl sm:flex sm:justify-center md:mt-8">
-          <Button />
-        </div>
 
         <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4 place-content-evenly">
-          {CARD_CONTENT.map((card) => (
-            <Card key={card.title} {...card} />
-          ))}
+          TODO
         </div>
       </main>
     </div>
