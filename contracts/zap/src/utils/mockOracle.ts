@@ -1,5 +1,6 @@
 import { Field, PrivateKey, PublicKey, Signature } from 'snarkyjs';
 import { DataObject, KeyPair, OracleResult } from '../types';
+import { ethers } from 'ethers';
 
 export class MockedOracle {
   publicKey: PublicKey;
@@ -10,27 +11,60 @@ export class MockedOracle {
     this.privateKey = keys.privateKey;
   }
 
+  verifyMessage = async (
+    message: string,
+    address: string,
+    ethereumSignature: string
+  ) => {
+    try {
+      const signerAddr = await ethers.utils.verifyMessage(
+        message,
+        ethereumSignature
+      );
+
+      if (signerAddr !== address) {
+        return false;
+      }
+
+      return true;
+    } catch (err) {
+      console.log(err);
+      return false;
+    }
+  };
+
   async generateStatementId(
     statementId: Field,
-    lowOrHighResult: boolean // determine the private data valu
-    //   signatureOfCaller: Signature
+    lowOrHighResult: boolean, // determine the private data value
+    signatureOfCaller: string,
+    ethereumAddress: string
   ): Promise<OracleResult> {
     let data: DataObject;
 
-    switch (statementId.value[0]) {
-      case Field(1).value[0]: // getBalance
+    const isCallerSignatureValid: boolean = await this.verifyMessage(
+      statementId.toString(),
+      ethereumAddress,
+      signatureOfCaller
+    );
+
+    if (!isCallerSignatureValid) {
+      throw new Error('signature of the caller is invalid');
+    }
+
+    switch (statementId.toString()) {
+      case Field(1).toString(): // getBalance
         data = {
           statementId: statementId,
           privateData: lowOrHighResult ? Field(700) : Field(500),
         };
         break;
-      case Field(2).value[0]: // azukiHolder
+      case Field(2).toString(): // azukiHolder
         data = {
           statementId: statementId,
           privateData: lowOrHighResult ? Field(1) : Field(0),
         };
         break;
-      case Field(3).value[0]: // ENS Owner
+      case Field(3).toString(): // ENS Owner
         data = {
           statementId: statementId,
           privateData: lowOrHighResult ? Field(1) : Field(0),
@@ -41,14 +75,14 @@ export class MockedOracle {
         throw new Error('statement not found');
     }
 
-    const signature: Signature = Signature.create(this.privateKey, [
+    const signatureOfOracle: Signature = Signature.create(this.privateKey, [
       data['statementId'],
       data['privateData'],
     ]);
 
     const res = {
       data: data,
-      signature: signature,
+      signature: signatureOfOracle,
       publicKey: this.publicKey,
     };
 

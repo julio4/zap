@@ -35,6 +35,11 @@ describe('Zap', () => {
     zapKeys: KeyPair,
     user: KeyPair;
 
+  // hardcoded for the moment just to test
+  const metamaskSignature =
+    '0x7f3943a698c1b4d732a6d24073ff2b9a68d17bd3f0a517ad3a11bc044d1b79ce5e83bfecb3a454fa189f1960bb8cb7dd53482f2b6dcf047ea8b8c3bfa65751c61b';
+  const ethereumAddress = '0x768D170EE896eb95714AB43aFCaC08F970607361';
+
   beforeAll(async () => {
     if (proofsEnabled) await MockedZap.compile();
   });
@@ -65,7 +70,9 @@ describe('Zap', () => {
     it('emits a `statementId` event containing the statement id if the provided signature is valid (TODO add statement verification)', async () => {
       const oracleResult: OracleResult = await oracle.generateStatementId(
         Field(1),
-        true // will return a high result (true for holder, big balance, etc.), statement is valid
+        true, // will return a high result (true for holder, big balance, etc.), statement is valid
+        metamaskSignature,
+        ethereumAddress
       );
 
       const txn = await Mina.transaction(user.publicKey, () => {
@@ -88,7 +95,9 @@ describe('Zap', () => {
     it('throws an error if the statement is invalid even if the provided signature is valid', async () => {
       const oracleResult: OracleResult = await oracle.generateStatementId(
         Field(1),
-        false // will return a low result (true for holder, big balance, etc.), statement is invalid
+        false, // will return a low result (true for holder, big balance, etc.), statement is invalid
+        metamaskSignature,
+        ethereumAddress
       );
       expect(async () => {
         await Mina.transaction(user.publicKey, () => {
@@ -105,7 +114,9 @@ describe('Zap', () => {
     it('throws an error if the statement is valid but the provided signature is invalid', async () => {
       const oracleResult: OracleResult = await oracle.generateStatementId(
         Field(1),
-        true // will return a high result (true for holder, big balance, etc.)
+        true, // will return a high result (true for holder, big balance, etc.)
+        metamaskSignature,
+        ethereumAddress
       );
 
       const signature = Signature.create(zapKeys.privateKey, [
