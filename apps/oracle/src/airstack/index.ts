@@ -150,7 +150,7 @@ export async function isXMTPenabled(owner: string): Promise<number> {
     query GetSocial {
       Wallet(
         input: {
-          identity: ${owner}
+          identity: "${owner}"
           blockchain: ethereum
         }
       ) {
@@ -161,17 +161,14 @@ export async function isXMTPenabled(owner: string): Promise<number> {
     }
   `;
 
-  const variables = {
-    owner,
-  };
+  console.log('XMTPquery', XMTPquery);
 
-  const response = await request<AirstackResponse<AirstackXmtpEnabled>>(
+  const response = await request<AirstackXmtpEnabled>(
     AIRSTACK_ENDPOINT,
-    XMTPquery,
-    variables
+    XMTPquery
   );
-
-  const responseIsEnabled = response.data.Wallet.xmtp ? 1 : 0;
+  console.log('response', response);
+  const responseIsEnabled = response.Wallet.xmtp ? 1 : 0;
 
   return responseIsEnabled;
 }

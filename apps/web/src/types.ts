@@ -48,6 +48,7 @@ export enum OracleRoute {
   BALANCE = "/balance",
   NFT = "/nft",
   POAP = "/poap",
+  XMTP_ENABLED = "/xmtpEnabled",
 }
 
 export type OracleRequest = {
@@ -116,6 +117,13 @@ export const StatementChoices: StatementChoice[] = [
         placeholder: "0x...",
       },
     ],
+    possibleConditions: [Condition.EQUAL],
+  },
+  {
+    route: OracleRoute.XMTP_ENABLED,
+    name: "XMTP Enabled",
+    description: "Check if the user has enabled XMTP",
+    args: [],
     possibleConditions: [Condition.EQUAL],
   },
 ];
