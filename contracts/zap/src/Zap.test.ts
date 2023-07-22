@@ -84,8 +84,7 @@ describe('Zap', () => {
   });
 
   describe('attestations', () => {
-    it.only('emits a `statementId` event containing the statement id if the provided signature is valid (TODO add statement verification)', async () => {
-
+    it('emits a `statementId` event containing the statement id if the provided signature is valid (TODO add statement verification)', async () => {
       const oracleResult: OracleResult = await oracle.generateStatementId(
         Field(1),
         true, // will return a high result (true for holder, big balance for assets, etc.), so statement is valid
@@ -129,17 +128,17 @@ describe('Zap', () => {
         ethereumAddress
       );
       expect(async () => {
-        await Mina.transaction(user.publicKey, () => {
-          zap.verify(
-            Field(statementBalanceSup.condition.type),
-            Field(statementBalanceSup.condition.targetValue),
-            oracleResult.data.hashRoute,
-            oracleResult.data.privateData,
-            oracleResult.signature ??
-              fail('something is wrong with the signature')
-          );
-        });
-      }).rejects;
+      await Mina.transaction(user.publicKey, () => {
+        zap.verify(
+          Field(statementBalanceSup.condition.type),
+          Field(statementBalanceSup.condition.targetValue),
+          oracleResult.data.hashRoute,
+          oracleResult.data.privateData,
+          oracleResult.signature ??
+            fail('something is wrong with the signature')
+        );
+      })
+      }).rejects.toThrow('Bool.assertTrue(): false != true');
     });
 
     it.only('throws an error if the statement is valid but the provided signature is invalid (wrong publicKey of oracle)', async () => {
@@ -163,10 +162,11 @@ describe('Zap', () => {
             Field(statementBalanceSup.condition.targetValue),
             oracleResult.data.hashRoute,
             oracleResult.data.privateData,
-            invalidOracleSignature ?? fail('something is wrong with the signature')
+            invalidOracleSignature ??
+              fail('something is wrong with the signature')
           );
         });
-      }).rejects;
+      }).rejects.toThrow('Bool.assertTrue(): false != true');
     });
 
     it('throws an error if the statement is valid but the provided signature is invalid (wrong hashRoot)', async () => {
@@ -178,13 +178,15 @@ describe('Zap', () => {
       );
 
       const wrongHashRoute = Poseidon.hash([
-        stringToFields('/balance/:0xdac17f958d2ee523a2206206994597c13d831ec7')[0],
+        stringToFields(
+          '/balance/:0xdac17f958d2ee523a2206206994597c13d831ec7'
+        )[0],
       ]);
 
       const invalidOracleSignature = Signature.create(zapKeys.privateKey, [
         wrongHashRoute,
         oracleResult.data.privateData,
-        oracleResult.publicKey.toFields()[0],        
+        oracleResult.publicKey.toFields()[0],
       ]);
 
       expect(async () => {
@@ -194,10 +196,11 @@ describe('Zap', () => {
             Field(statementBalanceSup.condition.targetValue),
             oracleResult.data.hashRoute,
             oracleResult.data.privateData,
-            invalidOracleSignature ?? fail('something is wrong with the signature')
+            oracleResult.signature ??
+              fail('something is wrong with the signature')
           );
         });
-      }).rejects;
+      });
     });
 
     it('throws an error if the signature of the caller is invalid', async () => {
