@@ -135,5 +135,16 @@ describe('Zap', () => {
         });
       }).rejects;
     });
+    
+    it('throws an error if the signature of the caller is invalid', async () => {
+      await expect(async () => {
+        await oracle.generateStatementId(
+          Field(1),
+          true, // will return a high result (true for holder, big balance, etc.), statement is valid
+          'invalid_metamask_signature',
+          ethereumAddress
+        );
+      }).rejects.toThrow('signature of the caller is invalid');
+    });
   });
 });

@@ -32,9 +32,7 @@
     "ts-jest": "^27.0.7"
   },
   "peerDependencies": {
-    "snarkyjs": "0.12.*"
-  },
-  "dependencies": {
-    "ethers": "^6.6.3"
+    "snarkyjs": "0.12.*",
+    "ethers": "^5.7.2"
   }
 }
