@@ -1,17 +1,5 @@
-import { JsonRpcSigner } from "ethers";
 import { createContext, useState } from "react";
-
-type MinaWallet = {
-  isConnected: boolean;
-  address: string;
-};
-
-type EthereumWallet = {
-  isConnected: boolean;
-  address: string;
-  signature: string;
-  signer?: JsonRpcSigner;
-};
+import { MinaWallet, EthereumWallet, Statement } from "../../types";
 
 type AttestContextType = {
   zkApp: any;
@@ -19,6 +7,8 @@ type AttestContextType = {
   setMinaWallet: (minaWallet: MinaWallet) => void;
   ethereumWallet: EthereumWallet;
   setEthereumWallet: (ethereumWallet: EthereumWallet) => void;
+  statement: Statement | null;
+  setStatement: (statement: Statement) => void;
 };
 
 const defaultAttestContext: AttestContextType = {
@@ -34,6 +24,8 @@ const defaultAttestContext: AttestContextType = {
     signature: "",
   },
   setEthereumWallet: () => {},
+  statement: null,
+  setStatement: () => {},
 };
 
 const AttestContext = createContext<AttestContextType>(defaultAttestContext);
@@ -51,6 +43,12 @@ const AttestProvider = ({ children }: { children: React.ReactNode }) => {
       setAttest((prevAttest) => ({
         ...prevAttest,
         ethereumWallet,
+      }));
+    },
+    setStatement: (statement: Statement) => {
+      setAttest((prevAttest) => ({
+        ...prevAttest,
+        statement,
       }));
     },
   });

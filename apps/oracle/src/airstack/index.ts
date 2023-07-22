@@ -93,7 +93,11 @@ export async function isNftHolderETH(
     return mockMiddleware([owner, nftAddress], isNftHolderETH);
   }
   const nftQueryETH = gql`
-    query GetTokenHolders($tokenAddress: Address, $limit: Int, $owner: String!) {
+    query GetTokenHolders(
+      $tokenAddress: Address
+      $limit: Int
+      $owner: String!
+    ) {
       ethereum: TokenBalances(
         input: {
           filter: {

@@ -1,5 +1,10 @@
 import { ParameterizedContext } from 'koa';
-import { getBalance, isNftHolderETH, isNftHolderPolygon, isPoapHolder } from './airstack/index.js';
+import {
+  getBalance,
+  isNftHolderETH,
+  isNftHolderPolygon,
+  isPoapHolder,
+} from './airstack/index.js';
 
 export async function getUserBalance(ctx: ParameterizedContext) {
   try {

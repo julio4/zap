@@ -22,7 +22,7 @@ export async function signResponse(ctx: ParameterizedContext, next: Next) {
   const publicKey = privateKey.toPublicKey();
 
   // Use private key to sign an array of Fields containing the requested data
-  const signature = Signature.create(privateKey, [...data]);  // et après avoir fait les changements L15, ici mettre juste create[privateKey, data]
+  const signature = Signature.create(privateKey, [...data]); // et après avoir fait les changements L15, ici mettre juste create[privateKey, data]
 
   // format response into Mina compatible signature scheme
   ctx.body = {
