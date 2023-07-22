@@ -6,31 +6,25 @@ export type AirstackTokenBalance = {
 
 export type AirstackPoapHolder = {
   Poaps: {
-    Poap: {
-      owner: {
-        identity: string;
-      };
-    };
-  } | null;
-};
-
-export type AirstackNftHolderPolygon = {
-  polygon: {
-    TokenBalance: {
-      owner: {
-        identity: string;
-      }[];
-    } | null;
+    Poap:
+      | {
+          owner: {
+            identity: string;
+          };
+        }[]
+      | null;
   };
 };
 
-export type AirstackNftHolderETH = {
-  ethereum: {
-    TokenBalance: {
-      owner: {
-        identity: string;
-      }[];
-    } | null;
+export type AirstackNftHolder = {
+  TokenBalances: {
+    TokenBalance:
+      | {
+          owner: {
+            addresses: string[];
+          };
+        }[]
+      | null;
   };
 };
 

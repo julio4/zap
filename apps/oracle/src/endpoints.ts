@@ -1,11 +1,11 @@
 import { ParameterizedContext } from 'koa';
-import { getBalance, isNftHolderETH, isNftHolderPolygon, isPoapHolder } from './airstack/index.js';
+import { getBalance, isNftHolder, isPoapHolder } from './airstack/index.js';
 
 export async function getUserBalance(ctx: ParameterizedContext) {
   try {
     const { address, args } = ctx.state;
-    const { tokenAddress } = args;
-    const balance = await getBalance(address, tokenAddress);
+    const { tokenAddress, blockchain } = args;
+    const balance = await getBalance(address, tokenAddress, blockchain);
 
     ctx.body = {
       balance,
@@ -33,33 +33,14 @@ export async function verifyPoapHolder(ctx: ParameterizedContext) {
   }
 }
 
-export async function verifyNftHolderETH(ctx: ParameterizedContext) {
+export async function verifyNftHolder(ctx: ParameterizedContext) {
   try {
     const { address, args } = ctx.state;
-    const { nftAddress } = args;
-    const addressFetched = await isNftHolderETH(address, nftAddress);
-
-    const nftHeld = addressFetched ? 1 : 0;
+    const { nftAddress, blockchain } = args;
+    const numberNft = await isNftHolder(address, nftAddress, blockchain);
 
     ctx.body = {
-      nftHeld,
-      // TODO IMPORTANT /!\ mettre la hashroute
-    };
-  } catch (error) {
-    ctx.throw(404);
-  }
-}
-
-export async function verifyNftHolderPolygon(ctx: ParameterizedContext) {
-  try {
-    const { address, args } = ctx.state;
-    const { nftAddress } = args;
-    const addressFetched = await isNftHolderPolygon(address, nftAddress);
-
-    const nftHeld = addressFetched == address ? 1 : 0;
-
-    ctx.body = {
-      nftHeld,
+      numberNft,
       // TODO IMPORTANT /!\ mettre la hashroute
     };
   } catch (error) {

@@ -1,7 +1,6 @@
 import { request, gql } from 'graphql-request';
 import {
-  AirstackNftHolderETH,
-  AirstackNftHolderPolygon,
+  AirstackNftHolder,
   AirstackPoapHolder,
   AirstackResponse,
   AirstackTokenBalance,
@@ -16,15 +15,16 @@ const mockMiddleware = (args: any[], fn: (...args: any[]) => any) =>
 
 export async function getBalance(
   owner: string,
-  token: string
-): Promise<string> {
+  token: string,
+  blockchain: string
+): Promise<number> {
   if (process.env['NODE_ENV'] === 'development') {
     return mockMiddleware([owner, token], getBalance);
   }
   const balanceQuery = gql`
-    query Balance($blockchain: String!, $owner: String!, $token: String!) {
+    query Balance {
       TokenBalance(
-        input: { blockchain: $blockchain, tokenAddress: $token, owner: $owner }
+        input: { blockchain: ${blockchain} , tokenAddress: $token, owner: $owner }
       ) {
         formattedAmount
       }
@@ -43,23 +43,23 @@ export async function getBalance(
     variables
   );
 
-  return res.data.TokenBalance?.formattedAmount.toString() || '0';
+  return res.data.TokenBalance?.formattedAmount || 0;
 }
 
 export async function isPoapHolder(
   owner: string,
-  poapId: string // eventId
-): Promise<string> {
+  poapId: string, // eventId
+): Promise<number> {
   if (process.env['NODE_ENV'] === 'development') {
     return mockMiddleware([owner, poapId], isPoapHolder);
   }
   const poapQuery = gql`
-    query GetPoapHolders($eventId: [String!], $limit: Int, $owner: String!) {
+    query GetPoapHolders {
       Poaps(
         input: {
-          filter: { eventId: { _in: $eventId }, owner: { _eq: $owner } }
+          filter: { eventId: { _in: ${poapId} }, owner: { _eq: ${owner} } }
           blockchain: ALL
-          limit: $limit
+          limit: 200
         }
       ) {
         Poap {
@@ -82,31 +82,34 @@ export async function isPoapHolder(
     variables
   );
 
-  return res.data.Poaps?.Poap?.owner?.identity || '';
+  const poapHeld = res.data.Poaps.Poap ? 1 : 0;
+  return poapHeld;
 }
 
-export async function isNftHolderETH(
+export async function isNftHolder(
   owner: string,
-  nftAddress: string // address
-): Promise<string> {
+  nftAddress: string, // address
+  blockchain: string // ethereum or polygon
+): Promise<number> {
   if (process.env['NODE_ENV'] === 'development') {
-    return mockMiddleware([owner, nftAddress], isNftHolderETH);
+    return mockMiddleware([owner, nftAddress], isNftHolder);
   }
   const nftQueryETH = gql`
-    query GetTokenHolders($tokenAddress: Address, $limit: Int, $owner: String!) {
-      ethereum: TokenBalances(
+    query MyQuery {
+      TokenBalances(
         input: {
           filter: {
-            tokenAddress: { _eq: $tokenAddress }
-            owner: { _eq: $owner }
+            owner: { _eq: "${owner}" }
+            tokenAddress: { _eq: "${nftAddress}" }
           }
-          blockchain: ethereum
-          limit: $limit
+          blockchain: ${blockchain}
+          limit: 150
         }
       ) {
         TokenBalance {
           owner {
-            identity
+            addresses
+          }
           }
         }
       }
@@ -115,48 +118,18 @@ export async function isNftHolderETH(
 
   const variables = {
     owner,
-    eventId: nftAddress,
+    nftAddress,
   };
 
-  const res = await request<AirstackResponse<AirstackNftHolderETH>>(
+  const response = await request<AirstackResponse<AirstackNftHolder>>(
     AIRSTACK_ENDPOINT,
     nftQueryETH,
     variables
   );
 
-  return res.data.ethereum?.TokenBalance?.owner[0]?.identity || '';
-}
+  const nftCount = response.data.TokenBalances.TokenBalance
+    ? response.data.TokenBalances.TokenBalance.length
+    : 0;
 
-export async function isNftHolderPolygon(
-  owner: string,
-  nftAddress: string // address
-): Promise<string> {
-  if (process.env['NODE_ENV'] === 'development') {
-    return mockMiddleware([owner, nftAddress], isNftHolderPolygon);
-  }
-  const nftQueryPolygon = gql`query GetTokenHolders($tokenAddress: Address, $limit: Int) {
-    polygon: TokenBalances(
-      input: {filter: {tokenAddress: {_eq: $tokenAddress},  owner: {_eq: }},  blockchain: polygon, limit: $limit}
-    ) {
-      TokenBalance {
-        owner {
-          identity
-        }
-      }
-    }
-  }
-  `;
-
-  const variables = {
-    owner,
-    eventId: nftAddress,
-  };
-
-  const res = await request<AirstackResponse<AirstackNftHolderPolygon>>(
-    AIRSTACK_ENDPOINT,
-    nftQueryPolygon,
-    variables
-  );
-
-  return res.data.polygon?.TokenBalance?.owner[0]?.identity || '';
+  return nftCount;
 }
