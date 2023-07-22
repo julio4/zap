@@ -12,16 +12,6 @@ export type EthereumWallet = {
   signer?: JsonRpcSigner;
 };
 
-export enum OracleRoute {
-  BALANCE = "/balance",
-  NFT = "/nft",
-}
-
-export type OracleRequest = {
-  route: OracleRoute;
-  args: any[];
-};
-
 export enum Condition {
   EQUAL = "==",
   LESS_THAN = "<",
@@ -39,9 +29,11 @@ export type Statement = {
 };
 
 export type HTMLInputSchema = {
+  name: string;
   type: "text" | "number" | "textarea";
   label: string;
   placeholder: string;
+  value?: string;
 };
 
 export type StatementChoice = {
@@ -52,6 +44,18 @@ export type StatementChoice = {
   possibleConditions: Condition[];
 };
 
+export enum OracleRoute {
+  BALANCE = "/balance",
+  NFT_ETH = "/nftETH",
+  NFT_POL = "/nftPolygon",
+  POAP = "/poap",
+}
+
+export type OracleRequest = {
+  route: OracleRoute;
+  args: { [key: string]: any };
+};
+
 export const StatementChoices: StatementChoice[] = [
   {
     route: OracleRoute.BALANCE,
@@ -59,6 +63,7 @@ export const StatementChoices: StatementChoice[] = [
     description: "Statement on a target ERC20 token balance",
     args: [
       {
+        name: "token",
         type: "text",
         label: "Target ERC20 Token Address",
         placeholder: "0x...",
@@ -71,11 +76,12 @@ export const StatementChoices: StatementChoice[] = [
     ],
   },
   {
-    route: OracleRoute.NFT,
-    name: "NFT",
-    description: "Statement on a target ERC721 token balance",
+    route: OracleRoute.NFT_ETH,
+    name: "NFT_ETH",
+    description: "Statement on a target ERC721 token balance on Ethereum",
     args: [
       {
+        name: "nftAddress",
         type: "text",
         label: "Target ERC721 Token Address",
         placeholder: "0x...",
@@ -86,5 +92,37 @@ export const StatementChoices: StatementChoice[] = [
       Condition.LESS_THAN,
       Condition.GREATER_THAN,
     ],
+  },
+  {
+    route: OracleRoute.NFT_POL,
+    name: "NFT_POL",
+    description: "Statement on a target ERC721 token balance on Polygon",
+    args: [
+      {
+        name: "nftAddress",
+        type: "text",
+        label: "Target ERC721 Token Address",
+        placeholder: "0x...",
+      },
+    ],
+    possibleConditions: [
+      Condition.EQUAL,
+      Condition.LESS_THAN,
+      Condition.GREATER_THAN,
+    ],
+  },
+  {
+    route: OracleRoute.POAP,
+    name: "POAP",
+    description: "Statement on a target POAP event",
+    args: [
+      {
+        name: "event_id",
+        type: "text",
+        label: "Target POAP event id",
+        placeholder: "0x...",
+      },
+    ],
+    possibleConditions: [Condition.EQUAL],
   },
 ];
