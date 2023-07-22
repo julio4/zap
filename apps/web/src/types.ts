@@ -46,8 +46,7 @@ export type StatementChoice = {
 
 export enum OracleRoute {
   BALANCE = "/balance",
-  NFT_ETH = "/nftETH",
-  NFT_POL = "/nftPolygon",
+  NFT = "/nft",
   POAP = "/poap",
 }
 
@@ -82,33 +81,21 @@ export const StatementChoices: StatementChoice[] = [
     ],
   },
   {
-    route: OracleRoute.NFT_ETH,
-    name: "NFT_ETH",
+    route: OracleRoute.NFT,
+    name: "NFT",
     description: "Statement on a target ERC721 token balance on Ethereum",
     args: [
       {
         name: "nftAddress",
         type: "text",
-        label: "Target ERC721 Token Address",
+        label: "ERC721 Token Address",
         placeholder: "0x...",
       },
-    ],
-    possibleConditions: [
-      Condition.EQUAL,
-      Condition.LESS_THAN,
-      Condition.GREATER_THAN,
-    ],
-  },
-  {
-    route: OracleRoute.NFT_POL,
-    name: "NFT_POL",
-    description: "Statement on a target ERC721 token balance on Polygon",
-    args: [
       {
-        name: "nftAddress",
+        name: "blockchain",
         type: "text",
-        label: "Target ERC721 Token Address",
-        placeholder: "0x...",
+        label: "Target Blockchain",
+        placeholder: "ethereum | polygon",
       },
     ],
     possibleConditions: [

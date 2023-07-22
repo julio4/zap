@@ -49,12 +49,10 @@ export async function getBalance(
     }
   `;
 
-  const requestpending = request<AirstackTokenBalance>(
+  const res = await request<AirstackTokenBalance>(
     AIRSTACK_ENDPOINT,
     balanceQuery
   );
-
-  const res = await requestpending;
 
   return res.TokenBalance?.formattedAmount || 0;
 }
@@ -84,15 +82,9 @@ export async function isPoapHolder(
     }
   `;
 
-  const variables = {
-    owner,
-    eventId: poapId,
-  };
-
   const res = await request<AirstackResponse<AirstackPoapHolder>>(
     AIRSTACK_ENDPOINT,
-    poapQuery,
-    variables
+    poapQuery
   );
 
   const poapHeld = res.data.Poaps.Poap ? 1 : 0;
@@ -123,25 +115,19 @@ export async function isNftHolder(
           owner {
             addresses
           }
-          }
         }
       }
     }
   `;
 
-  const variables = {
-    owner,
-    nftAddress,
-  };
 
-  const response = await request<AirstackResponse<AirstackNftHolder>>(
+  const response = await request<AirstackNftHolder>(
     AIRSTACK_ENDPOINT,
-    nftQuery,
-    variables
+    nftQuery
   );
 
-  const nftCount = response.data.TokenBalances.TokenBalance
-    ? response.data.TokenBalances.TokenBalance.length
+  const nftCount = response.TokenBalances.TokenBalance
+    ? response.TokenBalances.TokenBalance.length
     : 0;
 
   return nftCount;
