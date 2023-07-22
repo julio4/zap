@@ -1,11 +1,20 @@
 import { ParameterizedContext } from 'koa';
-import { getBalance, getNftSaleVolume, isEnsHolder, isFarcasterHolder, isLensHolder, isNftHolder, isPoapHolder, isXMTPenabled } from './airstack/index.js';
+import {
+  getBalance,
+  getNftSaleVolume,
+  isEnsHolder,
+  isFarcasterHolder,
+  isLensHolder,
+  isNftHolder,
+  isPoapHolder,
+  isXMTPenabled,
+} from './airstack/index.js';
 
 export async function getUserBalance(ctx: ParameterizedContext) {
   try {
     const { address, args } = ctx.state;
-    const { tokenAddress, blockchain } = args;
-    const balance = await getBalance(address, tokenAddress, blockchain);
+    const { token, blockchain } = args;
+    const balance = await getBalance(address, token, blockchain);
 
     ctx.body = {
       balance,
@@ -62,7 +71,7 @@ export async function verifyXMTPenabled(ctx: ParameterizedContext) {
   }
 }
 
-export async function verifyEnsHolder(ctx: ParameterizedContext){
+export async function verifyEnsHolder(ctx: ParameterizedContext) {
   try {
     const { address } = ctx.state;
     const isOwner = await isEnsHolder(address);
@@ -76,7 +85,7 @@ export async function verifyEnsHolder(ctx: ParameterizedContext){
   }
 }
 
-export async function verifyLensHolder(ctx: ParameterizedContext){
+export async function verifyLensHolder(ctx: ParameterizedContext) {
   try {
     const { address } = ctx.state;
     const isOwner = await isLensHolder(address);
@@ -90,7 +99,7 @@ export async function verifyLensHolder(ctx: ParameterizedContext){
   }
 }
 
-export async function verifyFarcasterHolder(ctx: ParameterizedContext){
+export async function verifyFarcasterHolder(ctx: ParameterizedContext) {
   try {
     const { address } = ctx.state;
     const isOwner = await isFarcasterHolder(address);
@@ -104,7 +113,7 @@ export async function verifyFarcasterHolder(ctx: ParameterizedContext){
   }
 }
 
-export async function getUserNftVolumeSales(ctx: ParameterizedContext){
+export async function getUserNftVolumeSales(ctx: ParameterizedContext) {
   try {
     const { address } = ctx.state;
     const volumeInEth = await getNftSaleVolume(address);
@@ -117,4 +126,3 @@ export async function getUserNftVolumeSales(ctx: ParameterizedContext){
     ctx.throw(404);
   }
 }
-

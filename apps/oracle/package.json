@@ -13,7 +13,7 @@
   "main": "build/src/index.js",
   "types": "build/src/index.d.ts",
   "scripts": {
-    "dev": "tsc && NODE_ENV=development node .",
+    "dev": "tsc && node .",
     "start": "tsc && node .",
     "build": "tsc",
     "buildw": "tsc --watch",

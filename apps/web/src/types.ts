@@ -68,6 +68,12 @@ export const StatementChoices: StatementChoice[] = [
         label: "Target ERC20 Token Address",
         placeholder: "0x...",
       },
+      {
+        name: "blockchain",
+        type: "text",
+        label: "Target Blockchain",
+        placeholder: "ethereum | polygon",
+      },
     ],
     possibleConditions: [
       Condition.EQUAL,

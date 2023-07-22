@@ -25,29 +25,38 @@ export async function getBalance(
   if (process.env['NODE_ENV'] === 'development') {
     return mockMiddleware([owner, token], getBalance);
   }
+
+  if (!blockchain) {
+    console.log('No blockchain specified, defaulting to ethereum');
+    blockchain = 'ethereum';
+  }
+
+  if (token == undefined) {
+    throw new Error('No token specified');
+  }
+
   const balanceQuery = gql`
     query Balance {
       TokenBalance(
-        input: { blockchain: ${blockchain} , tokenAddress: $token, owner: $owner }
+        input: {
+          blockchain: ${blockchain}
+          tokenAddress: "${token}"
+          owner: "${owner}"
+        }
       ) {
         formattedAmount
       }
     }
   `;
 
-  const variables = {
-    blockchain: 'ethereum',
-    owner,
-    token,
-  };
-
-  const res = await request<AirstackResponse<AirstackTokenBalance>>(
+  const requestpending = request<AirstackTokenBalance>(
     AIRSTACK_ENDPOINT,
-    balanceQuery,
-    variables
+    balanceQuery
   );
 
-  return res.data.TokenBalance?.formattedAmount || 0;
+  const res = await requestpending;
+
+  return res.TokenBalance?.formattedAmount || 0;
 }
 
 export async function isPoapHolder(
@@ -290,7 +299,7 @@ export async function getNftSaleVolume(owner: string): Promise<bigint> {
   if (process.env['NODE_ENV'] === 'development') {
     return mockMiddleware([owner], getNftSaleVolume);
   }
-  let cursor: string = ""; // initialize cursor
+  let cursor: string = ''; // initialize cursor
 
   const totalNftVolumeQuery = gql`
     query MyQuery {
