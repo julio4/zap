@@ -40,9 +40,11 @@ export type AirstackXmtpEnabled = {
 
 export type AirstackEnsHolder = {
   Wallet: {
-    primaryDomain: {
-      name: string;
-    } | null;
+    domains:
+      {
+          name: string;
+        }[]
+      | null;
   };
 };
 

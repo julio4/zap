@@ -161,16 +161,12 @@ export async function isXMTPenabled(owner: string): Promise<number> {
     }
   `;
 
-  console.log('XMTPquery', XMTPquery);
-
   const response = await request<AirstackXmtpEnabled>(
     AIRSTACK_ENDPOINT,
     XMTPquery
   );
-  console.log('response', response);
-  const responseIsEnabled = response.Wallet.xmtp ? 1 : 0;
 
-  return responseIsEnabled;
+  return response.Wallet.xmtp ? 1 : 0;
 }
 
 export async function isEnsHolder(owner: string): Promise<number> {
@@ -181,7 +177,7 @@ export async function isEnsHolder(owner: string): Promise<number> {
     query GetSocial {
       Wallet(
         input: {
-          identity: ${owner}
+          identity: "${owner}"
           blockchain: ethereum
         }
       ) {
@@ -192,19 +188,19 @@ export async function isEnsHolder(owner: string): Promise<number> {
     }
   `;
 
-  const variables = {
-    owner,
-  };
 
-  const response = await request<AirstackResponse<AirstackEnsHolder>>(
+  const response = await request<AirstackEnsHolder>(
     AIRSTACK_ENDPOINT,
-    EnsQuery,
-    variables
+    EnsQuery
   );
 
-  const responseEns = response.data.Wallet.primaryDomain ? 1 : 0;
+  let domainCount = 0;
 
-  return responseEns;
+  if (response.Wallet.domains) {
+    domainCount = response.Wallet.domains.length;
+  }
+
+  return domainCount;
 }
 
 export async function isLensHolder(owner: string): Promise<number> {

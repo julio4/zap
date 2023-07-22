@@ -72,10 +72,10 @@ export async function verifyXMTPenabled(ctx: ParameterizedContext) {
 export async function verifyEnsHolder(ctx: ParameterizedContext) {
   try {
     const { address } = ctx.state;
-    const isOwner = await isEnsHolder(address);
+    const gotEnsAttached = await isEnsHolder(address);
 
     ctx.body = {
-      isOwner,
+      gotEnsAttached,
       // TODO IMPORTANT /!\ mettre la hashroute
     };
   } catch (error) {
