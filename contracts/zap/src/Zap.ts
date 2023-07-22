@@ -75,21 +75,10 @@ export class Zap extends SmartContract {
 
     const whichOperator: Bool[] = [
       conditionType.equals(Field(1)),
-      Bool(true),
+      conditionType.equals(Field(2)),
       conditionType.equals(Field(3)),
       conditionType.equals(Field(4)),
     ];
-    console.log('conditionType', conditionType);
-    console.log('Field(2)', Field(2));
-
-    console.log('whichOperator', whichOperator);
-
-    console.log('privateData', privateData);
-    console.log('targetValue', targetValue);
-    console.log(
-      'privateData.greaterThan(targetValue)',
-      privateData.greaterThan(targetValue)
-    );
 
     // verify that the privateData attest the statement
     const isPrivateDataValid = Provable.switch(whichOperator, Bool, [

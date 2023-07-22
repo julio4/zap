@@ -1,7 +1,15 @@
 import { MockedZap } from './MockedZap';
-import { Field, Mina, PrivateKey, AccountUpdate, Signature } from 'snarkyjs';
+import {
+  Field,
+  Mina,
+  PrivateKey,
+  AccountUpdate,
+  Signature,
+  Poseidon,
+} from 'snarkyjs';
 import { KeyPair, OracleResult, Statement } from './types';
 import { MockedOracle } from './utils/mockOracle';
+import { stringToFields } from 'snarkyjs/dist/node/bindings/lib/encoding';
 
 // Speed up testing by disabling proofs for unit tests
 let proofsEnabled = false;
@@ -39,6 +47,16 @@ describe('Zap', () => {
     '0x7f3943a698c1b4d732a6d24073ff2b9a68d17bd3f0a517ad3a11bc044d1b79ce5e83bfecb3a454fa189f1960bb8cb7dd53482f2b6dcf047ea8b8c3bfa65751c61b';
   const ethereumAddress = '0x768D170EE896eb95714AB43aFCaC08F970607361';
 
+  /* Statement is: 'balance of user of token with address 0xdac1..1ec7 is greater (>) than 600' */
+  const statementBalanceSup: Statement = {
+    route: '/balance/:0xdac17f958d2ee523a2206206994597c13d831ec7',
+    args: null,
+    condition: {
+      type: 2,
+      targetValue: 600,
+    },
+  };
+
   beforeAll(async () => {
     if (proofsEnabled) await MockedZap.compile();
   });
@@ -67,15 +85,6 @@ describe('Zap', () => {
 
   describe('attestations', () => {
     it.only('emits a `statementId` event containing the statement id if the provided signature is valid (TODO add statement verification)', async () => {
-      /* Statement is: 'balance of user of token with address 0xdac1..1ec7 is greater (>) than 600' */
-      const statementBalanceSup: Statement = {
-        route: '/balance/:0xdac17f958d2ee523a2206206994597c13d831ec7',
-        args: null,
-        condition: {
-          type: 2,
-          targetValue: 600,
-        },
-      };
 
       const oracleResult: OracleResult = await oracle.generateStatementId(
         Field(1),
@@ -91,72 +100,115 @@ describe('Zap', () => {
           oracleResult.data.hashRoute,
           oracleResult.data.privateData,
           oracleResult.signature ??
-            fail('something is wrong with the signature'),
+            fail('something is wrong with the signature')
         );
       });
       await txn.prove();
       await txn.sign([user.privateKey]).send();
 
-      const events = await zap.fetchEvents();
-      const verifiedEventValue = events[0].event.data.toFields(null)[0];
-      console.log('events', events);
-      expect(events[0].type).toEqual('verified');
-      // expect(verifiedEventValue).toEqual(oracleResult.data.statementId);
+      const expectedDataInEvent = Poseidon.hash([
+        user.publicKey.toFields()[0],
+        Poseidon.hash([
+          oracleResult.data.hashRoute,
+          oracleResult.publicKey.toFields()[0],
+        ]),
+      ]);
+
+      const eventsFetched = await zap.fetchEvents();
+      const dataInEventFetched = eventsFetched[0].event.data;
+      expect(eventsFetched[0].type).toEqual('verified');
+      expect(dataInEventFetched).toEqual(expectedDataInEvent);
     });
 
-    // it('throws an error if the statement is invalid even if the provided signature is valid', async () => {
-    //   const oracleResult: OracleResult = await oracle.generateStatementId(
-    //     Field(1),
-    //     false, // will return a low result (true for holder, big balance, etc.), statement is invalid
-    //     metamaskSignature,
-    //     ethereumAddress
-    //   );
-    //   expect(async () => {
-    //     await Mina.transaction(user.publicKey, () => {
-    //       zap.verify(
-    //         oracleResult.data.statementId,
-    //         oracleResult.data.privateData,
-    //         oracleResult.signature ??
-    //           fail('something is wrong with the signature')
-    //       );
-    //     });
-    //   }).rejects;
-    // });
+    it('throws an error if the statement is invalid even if the provided signature is valid', async () => {
+      // oracle will return a value of 500, which is not greater than 600 => invalid statement
+      const oracleResult: OracleResult = await oracle.generateStatementId(
+        Field(1),
+        false, // will return a low result (true for holder, big balance, etc.), leading to an invalid statement
+        metamaskSignature,
+        ethereumAddress
+      );
+      expect(async () => {
+        await Mina.transaction(user.publicKey, () => {
+          zap.verify(
+            Field(statementBalanceSup.condition.type),
+            Field(statementBalanceSup.condition.targetValue),
+            oracleResult.data.hashRoute,
+            oracleResult.data.privateData,
+            oracleResult.signature ??
+              fail('something is wrong with the signature')
+          );
+        });
+      }).rejects;
+    });
 
-    // it('throws an error if the statement is valid but the provided signature is invalid', async () => {
-    //   const oracleResult: OracleResult = await oracle.generateStatementId(
-    //     Field(1),
-    //     true, // will return a high result (true for holder, big balance, etc.)
-    //     metamaskSignature,
-    //     ethereumAddress
-    //   );
+    it.only('throws an error if the statement is valid but the provided signature is invalid (wrong publicKey of oracle)', async () => {
+      const oracleResult: OracleResult = await oracle.generateStatementId(
+        Field(1),
+        true, // will return a high result (true for holder, big balance, etc.)
+        metamaskSignature,
+        ethereumAddress
+      );
 
-    //   const signature = Signature.create(zapKeys.privateKey, [
-    //     oracleResult.data.statementId,
-    //     oracleResult.data.privateData,
-    //     Field(0), // <- this is the invalid part
-    //   ]);
+      const invalidOracleSignature = Signature.create(zapKeys.privateKey, [
+        oracleResult.data.hashRoute,
+        oracleResult.data.privateData,
+        Field(0), // <- this is the invalid part, we use a wrong publicKey
+      ]);
 
-    //   expect(async () => {
-    //     await Mina.transaction(user.publicKey, () => {
-    //       zap.verify(
-    //         oracleResult.data.statementId,
-    //         oracleResult.data.privateData,
-    //         signature ?? fail('something is wrong with the signature')
-    //       );
-    //     });
-    //   }).rejects;
-    // });
+      expect(async () => {
+        await Mina.transaction(user.publicKey, () => {
+          zap.verify(
+            Field(statementBalanceSup.condition.type),
+            Field(statementBalanceSup.condition.targetValue),
+            oracleResult.data.hashRoute,
+            oracleResult.data.privateData,
+            invalidOracleSignature ?? fail('something is wrong with the signature')
+          );
+        });
+      }).rejects;
+    });
 
-    // it('throws an error if the signature of the caller is invalid', async () => {
-    //   await expect(async () => {
-    //     await oracle.generateStatementId(
-    //       Field(1),
-    //       true, // will return a high result (true for holder, big balance, etc.), statement is valid
-    //       'invalid_metamask_signature',
-    //       ethereumAddress
-    //     );
-    //   }).rejects.toThrow('signature of the caller is invalid');
-    // });
+    it('throws an error if the statement is valid but the provided signature is invalid (wrong hashRoot)', async () => {
+      const oracleResult: OracleResult = await oracle.generateStatementId(
+        Field(1),
+        true, // will return a high result (true for holder, big balance, etc.)
+        metamaskSignature,
+        ethereumAddress
+      );
+
+      const wrongHashRoute = Poseidon.hash([
+        stringToFields('/balance/:0xdac17f958d2ee523a2206206994597c13d831ec7')[0],
+      ]);
+
+      const invalidOracleSignature = Signature.create(zapKeys.privateKey, [
+        wrongHashRoute,
+        oracleResult.data.privateData,
+        oracleResult.publicKey.toFields()[0],        
+      ]);
+
+      expect(async () => {
+        await Mina.transaction(user.publicKey, () => {
+          zap.verify(
+            Field(statementBalanceSup.condition.type),
+            Field(statementBalanceSup.condition.targetValue),
+            oracleResult.data.hashRoute,
+            oracleResult.data.privateData,
+            invalidOracleSignature ?? fail('something is wrong with the signature')
+          );
+        });
+      }).rejects;
+    });
+
+    it('throws an error if the signature of the caller is invalid', async () => {
+      await expect(async () => {
+        await oracle.generateStatementId(
+          Field(1),
+          true, // will return a high result (true for holder, big balance, etc.), statement is valid
+          'invalid_metamask_signature',
+          ethereumAddress
+        );
+      }).rejects.toThrow('signature of the caller is invalid');
+    });
   });
 });
