@@ -273,20 +273,23 @@ export async function isFarcasterHolder(owner: string): Promise<number> {
   return farcasterHeld; // not Farcaster holder
 }
 
-export async function getNftSaleVolume(owner: string): Promise<bigint> {
+export async function getNftSaleVolume(owner: string): Promise<number> {
   if (process.env['NODE_ENV'] === 'development') {
     return mockMiddleware([owner], getNftSaleVolume);
   }
   let cursor: string = ''; // initialize cursor
 
-  const totalNftVolumeQuery = gql`
+  let totalVolume: number = 0; // initialize total amount
+
+  while (true) {
+    const totalNftVolumeQuery = gql`
     query MyQuery {
       NFTSaleTransactions(
         input: {
-          filter: { from: { _eq: ${owner} } }
+          filter: { from: { _eq: "${owner}" } }
           blockchain: ethereum
-          limit: 50
-          cursor: ${cursor}
+          limit: 200
+          cursor: "${cursor}"
         }
       ) {
         NFTSaleTransaction {
@@ -300,30 +303,19 @@ export async function getNftSaleVolume(owner: string): Promise<bigint> {
     }
   `;
 
-  const variables = {
-    owner,
-  };
+    const response = await request<AirstackNFTSaleTransactions>(
+      AIRSTACK_ENDPOINT,
+      totalNftVolumeQuery
+    );
 
-  let totalVolume: bigint = BigInt(0); // initialize total amount
-
-  while (true) {
-    const variables = {
-      owner,
-      cursor,
-    };
-
-    const response = await request<
-      AirstackResponse<AirstackNFTSaleTransactions>
-    >(AIRSTACK_ENDPOINT, totalNftVolumeQuery, variables);
-
-    if (response.data.NFTSaleTransactions.NFTSaleTransaction) {
-      for (let transaction of response.data.NFTSaleTransactions
-        .NFTSaleTransaction) {
-        totalVolume += BigInt(transaction.paymentAmount);
+    if (response.NFTSaleTransactions.NFTSaleTransaction) {
+      for (let transaction of response.NFTSaleTransactions.NFTSaleTransaction) {
+        const transactionInEth = parseInt(transaction.paymentAmount) / 1e18;
+        totalVolume += transactionInEth;
       }
     }
 
-    cursor = response.data.NFTSaleTransactions.pageInfo.nextCursor;
+    cursor = response.NFTSaleTransactions.pageInfo.nextCursor;
 
     if (!cursor) break; // stop if there's no next cursor
   }

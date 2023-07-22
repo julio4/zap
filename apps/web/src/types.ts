@@ -52,6 +52,7 @@ export enum OracleRoute {
   ENS = "/ens",
   LENS = "/lens",
   FARCASTER = "/farcaster",
+  TOTAL_NFT_VOLUME = "/totalNftVolume",
 }
 
 export type OracleRequest = {
@@ -153,5 +154,16 @@ export const StatementChoices: StatementChoice[] = [
     description: "Check if the user got a Farcaster profile",
     args: [],
     possibleConditions: [Condition.EQUAL],
+  },
+  {
+    route: OracleRoute.TOTAL_NFT_VOLUME,
+    name: "Total NFT Volume",
+    description: "Check the total volume of NFTs sold by the user",
+    args: [],
+    possibleConditions: [
+      Condition.EQUAL,
+      Condition.LESS_THAN,
+      Condition.GREATER_THAN,
+    ],
   },
 ];
