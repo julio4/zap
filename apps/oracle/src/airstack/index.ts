@@ -227,8 +227,8 @@ export async function isLensHolder(owner: string): Promise<number> {
     LensQuery
   );
   let lensHeld = 0;
-  if (response.data.Wallet.socials) {
-    lensHeld = response.data.Wallet.socials.some(
+  if (response.Wallet.socials) {
+    lensHeld = response.Wallet.socials.some(
       (social) => social.dappName === 'lens'
     )
       ? 1
@@ -262,8 +262,8 @@ export async function isFarcasterHolder(owner: string): Promise<number> {
     FarcasterQuery
   );
   let farcasterHeld = 0;
-  if (response.data.Wallet.socials) {
-    farcasterHeld = response.data.Wallet.socials.some(
+  if (response.Wallet.socials) {
+    farcasterHeld = response.Wallet.socials.some(
       (social) => social.dappName === 'farcaster'
     )
       ? 1
@@ -276,7 +276,7 @@ export async function getNftSaleVolume(owner: string): Promise<number> {
   if (process.env['NODE_ENV'] === 'development') {
     return mockMiddleware([owner], getNftSaleVolume);
   }
-  let cursor = ''; // initialize cursor
+  let cursor: string = ''; // initialize cursor
 
   let totalVolume: number = 0; // initialize total amount
 
@@ -299,30 +299,17 @@ export async function getNftSaleVolume(owner: string): Promise<number> {
           nextCursor
         }
       }
-    }
-  `;
+    }`;
 
     const response = await request<AirstackNFTSaleTransactions>(
       AIRSTACK_ENDPOINT,
       totalNftVolumeQuery
     );
 
-  let totalVolume = BigInt(0); // initialize total amount
-
-  while (true) {
-    const variables = {
-      owner,
-      cursor,
-    };
-
-    const response = await request<
-      AirstackResponse<AirstackNFTSaleTransactions>
-    >(AIRSTACK_ENDPOINT, totalNftVolumeQuery, variables);
-
-    if (response.data.NFTSaleTransactions.NFTSaleTransaction) {
-      for (let transaction of response.data.NFTSaleTransactions
-        .NFTSaleTransaction) {
-        totalVolume += BigInt(transaction.paymentAmount);
+    if (response.NFTSaleTransactions.NFTSaleTransaction) {
+      for (let transaction of response.NFTSaleTransactions.NFTSaleTransaction) {
+        const transactionInEth = parseInt(transaction.paymentAmount) / 1e18;
+        totalVolume += transactionInEth;
       }
     }
 
