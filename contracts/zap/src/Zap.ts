@@ -96,6 +96,8 @@ export class Zap extends SmartContract {
     // todo add timestamp
     // Attestation hash should contain information about the statement, so we can verify that this attestation corresponds to the right
     // statement
+
+    // TODO maybe we should hash and then sign, more secure (Birthday problem)
     const attestationHash = Poseidon.hash([
       hashRoute,
       conditionType,
@@ -103,7 +105,6 @@ export class Zap extends SmartContract {
       this.sender.toFields()[0],
       //timestamp
     ]);
-
 
     // Emit an event only if everything is valid, containing the attestation hash and also the timestamp
     // Thus, external watchers can only see that "some proof" (but it is hashed so they don't know what statement it is) has been verified
