@@ -64,11 +64,15 @@ export async function isPoapHolder(
   if (process.env['NODE_ENV'] === 'development') {
     return mockMiddleware([owner, poapId], isPoapHolder);
   }
+  if (poapId == undefined) {
+    throw new Error('No poapId specified');
+  }
+
   const poapQuery = gql`
     query GetPoapHolders {
       Poaps(
         input: {
-          filter: { eventId: { _in: ${poapId} }, owner: { _eq: ${owner} } }
+          filter: { eventId: { _in: "${poapId}" }, owner: { _eq: "${owner}" } }
           blockchain: ALL
           limit: 200
         }
@@ -82,13 +86,9 @@ export async function isPoapHolder(
     }
   `;
 
-  const res = await request<AirstackResponse<AirstackPoapHolder>>(
-    AIRSTACK_ENDPOINT,
-    poapQuery
-  );
+  const res = await request<AirstackPoapHolder>(AIRSTACK_ENDPOINT, poapQuery);
 
-  const poapHeld = res.data.Poaps.Poap ? 1 : 0;
-  return poapHeld;
+  return res.Poaps.Poap ? 1 : 0;
 }
 
 export async function isNftHolder(
@@ -99,6 +99,16 @@ export async function isNftHolder(
   if (process.env['NODE_ENV'] === 'development') {
     return mockMiddleware([owner, nftAddress], isNftHolder);
   }
+
+  if (!blockchain) {
+    console.log('No blockchain specified, defaulting to ethereum');
+    blockchain = 'ethereum';
+  }
+
+  if (nftAddress == undefined) {
+    throw new Error('No nftAddress specified');
+  }
+
   const nftQuery = gql`
     query MyQuery {
       TokenBalances(
@@ -119,7 +129,6 @@ export async function isNftHolder(
       }
     }
   `;
-
 
   const response = await request<AirstackNftHolder>(
     AIRSTACK_ENDPOINT,

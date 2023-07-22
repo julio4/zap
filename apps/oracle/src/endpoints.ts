@@ -28,13 +28,11 @@ export async function getUserBalance(ctx: ParameterizedContext) {
 export async function verifyPoapHolder(ctx: ParameterizedContext) {
   try {
     const { address, args } = ctx.state;
-    const { eventId } = args;
-    const addressFetched = await isPoapHolder(address, eventId);
-
-    const poapHeld = addressFetched == address ? 1 : 0;
+    const { event_id } = args;
+    const isHolder = await isPoapHolder(address, event_id);
 
     ctx.body = {
-      poapHeld,
+      isHolder,
       // TODO IMPORTANT /!\ mettre la hashroute
     };
   } catch (error) {
