@@ -1,4 +1,4 @@
-lockfileVersion: '6.1'
+lockfileVersion: '6.0'
 
 settings:
   autoInstallPeers: true
@@ -99,6 +99,9 @@ importers:
       '@packages/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      ethers:
+        specifier: ^6.6.3
+        version: 6.6.3
       next:
         specifier: ^13.4.1
         version: 13.4.1(react-dom@18.2.0)(react@18.2.0)

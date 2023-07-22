@@ -1,8 +1,11 @@
 "use client";
-import { useEffect, useContext } from 'react';
-import { AttestContext, AttestProvider } from '../../components/attestContext';
-
-const ZK_APP_ADDRESS = "B62qkwohsqTBPsvhYE8cPZSpzJMgoKn4i1LQRuBAtVXWpaT4dgH6WoA";
+import { useEffect, useContext } from "react";
+import {
+  AttestContext,
+  AttestProvider,
+} from "../../components/context/attestContext";
+import { MinaWallet } from "../../components/MinaWallet";
+import { EthereumWallet } from "../../components/EthereumWallet";
 
 export default function Attest() {
   const attest = useContext(AttestContext);
@@ -17,7 +20,7 @@ export default function Attest() {
       // Update this to use the address (public key) for your zkApp account.
       // To try it out, you can try this address for an example "Add" smart contract that we've deployed to
       // Berkeley Testnet B62qkwohsqTBPsvhYE8cPZSpzJMgoKn4i1LQRuBAtVXWpaT4dgH6WoA.
-      const zkAppAddress = ZK_APP_ADDRESS;
+      const zkAppAddress = process.env["ZK_APP"];
       // This should be removed once the zkAppAddress is updated.
       if (!zkAppAddress) {
         console.error(
@@ -31,6 +34,8 @@ export default function Attest() {
 
   return (
     <AttestProvider>
+      <MinaWallet />
+      <EthereumWallet />
       <p>TODO</p>
     </AttestProvider>
   );

@@ -29,6 +29,10 @@ const nextConfig = {
       },
     ];
   },
+
+  env: {
+    ZK_APP: "B62qkwohsqTBPsvhYE8cPZSpzJMgoKn4i1LQRuBAtVXWpaT4dgH6WoA",
+  },
 };
 
 module.exports = nextConfig;
