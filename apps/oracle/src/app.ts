@@ -9,7 +9,7 @@ import {
   signResponse,
   verifyEthereumSignature,
 } from './middlewares/index.js';
-import { getUserBalance } from './endpoints.js';
+import { getUserBalance, verifyNftHolderETH, verifyNftHolderPolygon, verifyPoapHolder } from './endpoints.js';
 
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -24,6 +24,9 @@ export const getApp = async (): Promise<Koa> => {
 
   router.prefix('/api');
   router.post('/balance', getUserBalance);
+  router.post('/poap', verifyPoapHolder)
+  router.post('/nftETH', verifyNftHolderETH)
+  router.post('/nftPolygon', verifyNftHolderPolygon)
   // TODO Register new endpoints here
 
   app

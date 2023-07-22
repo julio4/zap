@@ -1,0 +1,10 @@
+POST http://localhost:3030/api/nftPolygon/
+content-type: application/json
+
+{
+    "address": "0x000",
+    "signature": "0x000",
+    "args": {
+        "nftAddress": "0x000"
+    }
+}
