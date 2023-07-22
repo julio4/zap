@@ -1,9 +1,10 @@
 import { createContext, useState } from "react";
-import { MinaWallet, EthereumWallet, Statement } from "../../types";
-import ZkappWorkerClient from "../../worker/zkappWorkerClient";
+import { MinaWallet, EthereumWallet, Statement, SignResponse, PrivateData } from "../../types";
+import ZkappWorkerClient from "../../pages/zkappWorkerClient"
 
 type AttestContextType = {
   zkappWorkerClient: ZkappWorkerClient | null;
+  setZkappWorkerClient: (zkappWorkerClient: ZkappWorkerClient) => void;
   zkappHasBeenSetup: boolean;
   minaWallet: MinaWallet;
   setMinaWallet: (minaWallet: MinaWallet) => void;
@@ -11,13 +12,14 @@ type AttestContextType = {
   setEthereumWallet: (ethereumWallet: EthereumWallet) => void;
   statement: Statement | null;
   setStatement: (statement: Statement) => void;
-  privateData: any;
-  setPrivateData: (privateData: any) => void;
+  privateData: PrivateData | null;
+  setPrivateData: (privateData: PrivateData) => void;
   set: (attest: AttestContextType) => void;
 };
 
 const defaultAttestContext: AttestContextType = {
   zkappWorkerClient: null,
+  setZkappWorkerClient: () => {},
   zkappHasBeenSetup: false,
   minaWallet: {
     isConnected: false,
@@ -42,6 +44,13 @@ const AttestContext = createContext<AttestContextType>(defaultAttestContext);
 const AttestProvider = ({ children }: { children: React.ReactNode }) => {
   const [attest, setAttest] = useState<AttestContextType>({
     ...defaultAttestContext,
+    setZkappWorkerClient: (zkappWorkerClient: ZkappWorkerClient) => {
+      setAttest((prevAttest) => ({
+        ...prevAttest,
+        zkappWorkerClient,
+        zkappHasBeenSetup: true,
+      }));
+    },
     setMinaWallet: (minaWallet: MinaWallet) => {
       setAttest((prevAttest) => ({
         ...prevAttest,
@@ -60,7 +69,7 @@ const AttestProvider = ({ children }: { children: React.ReactNode }) => {
         statement,
       }));
     },
-    setPrivateData: (privateData: any) => {
+    setPrivateData: (privateData: PrivateData) => {
       setAttest((prevAttest) => ({
         ...prevAttest,
         privateData,
