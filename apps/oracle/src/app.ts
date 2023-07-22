@@ -9,7 +9,16 @@ import {
   signResponse,
   verifyEthereumSignature,
 } from './middlewares/index.js';
-import { getUserBalance, getUserNftVolumeSales, verifyEnsHolder, verifyFarcasterHolder, verifyLensHolder, verifyNftHolder, verifyPoapHolder, verifyXMTPenabled } from './endpoints.js';
+import {
+  getUserBalance,
+  getUserNftVolumeSales,
+  verifyEnsHolder,
+  verifyFarcasterHolder,
+  verifyLensHolder,
+  verifyNftHolder,
+  verifyPoapHolder,
+  verifyXMTPenabled,
+} from './endpoints.js';
 
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -24,13 +33,13 @@ export const getApp = async (): Promise<Koa> => {
 
   router.prefix('/api');
   router.post('/balance', getUserBalance);
-  router.post('/poap', verifyPoapHolder)
-  router.post('/nft', verifyNftHolder)
-  router.post('/xmtpEnabled', verifyXMTPenabled)
-  router.post('/ens', verifyEnsHolder)
-  router.post('/lens', verifyLensHolder)
-  router.post('/farcaster', verifyFarcasterHolder)
-  router.post('/totalNftVolume', getUserNftVolumeSales)
+  router.post('/poap', verifyPoapHolder);
+  router.post('/nft', verifyNftHolder);
+  router.post('/xmtpEnabled', verifyXMTPenabled);
+  router.post('/ens', verifyEnsHolder);
+  router.post('/lens', verifyLensHolder);
+  router.post('/farcaster', verifyFarcasterHolder);
+  router.post('/totalNftVolume', getUserNftVolumeSales);
   // TODO Register new endpoints here
 
   app

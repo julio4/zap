@@ -19,20 +19,20 @@ export async function verifyEthereumSignature(
     ctx.state.args = args;
 
     if (process.env['NODE_ENV'] !== 'development') {
-    // Skip signature verification in development mode
+      // Skip signature verification in development mode
 
-    // Verify the signature
-    const signerAddr = await ethers.verifyMessage(
-      `I am ${normalizedAddress}`,
-      signature
-    );
-    const normalizedSignerAddr = normalizeAddress(signerAddr);
+      // Verify the signature
+      const signerAddr = await ethers.verifyMessage(
+        `I am ${normalizedAddress}`,
+        signature
+      );
+      const normalizedSignerAddr = normalizeAddress(signerAddr);
 
-    if (normalizedSignerAddr != normalizedAddress) {
-      throw new Error('Invalid signature');
-    }
+      if (normalizedSignerAddr != normalizedAddress) {
+        throw new Error('Invalid signature');
+      }
 
-    console.log('Signature verified');
+      console.log('Signature verified');
     }
 
     await next();

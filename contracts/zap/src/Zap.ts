@@ -87,7 +87,6 @@ export class Zap extends SmartContract {
       privateData.equals(targetValue), // privateData == targetValue
     ]);
 
-
     isPrivateDataValid.assertTrue();
 
     // STATEMENT VERIFICATION: END

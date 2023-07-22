@@ -29,7 +29,7 @@
     "graphql-request": "^6.1.0",
     "koa": "^2.14.2",
     "koa-helmet": "^7.0.2",
-    "snarkyjs": "0.11.*"
+    "snarkyjs": "0.12.0"
   },
   "devDependencies": {
     "@packages/tsconfig": "workspace:*",

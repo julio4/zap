@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
-import { AttestContext } from "./context/attestContext";
+import { AttestContext } from "../../src/components/context/attestContext";
 import { shortenAddress } from "../utils/address";
+import { PublicKey } from "snarkyjs";
 
 const MinaWallet = () => {
   const attest = useContext(AttestContext);
@@ -20,13 +21,21 @@ const MinaWallet = () => {
       }
 
       // Accounts is an array of string Mina addresses.
-      accounts = await (window as any).mina.requestAccounts();
+      const publicKeyBase58 = (await (window as any).mina.requestAccounts())[0];
 
-      console.log(`Set connected account: ${accounts[0]}`);
+      // HERE ?
+      // const publicKey = PublicKey.fromBase58(publicKeyBase58);
+
+      // console.log(`Using key:${publicKey.toBase58()}`);
+      // console.log('Checking if fee payer account exists...');
+
+      // const res = await attest.zkappWorkerClient?.fetchAccount({
+      //   publicKey: publicKey!,
+      // });
 
       attest.setMinaWallet({
         isConnected: true,
-        address: accounts[0],
+        address: publicKeyBase58,
       });
     } catch (err: any) {
       // If the user has a wallet installed but has not created an account, an

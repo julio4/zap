@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, useContext } from "react";
 import axios from "axios";
 
@@ -8,7 +9,7 @@ import {
   HTMLInputSchema,
   Statement,
 } from "../../types";
-import { AttestContext } from "../../components/context/attestContext";
+import { AttestContext } from "../context/attestContext";
 
 const ORACLE_ENDPOINT = process.env["ORACLE_ENDPOINT"];
 if (!ORACLE_ENDPOINT) throw new Error("ORACLE_ENDPOINT is not set");
@@ -82,8 +83,6 @@ const SelectStep = () => {
       },
     };
 
-    console.log("statement", statement);
-
     // Make request to oracle to get signed values
     setWaiting({
       status: true,
@@ -95,23 +94,34 @@ const SelectStep = () => {
       signature: attest.ethereumWallet.signature,
       args: statement.request.args,
     };
-    try {
-      const response = await axios.post(
-        `${ORACLE_ENDPOINT}${statement.request.route}`,
-        request_data
-      );
-      console.log("oracle response", response);
-      attest.setStatement(statement);
-    } catch (e: any) {
-      console.error("oracle error", e);
-      setError(e.message);
-      reset();
-    }
+
+    // try {
+    //   const response = await axios.post(
+    //     `${ORACLE_ENDPOINT}${statement.request.route}`,
+    //     request_data
+    //   );
+    //   console.log("oracle response", response);
+    //   attest.setStatement(statement);
+    // } catch (e: any) {
+    //   console.error("oracle error", e);
+    //   setError(e.message);
+    //   reset();
+    // }
 
     setWaiting({
       status: false,
       message: "",
     });
+
+    // TODO remove this when oracle is ready
+    const mockedResponse = {
+      data: {
+        balance: 100,
+      },
+      signature: "mocked_signature",
+    };
+    attest.setStatement(statement);
+    attest.setPrivateData(mockedResponse);
   };
 
   if (error)

@@ -1,18 +1,24 @@
 import { createContext, useState } from "react";
 import { MinaWallet, EthereumWallet, Statement } from "../../types";
+import ZkappWorkerClient from "../../worker/zkappWorkerClient";
 
 type AttestContextType = {
-  zkApp: any;
+  zkappWorkerClient: ZkappWorkerClient | null;
+  zkappHasBeenSetup: boolean;
   minaWallet: MinaWallet;
   setMinaWallet: (minaWallet: MinaWallet) => void;
   ethereumWallet: EthereumWallet;
   setEthereumWallet: (ethereumWallet: EthereumWallet) => void;
   statement: Statement | null;
   setStatement: (statement: Statement) => void;
+  privateData: any;
+  setPrivateData: (privateData: any) => void;
+  set: (attest: AttestContextType) => void;
 };
 
 const defaultAttestContext: AttestContextType = {
-  zkApp: null,
+  zkappWorkerClient: null,
+  zkappHasBeenSetup: false,
   minaWallet: {
     isConnected: false,
     address: "",
@@ -26,6 +32,9 @@ const defaultAttestContext: AttestContextType = {
   setEthereumWallet: () => {},
   statement: null,
   setStatement: () => {},
+  privateData: null,
+  setPrivateData: () => {},
+  set: () => {},
 };
 
 const AttestContext = createContext<AttestContextType>(defaultAttestContext);
@@ -49,6 +58,18 @@ const AttestProvider = ({ children }: { children: React.ReactNode }) => {
       setAttest((prevAttest) => ({
         ...prevAttest,
         statement,
+      }));
+    },
+    setPrivateData: (privateData: any) => {
+      setAttest((prevAttest) => ({
+        ...prevAttest,
+        privateData,
+      }));
+    },
+    set: (attest: AttestContextType) => {
+      setAttest((prevAttest) => ({
+        ...prevAttest,
+        ...attest,
       }));
     },
   });

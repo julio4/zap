@@ -1,4 +1,13 @@
 {
   "version": 1,
-  "deployAliases": {}
+  "deployAliases": {
+    "berkeley": {
+      "url": "https://proxy.berkeley.minaexplorer.com/graphql",
+      "keyPath": "keys/berkeley.json",
+      "feepayerKeyPath": "/Users/julio/.cache/zkapp-cli/keys/dev2.json",
+      "feepayerAlias": "dev2",
+      "fee": "0.1",
+      "smartContract": "Zap"
+    }
+  }
 }
