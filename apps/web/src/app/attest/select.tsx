@@ -19,6 +19,7 @@ const SelectStep = () => {
   const [choice, setChoice] = useState<StatementChoice | null>(null);
   const [args, setArgs] = useState<
     {
+      name: string;
       schema: HTMLInputSchema;
       value: string;
     }[]
@@ -41,11 +42,12 @@ const SelectStep = () => {
 
   const handleSelect = async () => {
     choice?.args.forEach((arg) => {
-      if (!args[arg.name as any]) {
+      const t_arg = args.find((a) => a.name === arg.name);
+      if (!t_arg) {
         setError(`Please fill in '${arg.label}'`);
         return;
       }
-      const value = args[arg.name as any].value;
+      const value = t_arg.value;
       if (!value || value === "") {
         setError(`Please fill in '${arg.label}'`);
         return;
@@ -67,16 +69,20 @@ const SelectStep = () => {
       request: {
         route: choice?.route,
         // map args to a object with key value pairs of args.name: args.value
-        args: choice?.args.reduce((acc: { [key: string]: any }, arg) => {
-          acc[arg.name] = args[arg.name as any].value;
-          return acc;
-        }, {}),
+        args: Object.fromEntries(
+          choice?.args.map((arg) => {
+            const t_arg = args.find((a) => a.name === arg.name);
+            return [arg.name, t_arg?.value];
+          })
+        ),
       },
       condition: {
         type: condition,
         targetValue,
       },
     };
+
+    console.log("statement", statement);
 
     // Make request to oracle to get signed values
     setWaiting({
@@ -152,49 +158,46 @@ const SelectStep = () => {
         <div>
           <p>You have selected {choice.name}.</p>
           <form>
-            {choice.args.map((arg) => (
-              <div
-                key={arg.name}
-                className="border-2 border-gray-500 p-4 rounded-xl bg-gray-100"
+            <div className="border-2 border-gray-500 p-4 rounded-xl bg-gray-100">
+              <h3>Args</h3>
+              {choice.args.map((arg) => (
+                <div key={arg.name}>
+                  <label>{arg.label}</label>
+                  <input
+                    type={arg.type}
+                    value={args.find((a) => a.name === arg.name)?.value || ""}
+                    onChange={(e) => {
+                      setArgs([
+                        ...args.filter((a) => a.name !== arg.name),
+                        {
+                          name: arg.name,
+                          schema: arg,
+                          value: e.target.value,
+                        },
+                      ]);
+                    }}
+                  />
+                </div>
+              ))}
+              <label>Condition</label>
+              <select
+                value={condition}
+                onChange={(e) => setCondition(e.target.value as Condition)}
               >
-                <label>{arg.label}</label>
-                <input
-                  type={arg.type}
-                  value={
-                    args[arg.name as any] ? args[arg.name as any].value : ""
-                  }
-                  onChange={(e) => {
-                    setArgs((prevArgs) => {
-                      const newArgs = [...prevArgs];
-                      newArgs[arg.name as any] = {
-                        ...newArgs[arg.name as any],
-                        value: e.target.value,
-                      };
-                      return newArgs;
-                    });
-                  }}
-                />
+                {choice.possibleConditions.map((condition) => (
+                  <option key={condition} value={condition}>
+                    {condition}
+                  </option>
+                ))}
+              </select>
 
-                <label>Condition</label>
-                <select
-                  value={condition}
-                  onChange={(e) => setCondition(e.target.value as Condition)}
-                >
-                  {choice.possibleConditions.map((condition) => (
-                    <option key={condition} value={condition}>
-                      {condition}
-                    </option>
-                  ))}
-                </select>
-
-                <label>Target Value</label>
-                <input
-                  type="number"
-                  value={targetValue}
-                  onChange={(e) => setTargetValue(Number(e.target.value))}
-                />
-              </div>
-            ))}
+              <label>Target Value</label>
+              <input
+                type="number"
+                value={targetValue}
+                onChange={(e) => setTargetValue(Number(e.target.value))}
+              />
+            </div>
           </form>
           <button onClick={reset}>Cancel</button>
           <button onClick={handleSelect}>Select</button>
