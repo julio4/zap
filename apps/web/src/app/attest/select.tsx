@@ -25,14 +25,12 @@ const SelectStep = () => {
     setError(null);
   };
 
-  const handleSign = () => {
-    // TODO
-    console.log(" TODO handleSign");
-    // fake sig for now
-    attest.setEthereumWallet({
-      ...attest.ethereumWallet,
-      signature: "0x1234567890",
-    });
+  const handleSelect = async () => {
+    const { signer } = attest.ethereumWallet;
+    if (!signer) {
+      setError("Please connect your ethereum wallet.");
+      return;
+    }
 
     // Create Statement from statement choice, condition and args
     // assert good args and possible conditions ?? TODO
@@ -95,7 +93,7 @@ const SelectStep = () => {
             ))}
           </form>
           <button onClick={reset}>Cancel</button>
-          <button onClick={handleSign}>Sign</button>
+          <button onClick={handleSelect}>Select</button>
         </div>
       )}
     </div>

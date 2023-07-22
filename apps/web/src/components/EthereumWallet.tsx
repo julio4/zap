@@ -23,14 +23,15 @@ const EthereumWallet = () => {
         );
         return;
       }
-
       const signer = await provider.getSigner();
       const address = await signer.getAddress();
+
+      const signature = await signer.signMessage(`I am ${address}`);
 
       attest.setEthereumWallet({
         isConnected: true,
         address,
-        signature: "",
+        signature,
         signer,
       });
       console.log(`Set connected eth account: ${address}`);
@@ -39,7 +40,7 @@ const EthereumWallet = () => {
       // exception will be thrown. Consider showing "not connected" in your UI.
       console.log(err.message);
       setError(
-        "Ethereum wallet not found. Try to install Metamask and try again."
+        err.message || "Error connecting to Ethereum wallet. Please try again."
       );
     }
   };

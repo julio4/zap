@@ -34,7 +34,7 @@ export default function Attest() {
     attest.minaWallet.isConnected && attest.ethereumWallet.isConnected
   );
   // 2: Select statement, condition and sign -> get signed values from oracle
-  const step2 = !step1 && attest.ethereumWallet.signature == "";
+  const step2 = !step1 && !attest.statement;
   // 3: Generate proof and send tx on Mina ZAP contract
   const step3 = !step1 && !step2;
   // 4: Generate attestation note/confirmation
@@ -64,6 +64,8 @@ export default function Attest() {
         <div className="border-2 border-gray-500 p-4 rounded-xl bg-gray-100">
           STEP3
           <p>Generating proof and send tx on Mina ZAP contract!</p>
+          attest debug object:
+          <pre>{JSON.stringify(attest, null, 2)}</pre>
         </div>
       )}
       {/* <div className="border-2 border-gray-500 p-4 rounded-xl bg-gray-100">
