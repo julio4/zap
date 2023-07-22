@@ -5,6 +5,7 @@ content-type: application/json
     "address": "0x000",
     "signature": "0x000",
     "args": {
-        "token": "0x000"
+        "token": "0x000",
+        "blockchain": "ethereum",
     }
 }
