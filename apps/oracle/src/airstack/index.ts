@@ -188,7 +188,6 @@ export async function isEnsHolder(owner: string): Promise<number> {
     }
   `;
 
-
   const response = await request<AirstackEnsHolder>(
     AIRSTACK_ENDPOINT,
     EnsQuery
@@ -211,7 +210,7 @@ export async function isLensHolder(owner: string): Promise<number> {
     query GetSocial {
       Wallet(
         input: {
-          identity: ${owner}
+          identity: "${owner}"
           blockchain: ethereum
         }
       ) {
@@ -223,18 +222,14 @@ export async function isLensHolder(owner: string): Promise<number> {
     }
   `;
 
-  const variables = {
-    owner,
-  };
-
-  const response = await request<AirstackResponse<AirstackSocialsHolder>>(
+  const response = await request<AirstackSocialsHolder>(
     AIRSTACK_ENDPOINT,
-    LensQuery,
-    variables
+    LensQuery
   );
+
   let lensHeld: number = 0;
-  if (response.data.Wallet.socials) {
-    lensHeld = response.data.Wallet.socials.some(
+  if (response.Wallet.socials) {
+    lensHeld = response.Wallet.socials.some(
       (social) => social.dappName === 'lens'
     )
       ? 1
@@ -251,7 +246,7 @@ export async function isFarcasterHolder(owner: string): Promise<number> {
     query GetSocial {
       Wallet(
         input: {
-          identity: ${owner}
+          identity: "${owner}"
           blockchain: ethereum
         }
       ) {
@@ -263,18 +258,13 @@ export async function isFarcasterHolder(owner: string): Promise<number> {
     }
   `;
 
-  const variables = {
-    owner,
-  };
-
-  const response = await request<AirstackResponse<AirstackSocialsHolder>>(
+  const response = await request<AirstackSocialsHolder>(
     AIRSTACK_ENDPOINT,
-    FarcasterQuery,
-    variables
+    FarcasterQuery
   );
   let farcasterHeld: number = 0;
-  if (response.data.Wallet.socials) {
-    farcasterHeld = response.data.Wallet.socials.some(
+  if (response.Wallet.socials) {
+    farcasterHeld = response.Wallet.socials.some(
       (social) => social.dappName === 'farcaster'
     )
       ? 1

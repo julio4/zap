@@ -50,6 +50,8 @@ export enum OracleRoute {
   POAP = "/poap",
   XMTP_ENABLED = "/xmtpEnabled",
   ENS = "/ens",
+  LENS = "/lens",
+  FARCASTER = "/farcaster",
 }
 
 export type OracleRequest = {
@@ -137,5 +139,19 @@ export const StatementChoices: StatementChoice[] = [
       Condition.LESS_THAN,
       Condition.GREATER_THAN,
     ],
+  },
+  {
+    route: OracleRoute.LENS,
+    name: "Lens profile",
+    description: "Check if the user got a Lens profile",
+    args: [],
+    possibleConditions: [Condition.EQUAL],
+  },
+  {
+    route: OracleRoute.FARCASTER,
+    name: "Farcaster profile",
+    description: "Check if the user got a Farcaster profile",
+    args: [],
+    possibleConditions: [Condition.EQUAL],
   },
 ];
