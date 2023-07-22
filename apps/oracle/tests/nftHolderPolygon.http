@@ -5,6 +5,7 @@ content-type: application/json
     "address": "0x000",
     "signature": "0x000",
     "args": {
-        "nftAddress": "0x000"
+        "nftAddress": "0x000",
+        "blockchain": "polygon"
     }
 }

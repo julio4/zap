@@ -1,0 +1,7 @@
+POST http://localhost:3030/api/farcaster/
+content-type: application/json
+
+{
+    "address": "0x000",
+    "signature": "0x000",
+}
