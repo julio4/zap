@@ -8,11 +8,14 @@ import {
   Permissions,
   PublicKey,
   Signature,
+  Provable,
   Bool,
+  Poseidon,
 } from 'snarkyjs';
 
 // The public key of our trusted data provider
-const ORACLE_PUBLIC_KEY = 'B62qoAE4rBRuTgC42vqvEyUqCGhaZsW58SKVW4Ht8aYqP9UTvxFWBgy';
+const ORACLE_PUBLIC_KEY =
+  'B62qoAE4rBRuTgC42vqvEyUqCGhaZsW58SKVW4Ht8aYqP9UTvxFWBgy';
 
 /**
  * ZAP: Zero-knowledge Attestation Protocol
@@ -44,37 +47,76 @@ export class Zap extends SmartContract {
     this.oraclePublicKey.set(PublicKey.fromBase58(ORACLE_PUBLIC_KEY));
   }
 
-  @method verify(statementId: Field, privateData: Field, signature: Signature) {
-    // SIGNATURE VERIFICATION: START
+  @method verify(
+    conditionType: Field,
+    targetValue: Field,
+    hashRoute: Field,
+    privateData: Field,
+    signature: Signature
+  ) {
+    /* VERIFICATION OF ORACLE SIGNATURE AND ROUTE: START */
     // Get the oracle public key from the contract state
     const oraclePublicKey = this.oraclePublicKey.getAndAssertEquals();
 
-    // Evaluate whether the signature is valid for the provided data
+    // Evaluate whether the signature is valid for the provided data, and that the right
+    // statement is being attested
     const validSignature = signature.verify(oraclePublicKey, [
-      statementId,
+      hashRoute,
       privateData,
     ]);
 
     // Check that the signature is valid
     validSignature.assertTrue();
-    // SIGNATURE VERIFICATION: END
+    /* SIGNATURE VERIFICATION: END */
 
-    // STATEMENT VERIFICATION: START
+    /* STATEMENT VERIFICATION: START */
+    // conditionType are <: 1, >: 2, ==: 3, !=: 4
+    // determine which operator to use
 
-    // TODO: based on the statementId, verify that the privateData attest the statement
-    // WARNING: fixed for now! Statement is: balance (=private data) > 500
+    const whichOperator: Bool[] = [
+      conditionType.equals(Field(1)),
+      Bool(true),
+      conditionType.equals(Field(3)),
+      conditionType.equals(Field(4)),
+    ];
+    console.log('conditionType', conditionType);
+    console.log('Field(2)', Field(2));
 
-    const isPrivateDataValid: Bool = privateData.greaterThan(500);
+    console.log('whichOperator', whichOperator);
 
-    // const whichStatementId: Bool[] = [1, 2, 3].map((i) =>
-    //   statementId.equals(i)
-    // );
-    // const isPrivateDataValid = switch?
+    console.log('privateData', privateData);
+    console.log('targetValue', targetValue);
+    console.log(
+      'privateData.greaterThan(targetValue)',
+      privateData.greaterThan(targetValue)
+    );
+
+    // verify that the privateData attest the statement
+    const isPrivateDataValid = Provable.switch(whichOperator, Bool, [
+      privateData.lessThan(targetValue), // privateData < targetValue
+      privateData.greaterThan(targetValue), // privateData > targetValue
+      privateData.equals(targetValue), // privateData == targetValue
+      privateData.lessThan(targetValue) || privateData.greaterThan(targetValue), // privateData != targetValue
+    ]);
 
     isPrivateDataValid.assertTrue();
+
     // STATEMENT VERIFICATION: END
 
-    // Emit an event containing the verified statement id
-    this.emitEvent('verified', statementId);
+    /* Generate the attestation and emit an event*/
+    // Should we put private data in it ? we should also put timestamp in it
+    const attestationHash = Poseidon.hash([
+      hashRoute,
+      oraclePublicKey.toFields()[0],
+    ]);
+
+    // Emit an event only if everything is valid, containing the attestation hash, the sender and the current timestamp
+    // TODO add timestamp
+    // concatenate the sender and the attestation hash
+    const senderAndAttestationHash = Poseidon.hash([
+      this.sender.toFields()[0],
+      attestationHash,
+    ]);
+    this.emitEvent('verified', senderAndAttestationHash);
   }
 }

@@ -1,6 +1,8 @@
-import { Field, PrivateKey, PublicKey, Signature } from 'snarkyjs';
-import { DataObject, KeyPair, OracleResult } from '../types';
+import { Field, Poseidon, PrivateKey, PublicKey, Signature } from 'snarkyjs';
+import { DataOracleObject, KeyPair, OracleResult } from '../types';
 import { ethers } from 'ethers';
+import { FieldConst } from 'snarkyjs/dist/node/lib/field';
+import { stringToFields } from 'snarkyjs/dist/node/bindings/lib/encoding';
 
 export class MockedOracle {
   publicKey: PublicKey;
@@ -39,7 +41,7 @@ export class MockedOracle {
     signatureOfCaller: string,
     ethereumAddress: string
   ): Promise<OracleResult> {
-    let data: DataObject;
+    let data: DataOracleObject;
 
     const isCallerSignatureValid: boolean = await this.verifyMessage(
       statementId.toString(),
@@ -54,19 +56,28 @@ export class MockedOracle {
     switch (statementId.toString()) {
       case Field(1).toString(): // getBalance
         data = {
-          statementId: statementId,
+          hashRoute: Poseidon.hash([
+            stringToFields(
+              '/balance/:0xdac17f958d2ee523a2206206994597c13d831ec7'
+            )[0],
+          ]),
           privateData: lowOrHighResult ? Field(700) : Field(500),
         };
         break;
       case Field(2).toString(): // azukiHolder
+      // TODO also string to fields here
         data = {
-          statementId: statementId,
+          hashRoute: Poseidon.hash([
+            Field('/balance/:0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2'),
+          ]),
           privateData: lowOrHighResult ? Field(1) : Field(0),
         };
         break;
       case Field(3).toString(): // ENS Owner
         data = {
-          statementId: statementId,
+          hashRoute: Poseidon.hash([
+            Field('/ens/:0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2'),
+          ]),
           privateData: lowOrHighResult ? Field(1) : Field(0),
         };
         break;
@@ -76,7 +87,7 @@ export class MockedOracle {
     }
 
     const signatureOfOracle: Signature = Signature.create(this.privateKey, [
-      data['statementId'],
+      data['hashRoute'],
       data['privateData'],
     ]);
 

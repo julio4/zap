@@ -6,15 +6,25 @@ type KeyPair = {
   privateKey: PrivateKey; // The private key of the key pair.
 };
 
-type DataObject = {
-  statementId: Field;
+type DataOracleObject = {
   privateData: Field;
+  hashRoute: Field;
 };
 
 type OracleResult = {
-  data: DataObject;
+  data: DataOracleObject;
   signature: Signature;
   publicKey: PublicKey;
 };
 
-export type { KeyPair, OracleResult, DataObject };
+type Statement = {
+  route: string;
+  args: [] | null;
+  condition: {
+    /* type: 1: '<' | 2: '>' | 3: '==' | 4: '!='; */
+    type: number;
+    targetValue: number;
+  };
+};
+
+export type { KeyPair, DataOracleObject, OracleResult, Statement };
