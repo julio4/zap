@@ -9,6 +9,7 @@ export async function getUserBalance(ctx: ParameterizedContext) {
 
     ctx.body = {
       balance,
+      // TODO IMPORTANT /!\ mettre la hashroute
     };
   } catch (error) {
     ctx.throw(404);

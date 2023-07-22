@@ -34,8 +34,8 @@ export class MockedOracle {
     }
   };
 
-  async generateStatementId(
-    statementId: Field,
+  async generateStatement(
+    ApiRequestId: Field,
     lowOrHighResult: boolean, // determine the private data value
     signatureOfCaller: string,
     ethereumAddress: string
@@ -43,7 +43,7 @@ export class MockedOracle {
     let data: DataOracleObject;
 
     const isCallerSignatureValid: boolean = await this.verifyMessage(
-      statementId.toString(),
+      ApiRequestId.toString(),
       ethereumAddress,
       signatureOfCaller
     );
@@ -52,7 +52,7 @@ export class MockedOracle {
       throw new Error('signature of the caller is invalid');
     }
 
-    switch (statementId.toString()) {
+    switch (ApiRequestId.toString()) {
       case Field(1).toString(): // getBalance
         data = {
           hashRoute: Poseidon.hash([
@@ -64,7 +64,7 @@ export class MockedOracle {
         };
         break;
       case Field(2).toString(): // azukiHolder
-      // TODO also string to fields here
+        // TODO also string to fields here
         data = {
           hashRoute: Poseidon.hash([
             Field('/balance/:0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2'),
@@ -86,8 +86,8 @@ export class MockedOracle {
     }
 
     const signatureOfOracle: Signature = Signature.create(this.privateKey, [
-      data['hashRoute'],
-      data['privateData'],
+      data.privateData,
+      data.hashRoute,
     ]);
 
     const res = {

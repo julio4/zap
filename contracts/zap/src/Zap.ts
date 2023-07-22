@@ -61,8 +61,8 @@ export class Zap extends SmartContract {
     // Evaluate whether the signature is valid for the provided data, and that the right
     // statement is being attested
     const validSignature = signature.verify(oraclePublicKey, [
-      hashRoute,
       privateData,
+      hashRoute,
     ]);
 
     // Check that the signature is valid
@@ -71,13 +71,13 @@ export class Zap extends SmartContract {
 
     /* STATEMENT VERIFICATION: START */
     // conditionType are <: 1, >: 2, ==: 3, !=: 4
+    // crash if conditionType is > 3
+    conditionType.lessThanOrEqual(Field(3)).assertTrue();
     // determine which operator to use
-
     const whichOperator: Bool[] = [
       conditionType.equals(Field(1)),
       conditionType.equals(Field(2)),
       conditionType.equals(Field(3)),
-      conditionType.equals(Field(4)),
     ];
 
     // verify that the privateData attest the statement
@@ -85,27 +85,33 @@ export class Zap extends SmartContract {
       privateData.lessThan(targetValue), // privateData < targetValue
       privateData.greaterThan(targetValue), // privateData > targetValue
       privateData.equals(targetValue), // privateData == targetValue
-      privateData.lessThan(targetValue) || privateData.greaterThan(targetValue), // privateData != targetValue
     ]);
+
 
     isPrivateDataValid.assertTrue();
 
     // STATEMENT VERIFICATION: END
 
     /* Generate the attestation and emit an event*/
-    // Should we put private data in it ? we should also put timestamp in it
+    // todo add timestamp
+    // Attestation hash should contain information about the statement, so we can verify that this attestation corresponds to the right
+    // statement
     const attestationHash = Poseidon.hash([
       hashRoute,
-      oraclePublicKey.toFields()[0],
+      conditionType,
+      targetValue,
+      this.sender.toFields()[0],
+      //timestamp
     ]);
 
-    // Emit an event only if everything is valid, containing the attestation hash, the sender and the current timestamp
+
+    // Emit an event only if everything is valid, containing the attestation hash and also the timestamp
+    // Thus, external watchers can only see that "some proof" (but it is hashed so they don't know what statement it is) has been verified
+    // at a certain time
     // TODO add timestamp
-    // concatenate the sender and the attestation hash
-    const senderAndAttestationHash = Poseidon.hash([
-      this.sender.toFields()[0],
-      attestationHash,
-    ]);
-    this.emitEvent('verified', senderAndAttestationHash);
+    this.emitEvent(
+      'verified',
+      attestationHash // todo add timestamp
+    );
   }
 }
