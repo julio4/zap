@@ -12,6 +12,7 @@ export async function signResponse(ctx: ParameterizedContext, next: Next) {
 
   // Encode the JSON data as fields
   const data = Encoding.stringToFields(JSON.stringify(ctx.body));
+  // TODO: faire data = [data.privateData,data.hashRoute]
   console.log('Response data: ', JSON.stringify(ctx.body));
 
   // Load the private key of our account from an environment variable
@@ -21,7 +22,7 @@ export async function signResponse(ctx: ParameterizedContext, next: Next) {
   const publicKey = privateKey.toPublicKey();
 
   // Use private key to sign an array of Fields containing the requested data
-  const signature = Signature.create(privateKey, [...data]);
+  const signature = Signature.create(privateKey, [...data]);  // et après avoir fait les changements L15, ici mettre juste create[privateKey, data]
 
   // format response into Mina compatible signature scheme
   ctx.body = {
