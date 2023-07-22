@@ -11,6 +11,7 @@
   "dependencies": {
     "@contracts/zap": "workspace:*",
     "@packages/ui": "workspace:*",
+    "axios": "^1.4.0",
     "ethers": "^6.6.3",
     "next": "^13.4.1",
     "react": "^18.2.0",

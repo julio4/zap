@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { ethers } from "ethers";
 import { AttestContext } from "./context/attestContext";
-import { shortenAddress } from "../utils/address";
+import { shortenAddress, normalizeAddress } from "../utils/address";
 
 const EthereumWallet = () => {
   const attest = useContext(AttestContext);
@@ -25,16 +25,17 @@ const EthereumWallet = () => {
       }
       const signer = await provider.getSigner();
       const address = await signer.getAddress();
+      const normalizedAddress = normalizeAddress(address);
 
-      const signature = await signer.signMessage(`I am ${address}`);
+      const signature = await signer.signMessage(`I am ${normalizedAddress}`);
 
       attest.setEthereumWallet({
         isConnected: true,
-        address,
+        address: normalizedAddress,
         signature,
         signer,
       });
-      console.log(`Set connected eth account: ${address}`);
+      console.log(`Set connected eth account: ${normalizedAddress}`);
     } catch (err: any) {
       // If the user has a wallet installed but has not created an account, an
       // exception will be thrown. Consider showing "not connected" in your UI.
