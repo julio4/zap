@@ -14,10 +14,14 @@ export type EthereumWallet = {
 };
 
 export enum Condition {
-  LESS_THAN = "1",
-  GREATER_THAN = "2",
-  EQUAL = "3",
-  DIFFERENT = "4",
+  // LESS_THAN = "1",
+  // GREATER_THAN = "2",
+  // EQUAL = "3",
+  // DIFFERENT = "4",
+  LESS_THAN = "<",
+  GREATER_THAN = ">",
+  EQUAL = "==",
+  DIFFERENT = "!=",
 }
 
 export type StatementCondition = {

@@ -31,15 +31,14 @@ export async function signResponse(ctx: ParameterizedContext, next: Next) {
   const routeFields = Encoding.stringToFields(JSON.stringify(routeObj));
   const hashRoute = Poseidon.hash(routeFields).toString();
 
-  const data = {
+  const data = [
     value,
     hashRoute,
-  };
-  const dataFields = Encoding.stringToFields(JSON.stringify(data));
+  ]
+  const dataFields = data.map((field) => Field.from(field));
   console.log('--> Response data: ', data);
 
   const data_field_as_string = dataFields.map((field) => field.toString());
-  // Console.log boolean equality
 
   // Load the private key of our account from an environment variable
   const privateKey = PrivateKey.fromBase58(process.env['PRIVATE_KEY'] || '');

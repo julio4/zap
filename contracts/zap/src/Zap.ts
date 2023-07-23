@@ -14,8 +14,6 @@ import {
 } from 'snarkyjs';
 
 // The public key of our trusted data provider
-const ORACLE_PUBLIC_KEY =
-  "B62qqrwhASBsfhEfWEsB1aRSLHFEMrKZg1Qey3KeTmD9881ekj9f9NR";
 
 /**
  * ZAP: Zero-knowledge Attestation Protocol
@@ -44,7 +42,7 @@ export class Zap extends SmartContract {
     super.init();
 
     // Initialize contract state
-    this.oraclePublicKey.set(PublicKey.fromBase58(ORACLE_PUBLIC_KEY));
+    this.oraclePublicKey.set(PublicKey.fromBase58("B62qqrwhASBsfhEfWEsB1aRSLHFEMrKZg1Qey3KeTmD9881ekj9f9NR"));
   }
 
   @method verify(
