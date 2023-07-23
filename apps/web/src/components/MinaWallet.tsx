@@ -1,7 +1,6 @@
 import React, { useState, useContext } from "react";
 import { AttestContext } from "../../src/components/context/attestContext";
 import { shortenAddress } from "../utils/address";
-import { PublicKey } from "snarkyjs";
 
 const MinaWallet = () => {
   const attest = useContext(AttestContext);
@@ -9,8 +8,6 @@ const MinaWallet = () => {
   const [error, setError] = useState<string | null>(null);
 
   const handleConnect = async () => {
-    let accounts;
-
     try {
       const network = await (window as any).mina.requestNetwork();
       if (network !== "Berkeley") {
@@ -52,30 +49,23 @@ const MinaWallet = () => {
     });
   };
 
-  if (error)
-    return (
-      <div className="border-2 border-red-500 p-4 rounded-xl bg-red-100">
-        <p>Error: {error}</p>
-        <button onClick={() => setError(null)}>Close</button>
-      </div>
-    );
+  if (error) return;
 
   return (
-    <div className="border-2 border-gray-500 p-4 rounded-xl bg-gray-100">
-      MinaWallet Component:
+    <>
       {isConnected ? (
-        <div>
-          <div>Connected to Mina Wallet</div>
-          <div>Address: {shortenAddress(address)}</div>
-          <button onClick={handleDisconnect}>Disconnect</button>
-        </div>
+        <span
+          className="h-5 bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+          Mina: {shortenAddress(address)}
+        </span>
       ) : (
-        <div>
-          <div>Not connected to Mina Wallet</div>
-          <button onClick={handleConnect}>Connect</button>
-        </div>
+        <span
+          onClick={handleConnect}
+          className="cursor-pointer h-5 hover:scale-[1.05] duration-100 ease-in transition-all bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">
+            Mina: Connect
+        </span>
       )}
-    </div>
+    </>
   );
 };
 
