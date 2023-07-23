@@ -167,41 +167,44 @@ const SelectStep = () => {
     );
 
   return (
-    <div>
+    <div className="relative pt-4">
       {choice == null && (
-        <div>
-          <p>Select the attestation you want to make.</p>
+        <div className="absolute w-full grid grid-cols-1 md:grid-cols-2 gap-4">
           {StatementChoices.map((choice) => (
             <div
               key={choice.name}
-              className="border-2 border-gray-500 p-4 rounded-xl bg-gray-100"
+              className="cursor-pointer ring-slate-200 hover:ring-slate-300 bg-slate-800/75 hover:bg-slate-700/75 px-5 py-3 rounded-xl hover:scale-[1.02] duration-300 ease-in-out transition-all"
+              onClick={() => {
+                setChoice(choice);
+                setCondition(choice.possibleConditions[0]);
+              }}
             >
-              <h3>{choice.name}</h3>
-              <p>{choice.description}</p>
-              <button
-                onClick={() => {
-                  setChoice(choice);
-                  setCondition(choice.possibleConditions[0]);
-                }}
-              >
-                Select
-              </button>
+              <h3 className="text-xl bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text font-display tracking-tight text-transparent">
+                {choice.name}</h3>
+              <p className="text-slate-400 text-sm">{choice.description}</p>
             </div>
           ))}
         </div>
       )}
       {choice != null && (
-        <div>
-          <p>You have selected {choice.name}.</p>
-          <form>
-            <div className="border-2 border-gray-500 p-4 rounded-xl bg-gray-100">
-              <h3>Args</h3>
+        <div className="absolute w-full">
+          <div className="cursor-pointer ring-slate-200 bg-slate-800/75 px-5 py-3 rounded-xl flex flex-col">
+
+            <h3 className="text-xl bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text font-display tracking-tight text-transparent">
+              {choice.name}
+            </h3>
+            <p className="text-slate-400 text-sm">{choice.description}</p>
+
+            <hr className="w-48 h-1 mx-auto my-2 border-0 rounded md:my-4 dark:bg-slate-700"/>
+
+            <div className="flex flex-col gap-2">
               {choice.args.map((arg) => (
-                <div key={arg.name}>
-                  <label>{arg.label}</label>
+                <div key={arg.name} className="flex flex-row gap-2 justify-between">
+                  <label className="text-slate-400">{arg.label}</label>
                   <input
                     type={arg.type}
                     value={args.find((a) => a.name === arg.name)?.value || ""}
+                    className="border-2 border-slate-500 rounded-md bg-slate-600/50 text-slate-100"
                     onChange={(e) => {
                       setArgs([
                         ...args.filter((a) => a.name !== arg.name),
@@ -215,9 +218,15 @@ const SelectStep = () => {
                   />
                 </div>
               ))}
-              <label>Condition</label>
+            </div>
+
+            <hr className="w-48 h-1 mx-auto my-2 border-0 rounded md:my-4 dark:bg-slate-700"/>
+
+            <div className="flex flex-row gap-2 justify-between">
+              <label className="text-slate-400">Condition</label>
               <select
                 value={condition}
+                className="border-2 border-slate-500 rounded-md bg-slate-600/50 text-slate-100"
                 onChange={(e) => setCondition(e.target.value as Condition)}
               >
                 {choice.possibleConditions.map((condition) => (
@@ -227,16 +236,27 @@ const SelectStep = () => {
                 ))}
               </select>
 
-              <label>Target Value</label>
+              <label className="text-slate-400">Target Value</label>
               <input
                 type="number"
+                className="border-2 border-slate-500 rounded-md bg-slate-600/50 text-slate-100"
                 value={targetValue}
                 onChange={(e) => setTargetValue(Number(e.target.value))}
               />
             </div>
-          </form>
-          <button onClick={reset}>Cancel</button>
-          <button onClick={handleSelect}>Select</button>
+
+            <hr className="w-48 h-1 mx-auto my-2 border-0 rounded md:my-4 dark:bg-slate-700"/>
+
+            <div className="flex flex-col gap-2">
+              <button
+                onClick={handleSelect}
+                type="button"
+                className="transition-all hover:scale-[1.02] duration-200 ease-in-out text-white bg-gradient-to-r from-indigo-500 via-sky-400 to-indigo-300 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-sky-300 dark:focus:ring-sky-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 opacity-80">
+                  Select
+              </button>
+            </div>
+
+          </div>
         </div>
       )}
     </div>
