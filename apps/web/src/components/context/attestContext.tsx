@@ -1,6 +1,6 @@
 import { createContext, useState } from "react";
 import { MinaWallet, EthereumWallet, Statement } from "../../types";
-import ZkappWorkerClient from "../../worker/zkappWorkerClient";
+import ZkappWorkerClient from "../../pages/zkappWorkerClient";
 
 type AttestContextType = {
   zkappWorkerClient: ZkappWorkerClient | null;
@@ -14,6 +14,9 @@ type AttestContextType = {
   privateData: any;
   setPrivateData: (privateData: any) => void;
   set: (attest: AttestContextType) => void;
+  creatingTransaction: boolean;
+  displayText: string;
+  setDisplayText: (displayText: string) => void;
 };
 
 const defaultAttestContext: AttestContextType = {
@@ -35,6 +38,9 @@ const defaultAttestContext: AttestContextType = {
   privateData: null,
   setPrivateData: () => {},
   set: () => {},
+  creatingTransaction: false,
+  displayText: "",
+  setDisplayText: () => {},
 };
 
 const AttestContext = createContext<AttestContextType>(defaultAttestContext);
