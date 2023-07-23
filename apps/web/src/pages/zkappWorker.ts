@@ -1,4 +1,4 @@
-import { Mina, PublicKey, fetchAccount } from "snarkyjs";
+import { Field, Mina, PublicKey, Signature, fetchAccount } from "snarkyjs";
 
 type Transaction = Awaited<ReturnType<typeof Mina.transaction>>;
 
@@ -6,11 +6,13 @@ type Transaction = Awaited<ReturnType<typeof Mina.transaction>>;
 
 // import type { Zap } from '../../../contracts/src/Zap';
 import type { Zap } from "@contracts/zap/src/Zap";
+import { stringToFields } from "snarkyjs/dist/node/bindings/lib/encoding.js";
 
 const state = {
   Zap: null as null | typeof Zap,
   zkapp: null as null | Zap,
   transaction: null as null | Transaction,
+  creatingTransaction: false,
 };
 
 // ---------------------------------------------------------------------------------------
@@ -37,6 +39,29 @@ const functions = {
   initZkappInstance: async (args: { publicKey58: string }) => {
     const publicKey = PublicKey.fromBase58(args.publicKey58);
     state.zkapp = new state.Zap!(publicKey);
+  },
+  createGenerateAttestationTransaction: async (args: {
+    conditionType: string;
+    targetValue: string;
+    hashRoute: string;
+    privateData: string;
+    signature: string;
+  }) => {
+    const { conditionType, targetValue, hashRoute, privateData, signature } =
+      args;
+    const transaction = await Mina.transaction(() => {
+      state.zkapp!.verify(
+        Field.from(conditionType),
+        Field.from(targetValue),
+        Field.from(hashRoute),
+        Field.from(privateData),
+        Signature.fromBase58(signature)
+      );
+    });
+    state.transaction = transaction;
+  },
+  proveGenerateAttestationTransaction: async (args: {}) => {
+    await state.transaction!.prove();
   },
   getTransactionJSON: async (args: {}) => {
     return state.transaction!.toJSON();

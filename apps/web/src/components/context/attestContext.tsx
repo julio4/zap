@@ -15,6 +15,9 @@ type AttestContextType = {
   privateData: PrivateData | null;
   setPrivateData: (privateData: PrivateData) => void;
   set: (attest: AttestContextType) => void;
+  creatingTransaction: boolean;
+  displayText: string;
+  setDisplayText: (displayText: string) => void;
 };
 
 const defaultAttestContext: AttestContextType = {
@@ -37,6 +40,9 @@ const defaultAttestContext: AttestContextType = {
   privateData: null,
   setPrivateData: () => {},
   set: () => {},
+  creatingTransaction: false,
+  displayText: "",
+  setDisplayText: () => {},
 };
 
 const AttestContext = createContext<AttestContextType>(defaultAttestContext);

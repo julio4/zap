@@ -5,6 +5,7 @@ import type {
   ZkappWorkerReponse,
   WorkerFunctions,
 } from "./zkappWorker";
+import { Condition, OracleRequest, StatementCondition } from "../types";
 
 export default class ZkappWorkerClient {
   // ---------------------------------------------------------------------------------------
@@ -43,6 +44,31 @@ export default class ZkappWorkerClient {
     return result;
   }
 
+  async createGenerateAttestationTransaction({
+    conditionType,
+    targetValue,
+    hashRoute,
+    privateData,
+    signature,
+  }: {
+    conditionType: Condition;
+    targetValue: number;
+    hashRoute: OracleRequest; // todo s'assurer que c'est ok
+    privateData: string;
+    signature: string;
+  }) {
+    await this._call("createGenerateAttestationTransaction", {
+      conditionType,
+      targetValue,
+      hashRoute,
+      privateData,
+      signature,
+    });
+  }
+
+  async proveGenerateAttestationTransaction() {
+    await this._call("proveGenerateAttestationTransaction", {});
+  }
   // ---------------------------------------------------------------------------------------
 
   worker: Worker;
