@@ -7,6 +7,7 @@ type Transaction = Awaited<ReturnType<typeof Mina.transaction>>;
 // import type { Zap } from '../../../contracts/src/Zap';
 import type { Zap } from "@contracts/zap/src/Zap";
 import { stringToFields } from "snarkyjs/dist/node/bindings/lib/encoding.js";
+import { Condition, OracleRequest } from "../types.js";
 
 const state = {
   Zap: null as null | typeof Zap,
@@ -41,20 +42,49 @@ const functions = {
     state.zkapp = new state.Zap!(publicKey);
   },
   createGenerateAttestationTransaction: async (args: {
-    conditionType: string;
-    targetValue: string;
+    conditionType: Condition;
+    targetValue: number;
     hashRoute: string;
-    privateData: string;
+    privateData: number;
     signature: string;
   }) => {
+    console.log(
+      "we are in createGenerateAttestationTransaction in worker backend"
+    );
     const { conditionType, targetValue, hashRoute, privateData, signature } =
       args;
+
+    console.log(
+      "in worker before callsc: conditionType",
+      Field.from(conditionType).toString()
+    );
+    console.log(
+      "in worker before callsc: targetValue",
+      Field.from(targetValue).toString()
+    );
+    console.log(
+      "in worker before callsc: hashRoute",
+      Field.from(hashRoute).toString()
+    );
+    console.log(
+      "in worker before callsc: privateData",
+      Field.from(privateData).toString()
+    );
+    console.log(
+      "in worker before callsc: signature",
+      Signature.fromBase58(signature).toBase58()
+    );
+
+    const data = {
+      value: targetValue,
+      hashRoute: hashRoute,
+    };
+
     const transaction = await Mina.transaction(() => {
       state.zkapp!.verify(
-        Field.from(conditionType),
-        Field.from(targetValue),
-        Field.from(hashRoute),
-        Field.from(privateData),
+        Field(conditionType),
+        Field(targetValue),
+        data.map(f => Field.from(f)),
         Signature.fromBase58(signature)
       );
     });

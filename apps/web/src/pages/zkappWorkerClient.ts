@@ -53,8 +53,8 @@ export default class ZkappWorkerClient {
   }: {
     conditionType: Condition;
     targetValue: number;
-    hashRoute: OracleRequest; // todo s'assurer que c'est ok
-    privateData: string;
+    hashRoute: string, // todo s'assurer que c'est bien ça?
+    privateData: number;
     signature: string;
   }) {
     await this._call("createGenerateAttestationTransaction", {

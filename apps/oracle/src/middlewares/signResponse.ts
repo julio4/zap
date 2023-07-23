@@ -1,5 +1,12 @@
 import { ParameterizedContext, Next } from 'koa';
-import { PrivateKey, Signature, Encoding, Field, PublicKey, Poseidon } from 'snarkyjs';
+import {
+  PrivateKey,
+  Signature,
+  Encoding,
+  Field,
+  PublicKey,
+  Poseidon,
+} from 'snarkyjs';
 
 type body = {
   value: number;
@@ -26,14 +33,13 @@ export async function signResponse(ctx: ParameterizedContext, next: Next) {
 
   const data = {
     value,
-    hashRoute
-  }
+    hashRoute,
+  };
   const dataFields = Encoding.stringToFields(JSON.stringify(data));
-  console.log("--> Response data: ", data)
+  console.log('--> Response data: ', data);
 
   const data_field_as_string = dataFields.map((field) => field.toString());
-  console.log(`dataFields[0] = Field.from(dataFields[0].toString())`)
-  console.log(`${dataFields[0]} = ${Field.from(dataFields[0].toString())}`)
+  // Console.log boolean equality
 
   // Load the private key of our account from an environment variable
   const privateKey = PrivateKey.fromBase58(process.env['PRIVATE_KEY'] || '');
@@ -43,7 +49,6 @@ export async function signResponse(ctx: ParameterizedContext, next: Next) {
 
   // Use private key to sign an array of Fields containing the requested data
   const signature = Signature.create(privateKey, dataFields).toBase58();
-  // et après avoir fait les changements L15, ici mettre juste create[privateKey, data]
 
   // format response into Mina compatible signature scheme
   ctx.body = {

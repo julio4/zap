@@ -86,13 +86,25 @@ describe('Zap', () => {
 
   describe('Attestations creation', () => {
     describe('Modularity of requests', () => {
-      it('emits the correct event for a valid statement: balance of user is 700, targetValue 600, operationType ">"', async () => {
+      it.only('emits the correct event for a valid statement: balance of user is 700, targetValue 600, operationType ">"', async () => {
         const oracleResult: OracleResult = await oracle.generateStatement(
           Field(1), // ApiRequestId corresponding to `getBalance`
           true, // will return a high result (true for holder, big balance for assets, etc.), so statement is valid
           metamaskSignature,
           ethereumAddress
         );
+
+        console.log(
+          'conditionType',
+          Field.from(statementBalanceSup.condition.type)
+        );
+        console.log(
+          'targetValue',
+          Field.from(statementBalanceSup.condition.targetValue)
+        );
+        console.log('hashRoute', oracleResult.data.hashRoute);
+        console.log('privateData',oracleResult.data.privateData);
+        console.log('signature', oracleResult.signature);
 
         const txn = await Mina.transaction(user.publicKey, () => {
           zap.verify(

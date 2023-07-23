@@ -50,35 +50,49 @@ export class Zap extends SmartContract {
   @method verify(
     conditionType: Field,
     targetValue: Field,
-    hashRoute: Field,
-    privateData: Field,
+    privateData: Field[],
     signature: Signature
   ) {
+
+    console.log("we are in verify in Zap contractAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
     /* VERIFICATION OF ORACLE SIGNATURE AND ROUTE: START */
     // Get the oracle public key from the contract state
     const oraclePublicKey = this.oraclePublicKey.getAndAssertEquals();
+    console.log("1");
 
     // Evaluate whether the signature is valid for the provided data, and that the right
     // statement is being attested
+    // console.log("IN SC: signature", signature);
+    // console.log("IN SC: oraclePublicKey", oraclePublicKey);
+    // console.log("IN SC: privateData", privateData);
+    // console.log("IN SC: hashRoute", hashRoute);
     const validSignature = signature.verify(oraclePublicKey, [
       privateData,
       hashRoute,
     ]);
+    console.log("2");
+
 
     // Check that the signature is valid
     validSignature.assertTrue();
     /* SIGNATURE VERIFICATION: END */
 
+    console.log("3");
+
     /* STATEMENT VERIFICATION: START */
     // conditionType are <: 1, >: 2, ==: 3, !=: 4
     // crash if conditionType is > 3
     conditionType.lessThanOrEqual(Field(3)).assertTrue();
+
+    console.log("4");
+
     // determine which operator to use
     const whichOperator: Bool[] = [
       conditionType.equals(Field(1)),
       conditionType.equals(Field(2)),
       conditionType.equals(Field(3)),
     ];
+    console.log("5");
 
     // verify that the privateData attest the statement
     const isPrivateDataValid = Provable.switch(whichOperator, Bool, [
@@ -87,7 +101,11 @@ export class Zap extends SmartContract {
       privateData.equals(targetValue), // privateData == targetValue
     ]);
 
+    console.log("6");
+
     isPrivateDataValid.assertTrue();
+
+    console.log("7");
 
     // STATEMENT VERIFICATION: END
 
@@ -104,6 +122,8 @@ export class Zap extends SmartContract {
       this.sender.toFields()[0],
       //timestamp
     ]);
+
+    console.log("8");
 
     // Emit an event only if everything is valid, containing the attestation hash and also the timestamp
     // Thus, external watchers can only see that "some proof" (but it is hashed so they don't know what statement it is) has been verified

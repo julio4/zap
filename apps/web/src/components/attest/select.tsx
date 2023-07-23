@@ -106,19 +106,24 @@ const SelectStep = () => {
       // TODO: remove this part later
       // example of decoding
       const body = response.data as SignResponse;
+      console.log("body", body)
 
       // const data = Encoding.stringToFields(body.data);
       const data = body.data.map(f => Field.from(f));
+      console.log("data", data.toString())
 
       // signature verification
       // TODO ASSERT(body.publicKey === node.process["ORACLE_PUBLIC_KEY"])
       // -> will be asserted in the proof as well so ok to skip it here
       const signature = Signature.fromBase58(body.signature);
+      console.log("signature", signature.toBase58())
       const publicKey = PublicKey.fromBase58(body.publicKey);
+      console.log("publicKey", publicKey.toBase58())
       const decoded: {
         value: number;
         hashRoute: string;
       } = JSON.parse(Encoding.stringFromFields(data));
+      console.log("decoded", decoded)
 
       // We can verify here but really the most important is to verify within the proof
       const verified = signature.verify(publicKey, data);
@@ -132,7 +137,7 @@ const SelectStep = () => {
       if (decoded.hashRoute !== localHashRoute) {
         throw new Error('Hash route verification failed');
       }
-      
+
       // States changes
       attest.setStatement(statement);
       attest.setPrivateData({
@@ -195,7 +200,7 @@ const SelectStep = () => {
             </h3>
             <p className="text-slate-400 text-sm">{choice.description}</p>
 
-            <hr className="w-48 h-1 mx-auto my-2 border-0 rounded md:my-4 dark:bg-slate-700"/>
+            <hr className="w-48 h-1 mx-auto my-2 border-0 rounded md:my-4 dark:bg-slate-700" />
 
             <div className="flex flex-col gap-2">
               {choice.args.map((arg) => (
@@ -220,7 +225,7 @@ const SelectStep = () => {
               ))}
             </div>
 
-            <hr className="w-48 h-1 mx-auto my-2 border-0 rounded md:my-4 dark:bg-slate-700"/>
+            <hr className="w-48 h-1 mx-auto my-2 border-0 rounded md:my-4 dark:bg-slate-700" />
 
             <div className="flex flex-row gap-2 justify-between">
               <label className="text-slate-400">Condition</label>
@@ -245,14 +250,14 @@ const SelectStep = () => {
               />
             </div>
 
-            <hr className="w-48 h-1 mx-auto my-2 border-0 rounded md:my-4 dark:bg-slate-700"/>
+            <hr className="w-48 h-1 mx-auto my-2 border-0 rounded md:my-4 dark:bg-slate-700" />
 
             <div className="flex flex-col gap-2">
               <button
                 onClick={handleSelect}
                 type="button"
                 className="transition-all hover:scale-[1.02] duration-200 ease-in-out text-white bg-gradient-to-r from-indigo-500 via-sky-400 to-indigo-300 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-sky-300 dark:focus:ring-sky-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 opacity-80">
-                  Select
+                Select
               </button>
             </div>
 
