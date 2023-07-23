@@ -45,23 +45,26 @@ export default class ZkappWorkerClient {
   }
 
   async createGenerateAttestationTransaction({
+    senderKey58,
     conditionType,
     targetValue,
+    value,
     hashRoute,
-    privateData,
     signature,
   }: {
+    senderKey58: string;
     conditionType: Condition;
     targetValue: number;
-    hashRoute: string, // todo s'assurer que c'est bien ça?
-    privateData: number;
+    value: number;
+    hashRoute: string;
     signature: string;
   }) {
     await this._call("createGenerateAttestationTransaction", {
+      senderKey58,
       conditionType,
       targetValue,
+      value,
       hashRoute,
-      privateData,
       signature,
     });
   }

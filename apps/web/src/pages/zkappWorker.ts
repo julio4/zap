@@ -41,17 +41,19 @@ const functions = {
     const publicKey = PublicKey.fromBase58(args.publicKey58);
     state.zkapp = new state.Zap!(publicKey);
   },
+
   createGenerateAttestationTransaction: async (args: {
+    senderKey58: string;
     conditionType: Condition;
     targetValue: number;
+    value: number;
     hashRoute: string;
-    privateData: number;
     signature: string;
   }) => {
     console.log(
       "we are in createGenerateAttestationTransaction in worker backend"
     );
-    const { conditionType, targetValue, hashRoute, privateData, signature } =
+    const { senderKey58, conditionType, targetValue, value, hashRoute, signature } =
       args;
 
     console.log(
@@ -63,28 +65,24 @@ const functions = {
       Field.from(targetValue).toString()
     );
     console.log(
-      "in worker before callsc: hashRoute",
-      Field.from(hashRoute).toString()
+      "in worker before callsc: value",
+      Field.from(value).toString()
     );
     console.log(
-      "in worker before callsc: privateData",
-      Field.from(privateData).toString()
+      "in worker before callsc: hashRoute",
+      Field.from(hashRoute).toString()
     );
     console.log(
       "in worker before callsc: signature",
       Signature.fromBase58(signature).toBase58()
     );
 
-    const data = {
-      value: targetValue,
-      hashRoute: hashRoute,
-    };
-
-    const transaction = await Mina.transaction(() => {
+    const transaction = await Mina.transaction(PublicKey.fromBase58(senderKey58) ,() => {
       state.zkapp!.verify(
-        Field(conditionType),
-        Field(targetValue),
-        data.map(f => Field.from(f)),
+        Field.from(conditionType),
+        Field.from(targetValue),
+        Field.from(value),
+        Field.from(hashRoute),
         Signature.fromBase58(signature)
       );
     });

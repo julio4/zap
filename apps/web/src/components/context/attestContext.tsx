@@ -1,6 +1,7 @@
 import { createContext, useState } from "react";
 import { MinaWallet, EthereumWallet, Statement, SignResponse, PrivateData } from "../../types";
 import ZkappWorkerClient from "../../pages/zkappWorkerClient"
+import { Field } from "snarkyjs";
 
 type AttestContextType = {
   zkappWorkerClient: ZkappWorkerClient | null;
@@ -14,10 +15,12 @@ type AttestContextType = {
   setStatement: (statement: Statement) => void;
   privateData: PrivateData | null;
   setPrivateData: (privateData: PrivateData) => void;
-  set: (attest: AttestContextType) => void;
+  privateDataInput: Field[];
+  setPrivateDataInput: (privateDataInput: Field[]) => void;
   creatingTransaction: boolean;
   displayText: string;
   setDisplayText: (displayText: string) => void;
+  set: (attest: AttestContextType) => void;
 };
 
 const defaultAttestContext: AttestContextType = {
@@ -39,10 +42,12 @@ const defaultAttestContext: AttestContextType = {
   setStatement: () => {},
   privateData: null,
   setPrivateData: () => {},
-  set: () => {},
+  privateDataInput: [],
+  setPrivateDataInput: () => {},
   creatingTransaction: false,
   displayText: "",
   setDisplayText: () => {},
+  set: () => {},
 };
 
 const AttestContext = createContext<AttestContextType>(defaultAttestContext);
@@ -81,12 +86,15 @@ const AttestProvider = ({ children }: { children: React.ReactNode }) => {
         privateData,
       }));
     },
-    set: (attest: AttestContextType) => {
+    setPrivateDataInput: (privateDataInput: Field[]) => {
       setAttest((prevAttest) => ({
         ...prevAttest,
-        ...attest,
+        privateDataInput,
       }));
     },
+    set: (attest: AttestContextType) => {
+      setAttest(attest);
+    }
   });
 
   return (

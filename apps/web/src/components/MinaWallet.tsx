@@ -55,13 +55,13 @@ const MinaWallet = () => {
     <>
       {isConnected ? (
         <span
-          className="h-5 bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+          className="h-5 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full bg-green-900 text-green-300">
           Mina: {shortenAddress(address)}
         </span>
       ) : (
         <span
           onClick={handleConnect}
-          className="cursor-pointer h-5 hover:scale-[1.05] duration-100 ease-in transition-all bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">
+          className="cursor-pointer h-5 hover:scale-[1.05] duration-100 ease-in transition-all text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full bg-red-900 text-red-300">
             Mina: Connect
         </span>
       )}

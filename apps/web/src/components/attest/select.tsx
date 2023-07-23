@@ -103,27 +103,29 @@ const SelectStep = () => {
         request_data
       );
 
-      // TODO: remove this part later
-      // example of decoding
       const body = response.data as SignResponse;
-      console.log("body", body)
+      console.log("select.tsx body", body)
 
       // const data = Encoding.stringToFields(body.data);
       const data = body.data.map(f => Field.from(f));
-      console.log("data", data.toString())
+      attest.setPrivateDataInput(data);
+      console.log("select.tsx data", data.toString())
 
       // signature verification
       // TODO ASSERT(body.publicKey === node.process["ORACLE_PUBLIC_KEY"])
       // -> will be asserted in the proof as well so ok to skip it here
       const signature = Signature.fromBase58(body.signature);
-      console.log("signature", signature.toBase58())
+      console.log("select.tsx signature", signature.toBase58())
+
       const publicKey = PublicKey.fromBase58(body.publicKey);
-      console.log("publicKey", publicKey.toBase58())
-      const decoded: {
-        value: number;
-        hashRoute: string;
-      } = JSON.parse(Encoding.stringFromFields(data));
-      console.log("decoded", decoded)
+      console.log("select.tsx publicKey", publicKey.toBase58())
+
+      const decoded_value = data[0].toString();
+      const decoded_hashRoute = data[1].toString();
+      console.log("select.tsx decoded", {
+        value: decoded_value,
+        hashRoute: decoded_hashRoute
+      })
 
       // We can verify here but really the most important is to verify within the proof
       const verified = signature.verify(publicKey, data);
@@ -134,7 +136,7 @@ const SelectStep = () => {
       const localRouteFields = Encoding.stringToFields(JSON.stringify(statement.request))
       const localHashRoute = Poseidon.hash(localRouteFields).toString();
 
-      if (decoded.hashRoute !== localHashRoute) {
+      if (decoded_hashRoute !== localHashRoute) {
         throw new Error('Hash route verification failed');
       }
 
@@ -142,8 +144,12 @@ const SelectStep = () => {
       attest.setStatement(statement);
       attest.setPrivateData({
         ...body,
-        data: decoded
+        data: {
+          value: Number(decoded_value),
+          hashRoute: decoded_hashRoute
+        }
       });
+      console.log("ATTEST", attest)
     } catch (e: any) {
       console.error("oracle error", e);
       setError(e.message);

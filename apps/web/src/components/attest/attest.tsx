@@ -41,8 +41,8 @@ const Attest = () => {
         const zkappPublicKey = PublicKey.fromBase58(zkappAddress!);
         await zkappWorkerClient.initZkappInstance(zkappPublicKey);
 
-        // console.log('Getting zkApp state...');
-        // await zkappWorkerClient.fetchAccount({ publicKey: zkappPublicKey });
+        console.log('Getting zkApp state...');
+        await zkappWorkerClient.fetchAccount({ publicKey: zkappPublicKey });
         // const currentNum = await zkappWorkerClient.getNum();
         // console.log(`Current number in zkApp state: ${currentNum.toString()}`);
 
