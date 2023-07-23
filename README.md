@@ -133,7 +133,7 @@ Here are some examples:
 - NFT volume sales: 'In total, I have sold for more than 15 ETH of NFTs'
 
 <p align="center">
-  <img src="assets/zap_menu.png" alt="Zap Menu" width="600" height="600" />
+  <img src="assets/zap_menu.png" alt="Zap Menu" />
 </p>
 
 ## How to test
