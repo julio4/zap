@@ -27,8 +27,13 @@ ZAP is a project developed as part of the ETHGlobal hackathon which utilizes the
     <a href="#how-it-works">How It Works</a>
 </li>
 <li>
-    <a href="#key-features">Key Features</a>
+    <a href="#powered-by-airstack">Powered by AirStack</a>
 </li>
+<li>
+    <a href="#key-features">Key Features</a>
+    <ul>
+    <li><a href="#example-of-statements">Example of statements</a></li>
+    </ul>
 <li>
     <a href="#how-to-test">How to Test</a>
     <ul>
@@ -104,7 +109,7 @@ In our journey towards a more privacy-focused world, we appreciate support and s
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-### Key Features
+## Key Features
 
 - Trustlessness: We have incorporated steps in our smart contracts to ensure trustlessness and no data manipulation.
 - Privacy Preservation: Users can verify statements about their Ethereum wallets without revealing unnecessary information.
