@@ -57,7 +57,8 @@ ZAP is a project developed as part of the ETHGlobal hackathon which utilizes the
 
 ZAP allows a user to verify a specific statement related to their Ethereum wallet without having to disclose unnecessary information. The statement could be related to anything based on on-chain data, like the Ethereum balance or a user's lens profile. The user only needs to sign a message on MetaMask to authenticate and then specify the statement they want to verify via our frontend.
 
-Despite being built on a centralized oracle, we've incorporated steps in our smart contracts to ensure trustlessness. For instance, we check that the input data is from our oracle and also compare the hash of the API query path with that of the first oracle request query.
+Despite being built on a centralized oracle, we've incorporated steps in our smart contracts to ensure trustlessness. For instance,
+we ensures that data provided to the smart-contract is from our oracle and not from a third party, that the oracled called the right API, and that the caller had indeed the possession of the MetaMask wallet.
 
 <br />
 
@@ -67,6 +68,14 @@ Despite being built on a centralized oracle, we've incorporated steps in our sma
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## How it works
+
+Zap is composed of three main components:
+
+- A client-side application (dApp) that allows users to generate a statement and verify it.
+- An oracle that queries AirStack's API to verify the statement, signs the result and returns it to the user.
+- A smart contract that verifies the signature (ensuring data source authenticity and query correctness), and if the statement is true, emits an event containing some hashed information about that attestation.
+
+The user can then prove to anyone that they have verified the statement by providing their statement hash and Mina wallet address. The external watcher can hash the received data and check that the result has been emitted by our oracle. If it matches, the proof is correct.
 
 1. The user signs a message on MetaMask for authentication.
 2. The user specifies a statement they wish to verify through our frontend.
@@ -91,16 +100,16 @@ Notably, AirStack's simplicity and flexibility have allowed us to perform recurs
 
 By integrating with AirStack, ZAP can provide robust, accurate, and reliable verification for its users. The strong compatibility between AirStack's APIs and our oracle enables a seamless data exchange, ensuring efficient and speedy statement verification.
 
-In our journey towards a more decentralized and privacy-focused world, we appreciate support and services provided by AirStack.
+In our journey towards a more privacy-focused world, we appreciate support and services provided by AirStack.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Key Features
 
-- Trustlessness: We have incorporated steps in our smart contracts to ensure trustlessness by verifying the signature input and checking the statement truthfulness.
+- Trustlessness: We have incorporated steps in our smart contracts to ensure trustlessness and no data manipulation.
 - Privacy Preservation: Users can verify statements about their Ethereum wallets without revealing unnecessary information.
-- Interoperability: ZAP connects Ethereum and Mina, leveraging the strengths of both.
-- User-friendly: Users can easily specify the statement they wish to verify through our frontend.
+- Interoperability: ZAP connects Ethereum and Mina, leveraging the strengths of both blockchains.
+- User-friendly: Users can easily specify the statement they wish to verify through our frontend by following a few simple steps.
 
 ### Example of statements
 
