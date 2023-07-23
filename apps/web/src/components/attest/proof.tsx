@@ -52,9 +52,16 @@ const ProofStep = () => {
     });
   };
 
-  return <div>
-    <button onClick={onSendTransaction}>Send transaction</button>
-  </div>;
+  return (
+    <div className="flex flex-col pt-4">
+      <button
+        onClick={onSendTransaction}
+        className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+      >
+        Send transaction
+      </button>
+    </div>
+  );
 };
 
 export { ProofStep };
