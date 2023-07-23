@@ -1,7 +1,9 @@
 import React, { useState, useRef } from "react"
 import { Magnify } from "./logo";
+import { useRouter } from 'next/router';
 
 const Search = () => {
+  const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [search, setSearch] = useState<string>("");
@@ -10,6 +12,7 @@ const Search = () => {
     e.preventDefault();
     if (!search || search == "") return;
 
+    router.push('/verify');
     console.log("TODO: Search for attestation with note: ", search);
     setSearch("");
     setIsOpen(false);
@@ -44,7 +47,7 @@ const Search = () => {
         ref={inputRef}
         hidden={!isOpen}
         type="text"
-        className="flex-auto ml-2.5 text-slate-900 dark:text-slate-100 placeholder-slate-500 dark:placeholder-slate-400 bg-transparent focus:outline-none focus:ring-0"
+        className="flex-auto ml-2.5 text-slate-100 placeholder-slate-400 bg-transparent focus:outline-none focus:ring-0"
         placeholder="Verify attestation..."
         autoFocus
         value={search}

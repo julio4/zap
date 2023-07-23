@@ -21,6 +21,8 @@ type AttestContextType = {
   displayText: string;
   setDisplayText: (displayText: string) => void;
   set: (attest: AttestContextType) => void;
+  finalResult: string;
+  setFinalResult: (finalResult: string) => void;
 };
 
 const defaultAttestContext: AttestContextType = {
@@ -48,6 +50,8 @@ const defaultAttestContext: AttestContextType = {
   displayText: "",
   setDisplayText: () => {},
   set: () => {},
+  finalResult: "",
+  setFinalResult: () => {},
 };
 
 const AttestContext = createContext<AttestContextType>(defaultAttestContext);
@@ -94,6 +98,12 @@ const AttestProvider = ({ children }: { children: React.ReactNode }) => {
     },
     set: (attest: AttestContextType) => {
       setAttest(attest);
+    },
+    setFinalResult: (finalResult: string) => {
+      setAttest((prevAttest) => ({
+        ...prevAttest,
+        finalResult,
+      }));
     }
   });
 

@@ -59,8 +59,9 @@ const Attest = () => {
   // 2: Select statement, condition and sign -> get signed values from oracle
   const step2 = !step1 && !(attest.statement && attest.privateData);
   // 3: Generate proof and send tx on Mina ZAP contract
-  const step3 = !step1 && !step2;
+  const step3 = !step1 && !step2 && !attest.finalResult;
   // 4: Generate attestation note/confirmation
+  const step4 = attest.finalResult;
 
   return (
     <div className="flex items-center flex-col gap-5">
@@ -103,12 +104,20 @@ const Attest = () => {
           <ProofStep />
         </div>
       )}
-      {/* <div className="border-2 border-gray-500 p-4 rounded-xl bg-gray-100">
-          STEP4
-          <p>
-            Get the attestation note (don't lose it!).
+      {step4 && (
+        <div className="flex flex-col py-4">
+          <h2 className="py-2 text-center inline bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text font-display text-6xl tracking-tight text-transparent">
+            Attestation note!
+          </h2>
+          <p className="font-light mt-3 text-sm text-center tracking-tight text-slate-400 max-w-xl mx-auto">
+            Your attestation note is ready! You can now share it with your recipient.
+            Be aware that it is impossible to recover it if you lose it, so make sure to keep it safe. :D
           </p>
-      </div> */}
+          <pre className="whitespace-pre-wrap font-light mt-3 text-sm text-center tracking-tight text-slate-400 max-w-xl mx-auto">
+            {attest.finalResult}
+          </pre>
+        </div>
+      )}
     </div>
   );
 }
