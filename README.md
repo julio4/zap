@@ -82,18 +82,20 @@ Zap is composed of three main components:
 
 The user can then prove to anyone that they have verified the statement by providing their statement hash and Mina wallet address. The external watcher can hash the received data and check that the result has been emitted by our oracle. If it matches, the proof is correct.
 
-1. The user signs a message on MetaMask for authentication.
-2. The user specifies a statement they wish to verify through our frontend.
-3. The user connects their Mina wallet to our frontend and sends their MetaMask signature with the statement to be verified.
+### User Flow
+
+1. The user signs a dedicated message on MetaMask to authenticate themselves.
+2. The user specifies a statement they wish to verify through the frontend.
+3. The user connects their Mina wallet to the frontend and sends their MetaMask signature with the statement to be verified.
 4. The statement is sent to our oracle, which is linked to AirStack.
 5. The oracle queries the appropriate API to verify the statement.
-6. If the statement is true, the oracle emits an event containing "verified", and the statement hash.
+6. If the statement is true, the oracle emits an event containing "verified", and the statement hash (which contains the statement, the user's Mina wallet address, and the oracle's signature).
 7. The user can now prove to anyone that they have verified the statement by providing their statement hash and Mina wallet address.
-8. The external watcher can hash the received data and check that the result has been emitted by our oracle. If it matches, the proof is correct.
+8. The external watcher can hash the received data (through the frontend) and check that there is an event emitted by our oracle with the same hash. If it matches, the proof is correct.
 
 <p align="center">
-  <img src="assets/excalidraw_2.png" alt="Schéma"/>
-  Excalidraw
+  <img src="assets/excalidraw_main.png" alt="Schéma"/>
+  Mains actors and components of ZAP
 </p>
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -130,7 +132,9 @@ Here are some examples:
 - XMTP: 'XMTP is enabled on my wallet'
 - NFT volume sales: 'In total, I have sold for more than 15 ETH of NFTs'
 
-<!-- GETTING STARTED -->
+<p align="center">
+  <img src="assets/zap_menu.png" alt="Zap Menu" width="600" height="600" />
+</p>
 
 ## How to test
 
@@ -175,10 +179,6 @@ You can run the smart contract tests. Note that it does use some mock (especiall
 cd contracts/zap/ && npm run build && npm run test
 ```
 
-<p align="center">
-  <img src="assets/screenshot_test.png" alt="Test Zap Screenshot"/>
-</p>
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- GOAL -->
@@ -193,7 +193,6 @@ cd contracts/zap/ && npm run build && npm run test
 
 - Decentralization Efforts: We are exploring potential solutions to move away from a centralized oracle, aiming to make the system fully trustless and further enhance its security. As part of this process, we are considering ways to leverage AirStack's APIs in a more decentralized context. We anticipate that having AirStack's data responses signed would enable us to validate on-chain that the data indeed originates from AirStack, further bolstering the system's credibility and security.
 
-- User Interface Improvements: Given the time constraints inherent in hackathons, we recognize the need for further refining our frontend. Our goal is to ensure a seamless and user-friendly experience, so we plan to invest time and effort in enhancing the interface's usability and aesthetics.
   </br>
 
 ### Challenges and Difficulties
