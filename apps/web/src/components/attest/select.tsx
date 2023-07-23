@@ -152,15 +152,15 @@ const SelectStep = () => {
 
   if (error)
     return (
-      <div className="border-2 border-red-500 p-4 rounded-xl bg-red-100">
-        <p>Error: {error}</p>
-        <button onClick={reset}>Close</button>
+      <div className="py-4 border-2 border-red-700/75 p-4 rounded-xl bg-red-600/50">
+        <p className="text-slate-600">Error: {error}</p>
+        <button onClick={reset} className="text-slate-600">Close</button>
       </div>
     );
 
   if (waiting.status)
     return (
-      <div className="border-2 border-gray-500 p-4 rounded-xl bg-gray-100">
+      <div className="border-2 border-slate-500/75 p-4 rounded-xl bg-slate-700/50">
         <p>Loading ...</p>
         <p>{waiting.message}</p>
       </div>
