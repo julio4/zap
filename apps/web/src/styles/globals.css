@@ -1,3 +1,16 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html {
+  background-color: #0f172a;
+}
+
+body {
+  height: 100vh;
+}
+
+#__next {
+  position: absolute;
+  inset: 0;
+}

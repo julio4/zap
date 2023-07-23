@@ -1,19 +1,29 @@
 import React from "react";
 
-export default function Home() {
-  return (
-    <div className="flex min-h-screen flex-col items-center justify-center py-2">
-      <main className="mx-auto w-auto px-4 pt-16 pb-8 sm:pt-24 lg:px-8">
-        <h1 className="mx-auto text-center text-6xl font-extrabold tracking-tight text-white sm:text-7xl lg:text-8xl xl:text-8xl">
-          <span className="block bg-gradient-to-r from-brandred to-brandblue bg-clip-text text-transparent px-2">
-            ZAP - ZK Attestation Protocol on Mina!
-          </span>
-        </h1>
+import { Header } from "../components/Header";
+import { LeftDetails } from "../components/home/LeftDetails";
+import { RightDetails } from "../components/home/RightDetails";
+import { FoldingBg } from "../components/logo";
 
-        <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4 place-content-evenly">
-          TODO
+type HomeProps = {};
+
+export default function Home(props: HomeProps): JSX.Element {
+  return (
+    <>
+      <Header />
+      <div className="overflow-hidden flex flex-col justify-center lg:h-screen bg-slate-900 dark:-mb-32 dark:mt-[-4.5rem] dark:pb-32 dark:pt-[4.5rem] dark:lg:mt-[-4.75rem] dark:lg:pt-[4.75rem]">
+        <div className="py-16 sm:px-2 lg:relative lg:px-0 lg:py-20">
+          <div className="mx-auto grid max-w-2xl grid-cols-1 items-center gap-x-8 gap-y-16 px-4 lg:max-w-7xl lg:grid-cols-2 lg:px-8 xl:gap-x-16 xl:px-12">
+            <LeftDetails />
+            <RightDetails />
+          </div>
         </div>
-      </main>
-    </div>
+      </div>
+
+      <div className="fixed inset-x-[-50vw] -bottom-48 -top-32 [mask-image:linear-gradient(transparent,white,white)] dark:[mask-image:linear-gradient(transparent,white,transparent)] lg:-bottom-32 lg:-top-32 lg:left-[calc(50%+14rem)] lg:right-0 lg:[mask-image:none] lg:dark:[mask-image:linear-gradient(white,white,transparent)]">
+        <FoldingBg />
+      </div>
+
+    </>
   );
 }
