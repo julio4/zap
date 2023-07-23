@@ -18,7 +18,7 @@ const Header = ({
           {/* TODO Logo SVG? */}
           <h1 className="mx-auto text-center text-xl font-extrabold tracking-tight text-white sm:text-sm lg:text-2xl xl:text-2xl">
             <span className="block px-2">
-              ZAP
+              ⚡ ZAP
             </span>
           </h1>
         </Link>
