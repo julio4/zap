@@ -37,6 +37,7 @@ ZAP is a project developed as part of the ETHGlobal hackathon which utilizes the
 <li>
     <a href="#how-to-test">How to Test</a>
     <ul>
+    <li><a href="#architecture-of-the-repo">Architecture of the repo</a></li>
     <li><a href="#dapp">dApp</a></li>
     <li><a href="#local-installation">Local Installation</a></li>
     </ul>
@@ -138,6 +139,13 @@ Here are some examples:
 
 ## How to test
 
+#### Architecture of the repo
+
+- `apps/oracle/`: The oracle logic that queries AirStack's API, but also middleware and airstack API wrappers.
+- `apps/web/`: The client-side application (dApp) that allows users to generate a statement and verify it.
+- `contracts/zap/`: The snarky smart contracts that verify the statement and the signature.
+- `packages`: Contains some useful packages for the project, not directly related to the dApp or the smart contracts.
+
 #### dApp
 
 To test the dApp (website), you will need:
@@ -146,7 +154,7 @@ To test the dApp (website), you will need:
 - A Mina account with some tokens
 - A MetaMask wallet
 
-You can then test the dApp here: [Website](zap.vercel.app)
+You can then test the dApp locally. See the [local installation](#local-installation) section for more information.
 
 ### Local installation
 
@@ -178,6 +186,14 @@ You can run the smart contract tests. Note that it does use some mock (especiall
 ```sh
 cd contracts/zap/ && npm run build && npm run test
 ```
+
+You can also run the dApp locally. It will be available at http://localhost:3000/
+
+```sh
+pnpm run dev
+```
+
+*note: If you got an error because the port 3030 is already in use, you can change kill the process with `lsof -i :3030` and then `kill -9 <PID>`*
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
