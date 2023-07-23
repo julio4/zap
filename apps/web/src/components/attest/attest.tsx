@@ -48,11 +48,7 @@ export default function Attest() {
         // console.log(`Current number in zkApp state: ${currentNum.toString()}`);
 
         console.log("Setting up finished");
-        attest.set({
-          ...attest,
-          zkappWorkerClient,
-          zkappHasBeenSetup: true,
-        });
+        attest.setZkappWorkerClient(zkappWorkerClient);
       }
     })();
   }, []);

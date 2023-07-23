@@ -8,8 +8,10 @@ import {
   Condition,
   HTMLInputSchema,
   Statement,
+  SignResponse,
 } from "../../types";
 import { AttestContext } from "../context/attestContext";
+import { Encoding, Field, Poseidon, PublicKey, Signature } from "snarkyjs";
 
 const ORACLE_ENDPOINT = process.env["ORACLE_ENDPOINT"];
 if (!ORACLE_ENDPOINT) throw new Error("ORACLE_ENDPOINT is not set");
@@ -95,33 +97,57 @@ const SelectStep = () => {
       args: statement.request.args,
     };
 
-    // try {
-    //   const response = await axios.post(
-    //     `${ORACLE_ENDPOINT}${statement.request.route}`,
-    //     request_data
-    //   );
-    //   console.log("oracle response", response);
-    //   attest.setStatement(statement);
-    // } catch (e: any) {
-    //   console.error("oracle error", e);
-    //   setError(e.message);
-    //   reset();
-    // }
+    try {
+      const response = await axios.post(
+        `${ORACLE_ENDPOINT}${statement.request.route}`,
+        request_data
+      );
+
+      // TODO: remove this part later
+      // example of decoding
+      const body = response.data as SignResponse;
+
+      // const data = Encoding.stringToFields(body.data);
+      const data = body.data.map(f => Field.from(f));
+
+      // signature verification
+      // TODO ASSERT(body.publicKey === node.process["ORACLE_PUBLIC_KEY"])
+      // -> will be asserted in the proof as well so ok to skip it here
+      const signature = Signature.fromBase58(body.signature);
+      const publicKey = PublicKey.fromBase58(body.publicKey);
+      const decoded: {
+        value: number;
+        hashRoute: string;
+      } = JSON.parse(Encoding.stringFromFields(data));
+
+      // We can verify here but really the most important is to verify within the proof
+      const verified = signature.verify(publicKey, data);
+      if (!verified.toBoolean()) {
+        throw new Error('Signature verification failed');
+      }
+
+      const localRouteFields = Encoding.stringToFields(JSON.stringify(statement.request))
+      const localHashRoute = Poseidon.hash(localRouteFields).toString();
+
+      if (decoded.hashRoute !== localHashRoute) {
+        throw new Error('Hash route verification failed');
+      }
+      
+      // States changes
+      attest.setStatement(statement);
+      attest.setPrivateData({
+        ...body,
+        data: decoded
+      });
+    } catch (e: any) {
+      console.error("oracle error", e);
+      setError(e.message);
+    }
 
     setWaiting({
       status: false,
       message: "",
     });
-
-    // TODO remove this when oracle is ready
-    const mockedResponse = {
-      data: {
-        balance: 100,
-      },
-      signature: "mocked_signature",
-    };
-    attest.setStatement(statement);
-    attest.setPrivateData(mockedResponse);
   };
 
   if (error)

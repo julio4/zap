@@ -1,4 +1,5 @@
 import { JsonRpcSigner } from "ethers";
+import { Field, PublicKey, Signature } from "snarkyjs";
 
 export type MinaWallet = {
   isConnected: boolean;
@@ -167,3 +168,18 @@ export const StatementChoices: StatementChoice[] = [
     ],
   },
 ];
+
+export type SignResponse = {
+  data: string[]; // data.map((field) => Field.from(field))
+  signature: string; // Signature.fromBase58()
+  publicKey: string; // PublicKey.fromBase58()
+};
+
+export type PrivateData = {
+  data: {
+    value: number;
+    hashRoute: string;
+  },
+  signature: string;
+  publicKey: string;
+}

@@ -17,8 +17,8 @@ export async function getUserBalance(ctx: ParameterizedContext) {
     const balance = await getBalance(address, token, blockchain);
 
     ctx.body = {
-      balance,
-      // TODO IMPORTANT /!\ mettre la hashroute
+      value: balance,
+      route: "/balance"
     };
   } catch (error) {
     ctx.throw(404);
@@ -32,8 +32,8 @@ export async function verifyPoapHolder(ctx: ParameterizedContext) {
     const isHolder = await isPoapHolder(address, event_id);
 
     ctx.body = {
-      isHolder,
-      // TODO IMPORTANT /!\ mettre la hashroute
+      value: isHolder,
+      route: "/poap"
     };
   } catch (error) {
     ctx.throw(404);
@@ -47,8 +47,8 @@ export async function verifyNftHolder(ctx: ParameterizedContext) {
     const numberNft = await isNftHolder(address, nftAddress, blockchain);
 
     ctx.body = {
-      numberNft,
-      // TODO IMPORTANT /!\ mettre la hashroute
+      value: numberNft,
+      route: "/nft"
     };
   } catch (error) {
     ctx.throw(404);
@@ -61,8 +61,8 @@ export async function verifyXMTPenabled(ctx: ParameterizedContext) {
     const isOpen = await isXMTPenabled(address);
 
     ctx.body = {
-      isOpen,
-      // TODO IMPORTANT /!\ mettre la hashroute
+      value: isOpen,
+      route: "/xmtpEnabled"
     };
   } catch (error) {
     ctx.throw(404);
@@ -75,8 +75,8 @@ export async function verifyEnsHolder(ctx: ParameterizedContext) {
     const gotEnsAttached = await isEnsHolder(address);
 
     ctx.body = {
-      gotEnsAttached,
-      // TODO IMPORTANT /!\ mettre la hashroute
+      value: gotEnsAttached,
+      route: "/ens"
     };
   } catch (error) {
     ctx.throw(404);
@@ -89,8 +89,8 @@ export async function verifyLensHolder(ctx: ParameterizedContext) {
     const isOwner = await isLensHolder(address);
 
     ctx.body = {
-      isOwner,
-      // TODO IMPORTANT /!\ mettre la hashroute
+      value: isOwner,
+      route: "/lens"
     };
   } catch (error) {
     ctx.throw(404);
@@ -103,8 +103,8 @@ export async function verifyFarcasterHolder(ctx: ParameterizedContext) {
     const isOwner = await isFarcasterHolder(address);
 
     ctx.body = {
-      isOwner,
-      // TODO IMPORTANT /!\ mettre la hashroute
+      value: isOwner,
+      route: "/farcaster"
     };
   } catch (error) {
     ctx.throw(404);
@@ -117,8 +117,8 @@ export async function getUserNftVolumeSales(ctx: ParameterizedContext) {
     const volumeInEth = await getNftSaleVolume(address);
 
     ctx.body = {
-      volumeInEth,
-      // TODO IMPORTANT /!\ mettre la hashroute
+      value: volumeInEth,
+      route: "/totalNftVolume"
     };
   } catch (error) {
     ctx.throw(404);
