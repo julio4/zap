@@ -7,7 +7,7 @@
   <a href="https://www.developerdao.com/fr">
     <img src="assets/ethglobal.png" alt="Logo" width="80" height="80">
   </a>
-  <a href="https://minaprotocol.com/" style="margin-left: 25px">
+  <a href="https://minaprotocol.com/" style="margin-left: 55px">
     <img src="assets/mina-logo.png" alt="Mina Protocol" width="80" height="80">
   </a>
   </p>
