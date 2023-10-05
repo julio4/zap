@@ -1,7 +1,6 @@
-import { Field, Poseidon, PrivateKey, PublicKey, Signature } from 'snarkyjs';
+import { Field, Poseidon, PrivateKey, PublicKey, Signature } from 'o1js';
 import { DataOracleObject, KeyPair, OracleResult } from '../types';
 import { ethers } from 'ethers';
-import { stringToFields } from 'snarkyjs/dist/node/bindings/lib/encoding';
 
 export class MockedOracle {
   publicKey: PublicKey;
@@ -56,9 +55,7 @@ export class MockedOracle {
       case Field(1).toString(): // getBalance
         data = {
           hashRoute: Poseidon.hash([
-            stringToFields(
-              '/balance/:0xdac17f958d2ee523a2206206994597c13d831ec7'
-            )[0],
+            Field('/balance/:0xdac17f958d2ee523a2206206994597c13d831ec7'),
           ]),
           privateData: lowOrHighResult ? Field(700) : Field(500),
         };

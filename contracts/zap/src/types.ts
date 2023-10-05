@@ -1,4 +1,4 @@
-import { PublicKey, PrivateKey, Signature, Field } from 'snarkyjs';
+import { PublicKey, PrivateKey, Signature, Field } from 'o1js';
 
 // Represents a key pair to sign transactions.
 type KeyPair = {

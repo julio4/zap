@@ -6,10 +6,9 @@ import {
   AccountUpdate,
   Signature,
   Poseidon,
-} from 'snarkyjs';
+} from 'o1js';
 import { KeyPair, OracleResult, Statement } from './types';
 import { MockedOracle } from './utils/mockOracle';
-import { stringToFields } from 'snarkyjs/dist/node/bindings/lib/encoding';
 
 // Speed up testing by disabling proofs for unit tests
 let proofsEnabled = false;
@@ -332,7 +331,7 @@ describe('Zap', () => {
       );
 
       const wrongHashRoute = Poseidon.hash([
-        stringToFields('/balance/:0xShittyToken')[0], // <-- Wrong hashRoute
+        Field('/balance/:0xShittyToken'), // <-- Wrong hashRoute
       ]);
 
       const invalidOracleSignature = Signature.create(zapKeys.privateKey, [
