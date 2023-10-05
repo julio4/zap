@@ -1,9 +1,9 @@
 {
-  "name": "@contracts/zap",
+  "name": "zap",
   "version": "0.1.0",
-  "description": "",
+  "description": "Zap is a zero knowledge protocol that allows anyone to use a specified oracle as a source of truth to verify statements",
   "author": "",
-  "license": "Apache-2.0",
+  "license": "MIT License",
   "keywords": [
     "mina-zkapp",
     "mina-zk-app",
@@ -23,16 +23,18 @@
     "lint": "npx eslint src/* --fix"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.5.0",
+    "@typescript-eslint/parser": "^5.5.0",
     "@babel/preset-env": "^7.16.4",
     "@babel/preset-typescript": "^7.16.0",
-    "@packages/tsconfig": "workspace:*",
     "@types/jest": "^27.0.3",
-    "eslint-config-custom": "workspace:*",
     "jest": "^27.3.1",
-    "ts-jest": "^27.0.7"
+    "ts-jest": "^27.0.7",
+    "eslint": "^8.7.0",
+    "eslint-plugin-o1js": "^0.4.0"
   },
   "peerDependencies": {
     "ethers": "^5.7.2",
-    "o1js": "^0.13.1"
+    "o1js": "^0.12.1"
   }
 }
