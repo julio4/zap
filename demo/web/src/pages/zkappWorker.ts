@@ -1,12 +1,11 @@
-import { Field, Mina, PublicKey, Signature, fetchAccount } from "snarkyjs";
+import { Field, Mina, PublicKey, Signature, fetchAccount } from "o1js";
 
 type Transaction = Awaited<ReturnType<typeof Mina.transaction>>;
 
 // ---------------------------------------------------------------------------------------
 
-// import type { Zap } from '../../../contracts/src/Zap';
-import type { Zap } from "@contracts/zap/src/Zap";
-import { stringToFields } from "snarkyjs/dist/node/bindings/lib/encoding.js";
+import type { Zap } from "zap/src/Zap";
+import { stringToFields } from "o1js/dist/node/bindings/lib/encoding.js";
 import { Condition, OracleRequest } from "../types.js";
 
 const state = {
@@ -27,7 +26,7 @@ const functions = {
     Mina.setActiveInstance(Berkeley);
   },
   loadContract: async (args: {}) => {
-    const { Zap } = await import("../../../../contracts/zap/build/src/Zap.js");
+    const { Zap } = await import("zap/src/Zap");
     state.Zap = Zap;
   },
   compileContract: async (args: {}) => {

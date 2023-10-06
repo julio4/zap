@@ -1,3 +1,11 @@
 module.exports = {
-  presets: [['@babel/preset-env', { targets: { node: 'current' } }]],
+  presets: [
+    '@babel/preset-env',
+    '@babel/preset-typescript',
+    '@babel/preset-react',
+  ],
+  plugins: [
+    ['@babel/plugin-proposal-decorators', { legacy: true }],
+    ['@babel/plugin-proposal-class-properties'],
+  ],
 };
