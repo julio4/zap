@@ -1,5 +1,5 @@
 import { JsonRpcSigner } from "ethers";
-import { Field, PublicKey, Signature } from "snarkyjs";
+import { Field, PublicKey, Signature } from "o1js";
 
 export type MinaWallet = {
   isConnected: boolean;

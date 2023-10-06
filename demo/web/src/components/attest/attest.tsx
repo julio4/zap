@@ -5,7 +5,7 @@ import { SelectStep } from "./select";
 import { ProofStep } from "./proof";
 
 import ZkappWorkerClient from "../../pages/zkappWorkerClient";
-import { PublicKey } from "snarkyjs";
+import { PublicKey } from "o1js";
 import { MinaWallet } from "../../components/MinaWallet";
 import { EthereumWallet } from "../../components/EthereumWallet";
 

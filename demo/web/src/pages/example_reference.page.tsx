@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./reactCOIServiceWorker";
 import ZkappWorkerClient from "./zkappWorkerClient";
-import { PublicKey, Field } from "snarkyjs";
+import { PublicKey, Field } from "o1js";
 
 let transactionFee = 0.1;
 

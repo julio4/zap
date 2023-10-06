@@ -1,7 +1,7 @@
 {
-  "extends": "@packages/tsconfig/snarkyjs.json",
+  "extends": "@packages/tsconfig/o1js.json",
   "compilerOptions": {
-    "plugins": [{ "name": "snarkyjs" }],
+    "plugins": [{ "name": "o1js" }],
     "outDir": "./build",
     "rootDir": "."
   },

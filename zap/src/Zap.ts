@@ -1,8 +1,8 @@
 import {
   Field,
   SmartContract,
-  state,
   State,
+  state,
   method,
   DeployArgs,
   Permissions,
@@ -22,7 +22,7 @@ import {
  * The statement are validated with data signed by a trusted data provider.
  * The contract emits an event containing the verified statement id -> it's an attestation.
  */
-export class Zap extends SmartContract {
+export class Test extends SmartContract {
   @state(PublicKey) oraclePublicKey = State<PublicKey>();
 
   // contract events
