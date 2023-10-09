@@ -1,7 +1,7 @@
-import { Field, Poseidon, PrivateKey, PublicKey, Signature } from 'snarkyjs';
+import { Field, Poseidon, PrivateKey, PublicKey, Signature } from 'o1js';
 import { DataOracleObject, KeyPair, OracleResult } from '../types';
 import { ethers } from 'ethers';
-import { stringToFields } from 'snarkyjs/dist/node/bindings/lib/encoding';
+import { stringToFields } from 'o1js/dist/node/bindings/lib/encoding';
 
 export class MockedOracle {
   publicKey: PublicKey;

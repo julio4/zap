@@ -11,7 +11,7 @@ import {
   Provable,
   Bool,
   Poseidon,
-} from 'snarkyjs';
+} from 'o1js';
 
 // The public key of our trusted data provider
 

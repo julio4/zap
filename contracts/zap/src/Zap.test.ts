@@ -6,10 +6,10 @@ import {
   AccountUpdate,
   Signature,
   Poseidon,
-} from 'snarkyjs';
+} from 'o1js';
 import { KeyPair, OracleResult, Statement } from './types';
 import { MockedOracle } from './utils/mockOracle';
-import { stringToFields } from 'snarkyjs/dist/node/bindings/lib/encoding';
+import { stringToFields } from 'o1js/dist/node/bindings/lib/encoding';
 
 // Speed up testing by disabling proofs for unit tests
 let proofsEnabled = false;

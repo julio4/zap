@@ -6,7 +6,7 @@ import {
   Field,
   PublicKey,
   Poseidon,
-} from 'snarkyjs';
+} from 'o1js';
 
 type body = {
   value: number;

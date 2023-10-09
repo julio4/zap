@@ -1,7 +1,7 @@
 import { createContext, useState } from "react";
 import { MinaWallet, EthereumWallet, Statement, SignResponse, PrivateData } from "../../types";
 import ZkappWorkerClient from "../../pages/zkappWorkerClient"
-import { Field } from "snarkyjs";
+import { Field } from "o1js";
 
 type AttestContextType = {
   zkappWorkerClient: ZkappWorkerClient | null;

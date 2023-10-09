@@ -1,5 +1,5 @@
 import { Zap } from './Zap';
-import { method, PublicKey } from 'snarkyjs';
+import { method, PublicKey } from 'o1js';
 
 /**
  * A mocked version of the Zap contract that can be used for testing purposes.

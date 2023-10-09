@@ -11,7 +11,7 @@ import {
   SignResponse,
 } from "../../types";
 import { AttestContext } from "../context/attestContext";
-import { Encoding, Field, Poseidon, PublicKey, Signature } from "snarkyjs";
+import { Encoding, Field, Poseidon, PublicKey, Signature } from "o1js";
 
 const ORACLE_ENDPOINT = process.env["ORACLE_ENDPOINT"];
 if (!ORACLE_ENDPOINT) throw new Error("ORACLE_ENDPOINT is not set");
