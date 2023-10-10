@@ -1,0 +1,10 @@
+{
+  "extends": "@packages/tsconfig/snarkyjs.json",
+  "compilerOptions": {
+    "plugins": [{ "name": "snarkyjs" }],
+    "outDir": "./build",
+    "rootDir": "."
+  },
+  "include": ["./src"],
+  "exclude": ["node_modules", "./src/**/*.test.ts"]
+}
