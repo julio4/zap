@@ -1,0 +1,65 @@
+Please read the [Overview](./) page first as it contains important definitions and concepts used in this page.
+
+## Statement
+
+We define statement as a function $s$, with $V$ the set of all possible combinations of values of the variables for this statement:
+
+$$s: V \rightarrow \{true, false\}$$
+
+In logic, a statement is named a **predicate**.
+
+## Attestation
+
+We denote $a = s(v)$ the attestation of a statement $s$, $v$ a combination of values of the variables of the statement $s$ such that $v \in V$ with $V$ the set of all possible combinations of values of the variables of the statement $s$.
+We hence have $a \in \{true, false\}$.
+
+When only parts of the variables are given a value, then we call it a **partial attestation**.
+If the statement is "Over 18 years old and living in France", then the context "age 22" is not enough to determine the truth value of the statement, we also need to know the country of residence of the person.
+However, this gives us the partial attestation "living in France" knowing that the person is "age 22".
+
+In logic, an attestation is the realization/instantiation of a predicate.
+
+## Combining statements together for modularity and scalability
+
+We can combine multiple statements together to create more complex statements.
+For example, the statement "Over 18 years old and living in France" is the combination of the two statements "Over 18 years old" and "Living in France".
+
+With $s_1, s_2$ two statements, $V_1, V_2$ the set of possible combinations of values of the variables of $s_1, s_2$ respectively, and $v_1, v_2$ a combination of values of the variables of $s_1, s_2$ respectively such that $v_1 \in V_1$ and $v_2 \in V_2$, we define the combination of $s_1$ and $s_2$ as the statement $s_3$ such that:
+$$ s_3(v_1 \cup v_2) = s_1(v_1) \land s_2(v_2)$$
+
+This is useful because if we have a statement that is composed of multiple statements, then we can use the partial attestations of these statements that compose the statement to determine the truth value of the statement without having to reverify the validity of the partial attestations as long as they are still valid.
+
+In other words, with $a_1, a_2$ the attestations of $s_1, s_2$ respectively, and $a_3$ the attestation of $s_3$, then we can determine the truth value of $s_3$ with just $$a_3 = a_1 \land a_2$$
+
+## Zero-Knowledge Attestation
+
+We can redefine some previous concepts in the context of zero-knowledge proofs:
+We can divide $V$ the set of all possible combinations of values of the variables for a statement as the union of two distinct sets: $V_{private}$ and $V_{public}$, such that $V_{private} \cap V_{public} = \emptyset$ and $V_{private} \cup V_{public} = V$.
+
+We redefine the statement function $s$ as the prover:
+$$s: V \rightarrow P$$, with $P$ the set of all possible proofs of the statement $s$.
+
+Then, we define a function $v$ that acts as the verifier. For $V_{private}, V_{public}$, a proof $p \in P$ such that $p = s(V_{private} \cup V_{public})$, we have:
+$$v: V_{public} \rightarrow \{true, false\}$$
+
+## In ZAP
+
+In ZAP, $A$ can be represented as type, and $s$ as a function that takes an instance of this type as an argument and returns a boolean.
+Every statement must have at least the Mina wallet address of the user who emitted the statement, the time at which the statement was emitted and the validity duration as variables.
+```ts
+interface IContext = { address: MinaWallet, time: date, validity: number };
+interface IStatement = (context: IContext) => boolean;
+```
+This do not mean that theses two variables are used in the statement logic.
+
+More variables can be added to the set of arguments depending on the statement. For example, the statement "Over 18 years old" can have a `dateOfBirth` instead of `age`:
+```ts
+// Statement type
+type AgeContext: IContext & { dateOfBirth: date };
+type AgeStatement: IStatement = (context: AgeContext) => boolean;
+
+// Statement
+const isOver18: AgeStatement = (wallet, time, dateOfBirth) => {
+  return time - dateOfBirth > 18yr;
+}
+```
