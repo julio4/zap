@@ -8,7 +8,12 @@ const config: DocsThemeConfig = {
   },
   docsRepositoryBase: 'https://github.com/julio4/zap',
   footer: {
-    text: 'ZAP - Zero-Knowledge Attestation Protocol',
+    component: () => <></>
+  },
+  useNextSeoProps() {
+    return {
+      titleTemplate: '%s – ZAP'
+    }
   },
   editLink: {
     component: ({ ...props }) => (

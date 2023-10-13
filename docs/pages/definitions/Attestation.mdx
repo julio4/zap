@@ -1,0 +1,76 @@
+# Attestation
+
+An attestation is the truth value of a statement when all the variables are given a value.
+For example, the statement "Over 18 years old" is true if the assigned value of the variable `age` is `22`, and false if it is `14` (by using the logic rule `age > 18` of the statement).
+
+## Formalisation
+
+Please refer to [Statement](./Statement) for the formalisation of a statement before reading this section.
+
+We note $a_{(s,v)}$ the attestation of a statement $s$ with the values $v$ of the variables of $s$.
+$a_{(s,v)} \in s(V)$, with $V$ the set of all possible vectors of values of the variables of $s$.
+
+We say that an attestation $a_{(s,v)}$ is the **truth value** of $s$ for the values $v$, and $a$ is either:
+- **valid** if $s(v) = \text{true}$
+- **invalid** otherwise (if $s(v) = \text{false}$)
+
+In logic, an attestation is the **realization/instantiation** of a predicate.
+
+Example:
+
+Let consider the following statement:
+$$
+n = 1, V = \{\text{age}\}, \cal R = \{r_1\} \text{ with } r_1 = \text{age} > 18
+$$
+
+We have the following attestations:
+$$
+s(\{\text{age: } 22\}) = \text{true} \\
+s(\{\text{age: } 14\}) = \text{false}
+$$
+
+Some observations:
+- With no restriction on $V$, there's an infinite number of attestations for a statement.
+
+### Partial attestation
+
+When only parts of the variables are given a value, then we call it a **partial attestation**.
+If the statement is "Over 18 years old and living in France", then the assigned value `22` to the variable `age` is not enough to determine the truth value of the statement, we also need to know the value of the variable `country` (or `isLivingInFrance`).
+However, this gives us the partial attestation "living in France" knowing that the person is "age 22".
+
+### Combining attestations and statements together for modularity and scalability
+
+We can combine multiple statements together to create more complex statements.
+For example, the statement "Over 18 years old and living in France" is the combination of the two statements "Over 18 years old" and "Living in France".
+
+With $s_1, s_2$ two statements, $V_{s1}, V_{s2}$ the set of possible vectors of values of the variables of $s_1, s_2$ respectively, and $v_{s1}, v_{s2}$ two vectors such that $v_{s1} \in V_{s1}$ and $v_{s2} \in V_{s2}$, we define the combination of $s_1$ and $s_2$ as the statement $s_3$ such that:
+$$
+s_3(v_{s1} \cup v_{s2}) = s_1(v_{s1}) \land s_2(v_{s2})
+$$
+
+This is useful because if we have a statement that is composed of multiple statements, then we can use the partial attestation of these statements that compose the statement to determine the truth value of the statement without having to reverify the validity of the partial attestation as long as they are still valid.
+
+In other words, with $a_1, a_2$ the attestations of $s_1, s_2$ respectively, and $a_3$ the attestation of $s_3$, then we can determine the truth value of $s_3$ with just $$a_3 = a_1 \land a_2$$
+
+### Zero-knowledge attestation
+
+We declared the following statement function $s$ in [Zero-knowledge Statement](./Statement#zero-knowledge-statement):
+
+$$s: (V_{private}, V_{public}) \rightarrow P$$, with $P$ the set of all possible proofs of the statement $s$.
+
+We can define a function that acts as the verifier: $(P, V_{public}) \rightarrow \{true, false\}$
+
+We can note that $P$ is nothing else than the set of all possible attestations $s(V_{private}, V_{public})$, so we can represent an attestation as a zero-knowledge proof.
+
+We then have:
+
+$$
+\large
+\text{verify}: (s(V_{public}, V_{private}), V_{public}) \rightarrow \{true, false\}
+$$
+
+In other word, to verify the validity of an attestation, we just need to have the attestation proof with its public variables.
+
+## Implementation
+
+WIP

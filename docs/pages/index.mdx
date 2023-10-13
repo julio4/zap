@@ -1,23 +1,13 @@
+# Overview
+
 ZAP is the first Zero-Knowledge Attestation Protocol built on Mina. It's a **module-based**, **scalable** and **intuitive** protocol that enables developers to build privacy-preserving applications on Mina.
 
 ### What is a Zero-Knowledge Attestation ?
 
 To fully understand what is the goal behind ZAP, we need to understand what is a statement, an attestation, and a zero-knowledge proof.
-This section is a brief introduction to these concepts, and how they are used in ZAP. For more details, you can read the [Terminology page](./terminology).
 
-#### Statement
-
-A statement is a logical expression that contains one or more variables and that can be either true or false.
-A statement is abstract in the sense that the statement alone do not have any value, but specify a set of logic rules that can be used to determine if the statement is true or false for given values of the variables.
-
-Statement can often be expressed in natural language, for example "Over 18 years old" is a statement that contains the variable `age`, and that is true if and only if `age > 18`.
-
-#### Attestation
-
-An attestation is the truth value of a statement when all the variables are given a value.
-For example, the statement "Over 18 years old" is true if the context is "age 22" and false if the context is "age 14".
-
-#### Zero-Knowledge Attestation
+- [Statement](./definitions/Statement): a logical expression that contains one or more variables and that can be either true or false.
+- [Attestation](./definitions/Attestation): the truth value of a statement when all the variables are given a value.
 
 Zero-Knowledge Proofs are a novel type of cryptographic proofs that have two components: a **prover** and a **verifier**.
 The prover generate a proof based on both private and public inputs, and the verifier is able to verify the validity of the proof based on the public inputs only.
@@ -27,11 +17,15 @@ This is a significant steps in the direction of privacy-preserving applications,
 
 ### What is Zap?
 
-The main idea behind ZAP is to allow developers to easily create zero-knowledge attestations on Mina based on any kind of data source with minimal effort and maximum flexibility.
+The main idea behind ZAP is to allow developers to easily create zero-knowledge attestations on Mina based on any kind of data with minimal effort and maximum flexibility.
 ZAP want to abstract the complexity of handling private data during the generation of the attestation and the verification of the proof while ensuring that the logic rules are respected in a transparent way.
 
-This way developers can focus on the logic rules of the statement and the data source, and let ZAP handle the rest.
-Data sources refers to what is used to get the value of the variables of the statement, it can be on-chain data, off-chain data, or even user input.
+This way developers can focus on the logic rules of the statement and let ZAP handle the rest.
+
+ZAP abstract the logic of the creation/validation of statements/attestations and the data sources used to get the value of the variables of the statements.
+
+**Data sources** refers to what is used to get the value of the variables of the statement, it can be on-chain data, off-chain data, or even user input.
+ZAP provides a default EVM data source using `Airstack` as a demonstration, but developers are free to implement and use their own data sources.
 Data sources are always considered as trusted, so it's the developer's responsibility to ensure that the data source is reliable and inform its users about the source used.
 
 ### Use cases
@@ -49,8 +43,7 @@ ZAP can be used to attest the validity of on-chain data.
 - Proof of ownership (ERC20, ERC721, etc.)
 - ... 
 
-We are developing a demonstration using `Airstack API` to bring Ethereum data on Mina, as well as exploring new solutions such as [Nil Foundation In-EVM Mina State Verification](https://verify.mina.nil.foundation/).
-). See more in the [Example](./) section.
+We are developing a demo data source using `Airstack` to bring Ethereum data on Mina, and more data sources examples will be added in the near future.
 
 #### Off-chain data
 
@@ -62,7 +55,7 @@ Using email signatures, API keys, authentication tokens, etc. ZAP can be used to
 ZAP can be used to attest the validity of a user's identity. The user can then use this attestation to prove that he is who he claims to be without revealing any sensitive information.
 This coupled with web2 off-chain identity providers can be used to build sybil-resistant decentralized applications, reputation systems, proof of humanity, etc.
 
-## Current status
+## Project status
 
 Currently, ZAP is **in-development** and should not be used in production.
 Use at your own risk and please report any issue you encounter.

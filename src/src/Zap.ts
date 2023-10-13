@@ -14,6 +14,8 @@ import {
 } from 'o1js';
 
 // The public key of our trusted data provider
+const ORACLE_PUBLIC_KEY =
+  'B62qoAE4rBRuTgC42vqvEyUqCGhaZsW58SKVW4Ht8aYqP9UTvxFWBgy';
 
 /**
  * ZAP: Zero-knowledge Attestation Protocol
@@ -42,7 +44,7 @@ export class Zap extends SmartContract {
     super.init();
 
     // Initialize contract state
-    this.oraclePublicKey.set(PublicKey.fromBase58("B62qqrwhASBsfhEfWEsB1aRSLHFEMrKZg1Qey3KeTmD9881ekj9f9NR"));
+    this.oraclePublicKey.set(PublicKey.fromBase58(ORACLE_PUBLIC_KEY));
   }
 
   @method verify(
@@ -62,11 +64,10 @@ export class Zap extends SmartContract {
 
     // Evaluate whether the signature is valid for the provided data, and that the right
     // statement is being attested
-    // console.log("IN SC: signature", signature);
-    // console.log("IN SC: oraclePublicKey", oraclePublicKey);
-    // console.log("IN SC: privateData", privateData);
-    // console.log("IN SC: hashRoute", hashRoute);
-    const validSignature = signature.verify(oraclePublicKey, [value, hashRoute]);
+    const validSignature = signature.verify(oraclePublicKey, [
+      value,
+      hashRoute,
+    ]);
 
     // Check that the signature is valid
     validSignature.assertTrue();

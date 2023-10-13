@@ -1,0 +1,55 @@
+# Statement
+
+A statement is a logical expression that contains one or more variables and that can be either true or false.
+A statement is abstract in the sense that the statement alone do not have any value, but specify a set of logic rules that can be used to determine if the statement is true or false for given values of the variables.
+
+Statement can often be expressed in natural language, for example "Over 18 years old" is a statement that contains the variable `age`, and that is true if and only if `age > 18`.
+
+## Formalisation
+
+Let consider $s$ a statement as a function defined on $n$ real variables:
+
+$$
+\large
+s: \mathbb{R}^n \rightarrow \{\text{true}, \text{false}\}
+$$
+
+We can assign the values for each variables of a statement as a vector $v = (v_1, v_2, ..., v_n)$, with $v_i$ the value of the $i$-th variable.
+We note $V$ the set of all possible vectors possible, $V = \mathbb{R}^n$. So $\forall v, v \in V$.
+
+The logic rules are represented as a set $\cal R$ of logical propositions.
+Each rule $r_i$ can involves any variables $v_i$ (atleast one), and can be expressed using logical operators ($\land$, $\lor$, $\lnot$) and comparison operators ($=$, $>$, $<$, $\geq$, $\leq$).
+
+The function $s$ can be defined as the following:
+
+$$
+s(v) =
+\begin{cases} 
+\text{true}, & \text{if all rules in } \mathcal{R} \text{ are satisfied by } \mathbf{v} \\ 
+\text{false}, & \text{otherwise} 
+\end{cases}
+$$
+
+Example:
+
+$$
+n = 1, V = \{\text{age}\}, \cal R = \{r_1\} \text{ with } r_1 = \text{age} > 18
+$$
+
+In logic, a statement is named a **predicate**.
+
+Some observations:
+- If there is two rules that are mutually exclusive, then $s$ cannot be true for any $v$.
+- If there's a variable $v_i$ that is not used in any rule, then $s$ is equivalent to the a statement that does not contain $v_i$ but has the same set of rules.
+
+### Zero-knowledge statement
+
+We can divide the set $V$ as the union of two distinct sets: $V_{private}$ and $V_{public}$, such that $V_{private} \cap V_{public} = \emptyset$ and $V_{private} \cup V_{public} = V$.
+
+We redefine the statement function $attest$ as the prover:
+
+$$\large s: (V_{private}, V_{public}) \rightarrow P$$, with $P$ the set of all possible proofs of the statement $s$.
+
+## Implementation
+
+WIP

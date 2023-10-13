@@ -1,4 +1,4 @@
-import { Field, PrivateKey } from 'o1js';
+import { PrivateKey } from 'o1js';
 
 function generateKeyPair() {
   const privateKey = PrivateKey.random();
