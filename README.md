@@ -1,12 +1,8 @@
 <a name="readme-top"></a>
 [![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/julio4/zap)
 
-<!-- PROJECT LOGO -->
 <br />
 <div align="center" display="flex" flex-direction="row" justify-content="center" align-items="center">
-  <a href="https://www.developerdao.com/fr">
-    <img src="assets/ethglobal.png" alt="Logo" width="80" height="80">
-  </a>
   <a href="https://minaprotocol.com/" style="margin-left: 55px">
     <img src="assets/mina-logo.png" alt="Mina Protocol" width="80" height="80">
   </a>
@@ -14,11 +10,12 @@
 </div>
 
 <p>
-ZAP is a project developed as part of the ETHGlobal hackathon which utilizes the Mina blockchain protocol and Airstack as it's decentralized data provider. With ZAP, a user can verify a statement based on on-chain data from Ethereum without revealing anything but the fact that the statement has been verified for their EVM wallet.
+ZAP aims to be the first Zero-Knowledge Attestation Protocol on Mina, allowing protocols to verify statements about anything without revealing unnecessary information.
+ZAP is module-based, meaning that anyone can plug in an "oracle", either centralized or decentralized, as a source of truth for the statement.
+Currently, we have implemented a centralized oracle that queries AirStack's API to verify the statement, signs the result and returns it to the user, and we plan to release a decentralized version in the future alongside with others kind of data providers (such as web2 proof: email auths, social medias, ...).
 </p>
 
-<!-- TABLE OF CONTENTS -->
-<summary>Table of Contents</summary>
+<!-- <summary>Table of Contents</summary>
 <ol>
 <li>
     <a href="#about-the-project">About The Project</a>
@@ -56,10 +53,10 @@ ZAP is a project developed as part of the ETHGlobal hackathon which utilizes the
 </li>
 <li><a href="#contact">Contact</a></li>
 </ol>
-<br />
+<br /> -->
 <!-- ABOUT THE PROJECT -->
 
-## About The Project
+<!-- ## About The Project
 
 ZAP allows a user to verify a specific statement related to their Ethereum wallet without having to disclose unnecessary information. The statement could be related to anything based on on-chain data, like the Ethereum balance or a user's lens profile. The user only needs to sign a message on MetaMask to authenticate and then specify the statement they want to verify via our frontend.
 
@@ -195,11 +192,11 @@ pnpm run dev
 
 *note: If you got an error because the port 3030 is already in use, you can change kill the process with `lsof -i :3030` and then `kill -9 <PID>`*
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+<p align="right">(<a href="#readme-top">back to top</a>)</p> -->
 
 <!-- GOAL -->
 
-</br>
+<!-- </br>
 
 ### More to come
 
@@ -243,4 +240,4 @@ Twitter:
 
 <br />
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+<p align="right">(<a href="#readme-top">back to top</a>)</p> -->

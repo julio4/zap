@@ -1,0 +1,38 @@
+{
+  "name": "zap",
+  "version": "0.1.0",
+  "description": "",
+  "author": "",
+  "license": "Apache-2.0",
+  "keywords": [
+    "mina-zkapp",
+    "mina-zk-app",
+    "mina-dapp",
+    "zkapp"
+  ],
+  "type": "module",
+  "main": "build/src/index.js",
+  "types": "build/src/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "buildw": "tsc --watch",
+    "coverage": "node --experimental-vm-modules --experimental-wasm-threads node_modules/jest/bin/jest.js --coverage",
+    "format": "prettier --write --ignore-unknown **/*",
+    "test": "node --experimental-vm-modules --experimental-wasm-threads node_modules/jest/bin/jest.js",
+    "testw": "node --experimental-vm-modules --experimental-wasm-threads node_modules/jest/bin/jest.js --watch",
+    "lint": "npx eslint src/* --fix"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.16.4",
+    "@babel/preset-typescript": "^7.16.0",
+    "@packages/tsconfig": "workspace:*",
+    "@types/jest": "^27.0.3",
+    "eslint-config-custom": "workspace:*",
+    "jest": "^27.3.1",
+    "ts-jest": "^27.0.7"
+  },
+  "peerDependencies": {
+    "o1js": "0.13.1",
+    "ethers": "^5.7.2"
+  }
+}
