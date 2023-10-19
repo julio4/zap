@@ -1,4 +1,5 @@
 packages:
-  - "src"
+  - "zap"
   - "docs"
   - "packages/*"
+  - "demo/*"

@@ -1,6 +1,20 @@
-# Zap Contract
+# ZAP Contract
 
-```js filename="demo.js" {3} copy
-let a = 1;
-console.log(a);
+```ts filename="zap.ts"
+/**
+ * ZAP: Zero-knowledge Attestation Protocol
+ */
+export class Zap extends SmartContract {
+  @method verify(
+    // The statement to attest
+    conditionType: Field,
+    targetValue: Field,
+    // The private data attesting the statement from the trusted oracle
+    hashRoute: Field,
+    privateData: Field,
+    // The signature that allows us to be sure that the private data are coming from our trusted oracle
+    signature: Signature
+  );
+}
+
 ```

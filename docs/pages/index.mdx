@@ -10,15 +10,15 @@ To fully understand what is the goal behind ZAP, we need to understand what is a
 - [Attestation](./definitions/Attestation): the truth value of a statement when all the variables are given a value.
 
 Zero-Knowledge Proofs are a novel type of cryptographic proofs that have two components: a **prover** and a **verifier**.
-The prover generate a proof based on both private and public inputs, and the verifier is able to verify the validity of the proof based on the public inputs only.
+The prover generates a proof based on both private and public inputs, and the verifier is able to verify the validity of the proof based on the public inputs only.
 
 We can directly see the use case of zero-knowledge proofs in the context of attestations: the user wants to prove that a statement is true, i.e. create an attestation, but without revealing all the variables values, and the verifier is the end-application that wants to use the attestation to verify the truth value of the statement.
-This is a significant steps in the direction of privacy-preserving applications, and this is what ZAP and Mina is all about!
+This is a significant step in the direction of privacy-preserving applications, and this is what ZAP and Mina is all about!
 
-### What is Zap?
+### What is ZAP?
 
 The main idea behind ZAP is to allow developers to easily create zero-knowledge attestations on Mina based on any kind of data with minimal effort and maximum flexibility.
-ZAP want to abstract the complexity of handling private data during the generation of the attestation and the verification of the proof while ensuring that the logic rules are respected in a transparent way.
+ZAP wants to abstract the complexity of handling private data during the generation of the attestation and the verification of the proof while ensuring that the logic rules are respected in a transparent way.
 
 This way developers can focus on the logic rules of the statement and let ZAP handle the rest.
 
@@ -43,7 +43,7 @@ ZAP can be used to attest the validity of on-chain data.
 - Proof of ownership (ERC20, ERC721, etc.)
 - ... 
 
-We are developing a demo data source using `Airstack` to bring Ethereum data on Mina, and more data sources examples will be added in the near future.
+We are developing a demo data source using [`Airstack`](https://www.airstack.xyz/) to bring Ethereum data on Mina, and more data sources examples will be added in the near future.
 
 #### Off-chain data
 

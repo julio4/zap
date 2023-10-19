@@ -1,7 +1,7 @@
 {
-  "name": "zap-docs",
+  "name": "docs",
   "version": "1.0.0",
-  "description": "Zap docs",
+  "description": "ZAP docs",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

@@ -5,7 +5,7 @@ type Transaction = Awaited<ReturnType<typeof Mina.transaction>>;
 // ---------------------------------------------------------------------------------------
 
 // import type { Zap } from '../../../contracts/src/Zap';
-import type { Zap } from "@contracts/zap/src/Zap";
+import type { Zap } from "zap/src/Zap";
 import { stringToFields } from "o1js/dist/node/bindings/lib/encoding.js";
 import { Condition, OracleRequest } from "../types.js";
 
@@ -27,7 +27,7 @@ const functions = {
     Mina.setActiveInstance(Berkeley);
   },
   loadContract: async (args: {}) => {
-    const { Zap } = await import("../../../../contracts/zap/build/src/Zap.js");
+    const { Zap } = await import("../../../../zap/build/src/Zap.js");
     state.Zap = Zap;
   },
   compileContract: async (args: {}) => {

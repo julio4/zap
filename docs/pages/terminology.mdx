@@ -1,13 +1,5 @@
 ## In ZAP
 
-In ZAP, $A$ can be represented as type, and $s$ as a function that takes an instance of this type as an argument and returns a boolean.
-Every statement must have at least the Mina wallet address of the user who emitted the statement, the time at which the statement was emitted and the validity duration as variables.
-```ts
-interface IContext = { address: MinaWallet, time: date, validity: number };
-interface IStatement = (context: IContext) => boolean;
-```
-This do not mean that theses two variables are used in the statement logic.
-
 More variables can be added to the set of arguments depending on the statement. For example, the statement "Over 18 years old" can have a `dateOfBirth` instead of `age`:
 ```ts
 // Statement type
