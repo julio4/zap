@@ -1,5 +1,7 @@
 {
-  "index": "Overview",
-  "definitions": "Definitions",
-  "getstarted": "Get Started with ZAP"
+  "index": "Zap Overview",
+  "concepts": "Protocol Concepts",
+  "protocol": "Zap Protocol",
+  "reference": "Technical Reference",
+  "guides": "Guides"
 }

@@ -24,7 +24,7 @@ This way developers can focus on the logic rules of the statement and let ZAP ha
 
 ZAP abstract the logic of the creation/validation of statements/attestations and the data sources used to get the value of the variables of the statements.
 
-**Data sources** refers to what is used to get the value of the variables of the statement, it can be on-chain data, off-chain data, or even user input.
+**Oracle** refers to what is used to a data source to get the value of the variables of the statement, it can be from on-chain data, off-chain data, ...
 ZAP provides a default EVM data source using `Airstack` as a demonstration, but developers are free to implement and use their own data sources.
 Data sources are always considered as trusted, so it's the developer's responsibility to ensure that the data source is reliable and inform its users about the source used.
 
@@ -43,7 +43,7 @@ ZAP can be used to attest the validity of on-chain data.
 - Proof of ownership (ERC20, ERC721, etc.)
 - ... 
 
-We are developing a demo data source using [`Airstack`](https://www.airstack.xyz/) to bring Ethereum data on Mina, and more data sources examples will be added in the near future.
+We are developing a demo Zap Oracle using [`Airstack`](https://www.airstack.xyz/) to bring Ethereum data on Mina, and more examples will be added in the near future.
 
 #### Off-chain data
 
