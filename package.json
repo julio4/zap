@@ -2,8 +2,9 @@
   "private": true,
   "scripts": {
     "dev": "turbo dev --filter=!docs",
+    "build": "turbo build --filter=!docs",
     "docs:dev": "turbo dev --filter=docs",
-    "build": "turbo build",
+    "docs:build": "turbo build --filter=docs",
     "lint": "turbo lint",
     "clean": "turbo clean",
     "format": "prettier --write --ignore-unknown **/*"

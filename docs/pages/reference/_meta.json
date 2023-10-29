@@ -1,7 +1,3 @@
 {
-  "ZapContract": "Zap Contract",
-  "Statement": "Statement creation",
-  "AttestationGen": "Attestation generation",
-  "AttestationVerif": "Attestation verification",
-  "Oracle": "Oracle"
+  "ZapContract": "ZAP Contract"
 }

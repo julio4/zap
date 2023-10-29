@@ -1,5 +1,4 @@
 {
   "Statement": "Statement",
-  "Attestation": "Attestation",
-  "Oracle": "Oracle"
+  "Attestation": "Attestation"
 }

@@ -1,7 +1,8 @@
 {
-  "index": "Zap Overview",
+  "index": "ZAP Overview",
+  "milestone": "Project Milestones",
   "concepts": "Protocol Concepts",
-  "protocol": "Zap Protocol",
+  "protocol": "ZAP Protocol",
   "reference": "Technical Reference",
   "guides": "Guides"
 }

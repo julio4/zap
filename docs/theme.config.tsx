@@ -2,7 +2,7 @@ import React from 'react'
 import { DocsThemeConfig } from 'nextra-theme-docs'
 
 const config: DocsThemeConfig = {
-  logo: <span>ZAP</span>,
+  logo: <span>⚡ ZAP</span>,
   project: {
     link: 'https://github.com/julio4/zap',
   },
@@ -24,7 +24,8 @@ const config: DocsThemeConfig = {
         { props.children }
       </a>
     )
-  }
+  },
+  faviconGlyph: '⚡'
 }
 
 export default config
