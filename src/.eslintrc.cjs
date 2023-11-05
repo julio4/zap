@@ -15,7 +15,7 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 'latest',
   },
-  plugins: ['@typescript-eslint', 'snarkyjs'],
+  plugins: ['@typescript-eslint', 'o1js'],
   rules: {
     'no-constant-condition': 'off',
     'prefer-const': 'off',
