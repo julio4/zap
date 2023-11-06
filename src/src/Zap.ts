@@ -52,8 +52,8 @@ export class Zap extends SmartContract {
     conditionType: Field,
     targetValue: Field,
     // The private data attesting the statement from the trusted oracle
-    value: Field,
     hashRoute: Field,
+    privateData: Field,
     // The signature that allows us to be sure that the private data are coming from our trusted oracle
     signature: Signature
   ) {
@@ -65,7 +65,7 @@ export class Zap extends SmartContract {
     // Evaluate whether the signature is valid for the provided data, and that the right
     // statement is being attested
     const validSignature = signature.verify(oraclePublicKey, [
-      value,
+      privateData,
       hashRoute,
     ]);
 
@@ -87,9 +87,9 @@ export class Zap extends SmartContract {
 
     // verify that the privateData attest the statement
     const isPrivateDataValid = Provable.switch(whichOperator, Bool, [
-      value.lessThan(targetValue), // privateData < targetValue
-      value.greaterThan(targetValue), // privateData > targetValue
-      value.equals(targetValue), // privateData == targetValue
+      privateData.lessThan(targetValue), // privateData < targetValue
+      privateData.greaterThan(targetValue), // privateData > targetValue
+      privateData.equals(targetValue), // privateData == targetValue
     ]);
 
     isPrivateDataValid.assertTrue();
