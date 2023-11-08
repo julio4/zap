@@ -14,7 +14,7 @@ const MinaWallet = () => {
       const network = await (window as any).mina.requestNetwork();
       if (network !== "Berkeley") {
         setError(
-          "Mina wallet is not connected to Berkeley Testnet. Please switch to Berkeley Testnet and try again."
+          "Not connected to Berkeley Testnet. Please switch to Berkeley Testnet and try again."
         );
         console.log("Mina wallet is not connected to Berkeley Testnet. Please switch to Berkeley Testnet and try again.")
         return;
@@ -54,7 +54,7 @@ const MinaWallet = () => {
   if (error) return (
     <span
       className="h-5 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full bg-red-900 text-red-300">
-      Mina: {error}
+      {error || "Error connecting to Mina wallet. See logs for details."}
     </span>
   )
 

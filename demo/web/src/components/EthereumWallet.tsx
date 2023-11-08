@@ -41,20 +41,25 @@ const EthereumWallet = () => {
       // exception will be thrown. Consider showing "not connected" in your UI.
       console.log(err.message);
       setError(
-        err.message || "Error connecting to Ethereum wallet. Please try again."
+        "Error connecting to Ethereum wallet. See logs for details."
       );
     }
   };
 
-  const handleDisconnect = () => {
-    attest.setEthereumWallet({
-      isConnected: false,
-      address: "",
-      signature: "",
-    });
-  };
+  /*   const handleDisconnect = () => {
+      attest.setEthereumWallet({
+        isConnected: false,
+        address: "",
+        signature: "",
+      });
+    }; */
 
-  if (error) return;
+  if (error) return (
+    <span
+      className="h-5 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full bg-red-900 text-red-300">
+        {error}
+    </span>
+  )
 
   return (
     <>
@@ -67,7 +72,7 @@ const EthereumWallet = () => {
         <span
           onClick={handleConnect}
           className="cursor-pointer h-5 hover:scale-[1.05] duration-100 ease-in transition-all text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full bg-red-900 text-red-300">
-            Ethereum: Connect
+          Ethereum: Connect
         </span>
       )}
     </>
