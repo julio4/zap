@@ -28,17 +28,23 @@ export async function signResponse(ctx: ParameterizedContext, next: Next) {
     route: route,
     args: ctx.state.args,
   };
+  console.log('--> Response route string: ', JSON.stringify(routeObj));
   const routeFields = Encoding.stringToFields(JSON.stringify(routeObj));
+  console.log('--> Response route fields: ', routeFields);
   const hashRoute = Poseidon.hash(routeFields).toString();
+  console.log('--> Response route hash: ', hashRoute);
 
   const data = [
-    value,
+    Math.round(value),  // TODO: Need to work with decimal to avoid rounding errors
     hashRoute,
   ]
+  console.log('--> Response data: ', data);
   const dataFields = data.map((field) => Field.from(field));
   console.log('--> Response data: ', data);
 
   const data_field_as_string = dataFields.map((field) => field.toString());
+
+  console.log('--> Response data as string: ', data_field_as_string);
 
   // Load the private key of our account from an environment variable
   const privateKey = PrivateKey.fromBase58(process.env['PRIVATE_KEY'] || '');

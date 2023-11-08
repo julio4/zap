@@ -2,7 +2,7 @@ import { ParameterizedContext, Next } from 'koa';
 import { ethers } from 'ethers';
 
 const normalizeAddress = (address: string) => {
-  return '0x' + address.slice(2).toUpperCase().normalize();
+  return ethers.getAddress(address);
 };
 
 export async function verifyEthereumSignature(

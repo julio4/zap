@@ -7,7 +7,7 @@ type Transaction = Awaited<ReturnType<typeof Mina.transaction>>;
 // import type { Zap } from '../../../contracts/src/Zap';
 import type { Zap } from "zap/src/Zap";
 import { stringToFields } from "o1js/dist/node/bindings/lib/encoding.js";
-import { Condition, OracleRequest } from "../types.js";
+import { Condition } from "../types";
 
 const state = {
   Zap: null as null | typeof Zap,
@@ -50,46 +50,81 @@ const functions = {
     hashRoute: string;
     signature: string;
   }) => {
-    console.log(
-      "we are in createGenerateAttestationTransaction in worker backend"
-    );
-    const { senderKey58, conditionType, targetValue, value, hashRoute, signature } =
-      args;
-
-    console.log(
-      "in worker before callsc: conditionType",
-      Field.from(conditionType).toString()
-    );
-    console.log(
-      "in worker before callsc: targetValue",
-      Field.from(targetValue).toString()
-    );
-    console.log(
-      "in worker before callsc: value",
-      Field.from(value).toString()
-    );
-    console.log(
-      "in worker before callsc: hashRoute",
-      Field.from(hashRoute).toString()
-    );
-    console.log(
-      "in worker before callsc: signature",
-      Signature.fromBase58(signature).toBase58()
-    );
-
-    const transaction = await Mina.transaction(PublicKey.fromBase58(senderKey58) ,() => {
-      state.zkapp!.verify(
-        Field.from(conditionType),
-        Field.from(targetValue),
-        Field.from(value),
-        Field.from(hashRoute),
-        Signature.fromBase58(signature)
+    try {
+      console.log(
+        "we are in createGenerateAttestationTransaction in worker backendd"
       );
-    });
-    state.transaction = transaction;
+      console.log("args", args);
+      const {
+        senderKey58,
+        conditionType,
+        targetValue,
+        value,
+        hashRoute,
+        signature,
+      } = args;
+
+      let conditionTypeNumber: number;
+      switch (conditionType) {
+        case Condition.LESS_THAN:
+          conditionTypeNumber = 1;
+          break;
+        case Condition.GREATER_THAN:
+          conditionTypeNumber = 2;
+          break;
+        case Condition.EQUAL:
+          conditionTypeNumber = 3;
+          break;
+        case Condition.DIFFERENT:
+          conditionTypeNumber = 4;
+          break;
+        default:
+          throw new Error("conditionType not supported");
+      }
+      console.log(
+        "in worker before callsc: conditionTypeNumber",
+        Field.from(conditionTypeNumber).toString()
+      );
+      console.log(
+        "in worker before callsc: targetValue",
+        Field.from(targetValue).toString()
+      );
+      console.log(
+        "in worker before callsc: value",
+        Field.from(value).toString()
+      );
+      console.log(
+        "in worker before callsc: hashRoute",
+        Field.from(hashRoute).toString()
+      );
+      console.log(
+        "in worker before callsc: signature",
+        Signature.fromBase58(signature).toBase58()
+      );
+
+      const transaction = await Mina.transaction(
+        PublicKey.fromBase58(senderKey58),
+        () => {
+          state.zkapp!.verify(
+            Field.from(conditionTypeNumber),
+            Field.from(targetValue),
+            Field.from(value),
+            Field.from(hashRoute),
+            Signature.fromBase58(signature)
+          );
+        }
+      );
+      state.transaction = transaction;
+    } catch (error) {
+      console.log("error in worker backend", error);
+    }
   },
   proveGenerateAttestationTransaction: async (args: {}) => {
+    console.log("in worker, proveGenerateAttestationTransaction");
     await state.transaction!.prove();
+  },
+  getOraclePublicKey: async (args: {}) => {
+    return state.zkapp!.getOraclePublicKey().toBase58();
   },
   getTransactionJSON: async (args: {}) => {
     return state.transaction!.toJSON();

@@ -41,18 +41,18 @@ describe('Zap', () => {
 
   /* Statement is: 'balance of user of token with address 0xdac1..1ec7 is greater (>) than 600' */
   const statementBalanceSup: Statement = {
-    route: '/balance/:0xdac17f958d2ee523a2206206994597c13d831ec7',
+    route: '/balance', // todo: not necessary to put route here, see where it is used
     args: null,
     condition: {
       type: 2,
-      targetValue: 600,
+      targetValue: 300,
     },
   };
 
-  const ethereumAddress = '0x768D170EE896eb95714AB43aFCaC08F970607361';
-  // Metamask signature corresponding to the `statementBalanceSup` statement, signed by the user 0x768...361
+  const ethereumAddress = '0x1a737A9eA21f6E087c2e74a0c620f81dA76bf49E';
+  // Metamask signature of the caller
   const metamaskSignature =
-    '0x7f3943a698c1b4d732a6d24073ff2b9a68d17bd3f0a517ad3a11bc044d1b79ce5e83bfecb3a454fa189f1960bb8cb7dd53482f2b6dcf047ea8b8c3bfa65751c61b';
+    '0x776038715080d4d08417b7a62a4fa390cc476eed90fafb043a30a77a3f54914f397685de38c50e3f38e90d717202423c154ff86dac0ab34b71247da91317b4471b';
 
   beforeEach(async () => {
     // create local blockchain
@@ -78,13 +78,25 @@ describe('Zap', () => {
 
   describe('Attestations creation', () => {
     describe('Modularity of requests', () => {
-      it('emits the correct event for a valid statement: balance of user is 700, targetValue 600, operationType ">"', async () => {
+      it.only('emits the correct event for a valid statement: balance of user is 375, targetValue 300, operationType ">"', async () => {
         const oracleResult: OracleResult = await oracle.generateStatement(
           Field(1), // ApiRequestId corresponding to `getBalance`
           true, // will return a high result (true for holder, big balance for assets, etc.), so statement is valid
           metamaskSignature,
           ethereumAddress
         );
+
+        console.log(
+          'conditiontypenumber:',
+          Field.from(statementBalanceSup.condition.type).toString()
+        );
+        console.log(
+          'targetvalue:',
+          Field.from(statementBalanceSup.condition.targetValue).toString()
+        );
+        console.log('value:', oracleResult.data.privateData.toString());
+        console.log('hashroute:', oracleResult.data.hashRoute.toString());
+        console.log('signature:', oracleResult.signature.toBase58());
 
         const txn = await Mina.transaction(user.publicKey, () => {
           zap.verify(

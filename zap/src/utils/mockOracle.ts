@@ -3,6 +3,10 @@ import { DataOracleObject, KeyPair, OracleResult } from '../types';
 import { ethers } from 'ethers';
 import { stringToFields } from 'o1js/dist/node/bindings/lib/encoding';
 
+const normalizeAddress = (address: string) => {
+  return ethers.utils.getAddress(address);
+};
+
 export class MockedOracle {
   publicKey: PublicKey;
   privateKey: PrivateKey;
@@ -20,11 +24,11 @@ export class MockedOracle {
   ) => {
     try {
       const signerAddr = await ethers.utils.verifyMessage(
-        message,
+        `I am ${normalizeAddress(address)}`,
         ethereumSignature
       );
 
-      if (signerAddr !== address) {
+      if (normalizeAddress(signerAddr) !== normalizeAddress(address)) {
         return false;
       }
 
@@ -45,7 +49,7 @@ export class MockedOracle {
     let data: DataOracleObject;
 
     const isCallerSignatureValid: boolean = await this.checkMessageSigner(
-      ApiRequestId.toString(),  // TODO: Why is it the ApiRequestId? need to check flow 
+      ApiRequestId.toString(), // TODO: Why is it the ApiRequestId? need to check flow
       ethereumAddress,
       signatureOfCaller
     );
@@ -53,16 +57,18 @@ export class MockedOracle {
       throw new Error('signature of the caller is invalid');
     }
 
+    const routeString = JSON.stringify({
+      //todo clean
+      route: '/balance',
+      args: { token: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174' },
+    });
+
     /* Generating the statement */
     switch (ApiRequestId.toString()) {
       case Field(1).toString(): // getBalance
         data = {
-          hashRoute: Poseidon.hash([
-            stringToFields(
-              '/balance/:0xdac17f958d2ee523a2206206994597c13d831ec7'
-            )[0],
-          ]),
-          privateData: lowOrHighResult ? Field(700) : Field(500),
+          hashRoute: Poseidon.hash([stringToFields(routeString)[0]]),
+          privateData: Field(375),
         };
         break;
       case Field(2).toString(): // azukiHolder

@@ -15,10 +15,9 @@ export async function getUserBalance(ctx: ParameterizedContext) {
     const { address, args } = ctx.state;
     const { token, blockchain } = args;
     const balance = await getBalance(address, token, blockchain);
-
     ctx.body = {
       value: balance,
-      route: "/balance"
+      route: '/balance',
     };
   } catch (error) {
     ctx.throw(404);
@@ -33,7 +32,7 @@ export async function verifyPoapHolder(ctx: ParameterizedContext) {
 
     ctx.body = {
       value: isHolder,
-      route: "/poap"
+      route: '/poap',
     };
   } catch (error) {
     ctx.throw(404);
@@ -48,7 +47,7 @@ export async function verifyNftHolder(ctx: ParameterizedContext) {
 
     ctx.body = {
       value: numberNft,
-      route: "/nft"
+      route: '/nft',
     };
   } catch (error) {
     ctx.throw(404);
@@ -62,7 +61,7 @@ export async function verifyXMTPenabled(ctx: ParameterizedContext) {
 
     ctx.body = {
       value: isOpen,
-      route: "/xmtpEnabled"
+      route: '/xmtpEnabled',
     };
   } catch (error) {
     ctx.throw(404);
@@ -76,7 +75,7 @@ export async function verifyEnsHolder(ctx: ParameterizedContext) {
 
     ctx.body = {
       value: gotEnsAttached,
-      route: "/ens"
+      route: '/ens',
     };
   } catch (error) {
     ctx.throw(404);
@@ -90,7 +89,7 @@ export async function verifyLensHolder(ctx: ParameterizedContext) {
 
     ctx.body = {
       value: isOwner,
-      route: "/lens"
+      route: '/lens',
     };
   } catch (error) {
     ctx.throw(404);
@@ -104,7 +103,7 @@ export async function verifyFarcasterHolder(ctx: ParameterizedContext) {
 
     ctx.body = {
       value: isOwner,
-      route: "/farcaster"
+      route: '/farcaster',
     };
   } catch (error) {
     ctx.throw(404);
@@ -118,7 +117,7 @@ export async function getUserNftVolumeSales(ctx: ParameterizedContext) {
 
     ctx.body = {
       value: volumeInEth,
-      route: "/totalNftVolume"
+      route: '/totalNftVolume',
     };
   } catch (error) {
     ctx.throw(404);

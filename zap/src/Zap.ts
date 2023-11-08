@@ -40,6 +40,11 @@ export class Zap extends SmartContract {
     this.oraclePublicKey.set(publicKey);
   }
 
+  @method getOraclePublicKey() {
+    this.oraclePublicKey.assertEquals(this.oraclePublicKey.get());
+    return this.oraclePublicKey.get();
+  }
+
   @method verify(
     // The statement to attest
     conditionType: Field,
@@ -68,7 +73,7 @@ export class Zap extends SmartContract {
 
     /* STATEMENT VERIFICATION: START */
     // conditionType are <: 1, >: 2, ==: 3, !=: 4
-    // crash if conditionType is > 3
+    // crash if conditionType is > 3 todo handle != case
     conditionType.lessThanOrEqual(Field(3)).assertTrue();
 
     // determine which operator to use
