@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+
+
+    - name: Install dependencies
+      run: npm install -g pnpm && pnpm install
+
+    - name: Build and test  # todo: should do script to display coverage
+      run: cd zap && npm run build && npm run test
