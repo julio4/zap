@@ -12,7 +12,8 @@ export class MockedOracle {
     this.privateKey = keys.privateKey;
   }
 
-  verifyMessage = async (
+  /* Verify that the message comes from the right address */
+  checkMessageSigner = async (
     message: string,
     address: string,
     ethereumSignature: string
@@ -34,24 +35,25 @@ export class MockedOracle {
     }
   };
 
+  /* Generate a statement for a given ApiRequestId */
   async generateStatement(
     ApiRequestId: Field,
-    lowOrHighResult: boolean, // determine the private data value
+    lowOrHighResult: boolean, // Mock parameter, to determine the private data value
     signatureOfCaller: string,
     ethereumAddress: string
   ): Promise<OracleResult> {
     let data: DataOracleObject;
 
-    const isCallerSignatureValid: boolean = await this.verifyMessage(
-      ApiRequestId.toString(),
+    const isCallerSignatureValid: boolean = await this.checkMessageSigner(
+      ApiRequestId.toString(),  // TODO: Why is it the ApiRequestId? need to check flow 
       ethereumAddress,
       signatureOfCaller
     );
-
     if (!isCallerSignatureValid) {
       throw new Error('signature of the caller is invalid');
     }
 
+    /* Generating the statement */
     switch (ApiRequestId.toString()) {
       case Field(1).toString(): // getBalance
         data = {
@@ -64,10 +66,11 @@ export class MockedOracle {
         };
         break;
       case Field(2).toString(): // azukiHolder
-        // TODO also string to fields here
         data = {
           hashRoute: Poseidon.hash([
-            Field('/balance/:0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2'),
+            stringToFields(
+              '/balance/:0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2'
+            )[0],
           ]),
           privateData: lowOrHighResult ? Field(1) : Field(0),
         };
@@ -75,7 +78,9 @@ export class MockedOracle {
       case Field(3).toString(): // ENS Owner
         data = {
           hashRoute: Poseidon.hash([
-            Field('/ens/:0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2'),
+            stringToFields(
+              '/balance/:0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2'
+            )[0],
           ]),
           privateData: lowOrHighResult ? Field(1) : Field(0),
         };
@@ -85,6 +90,7 @@ export class MockedOracle {
         throw new Error('statement not found');
     }
 
+    /* Oracle needs to sign the statement to prove that he is the one who generated it */
     const signatureOfOracle: Signature = Signature.create(this.privateKey, [
       data.privateData,
       data.hashRoute,

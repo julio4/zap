@@ -1,4 +1,3 @@
-import { MockedZap } from './MockedZap';
 import {
   Field,
   Mina,
@@ -9,6 +8,7 @@ import {
 } from 'o1js';
 import { KeyPair, OracleResult, Statement } from './types';
 import { MockedOracle } from './utils/mockOracle';
+import { Zap } from './Zap';
 import { stringToFields } from 'o1js/dist/node/bindings/lib/encoding';
 
 // Speed up testing by disabling proofs for unit tests
@@ -20,11 +20,7 @@ function generateKeyPair(): KeyPair {
   return { privateKey, publicKey };
 }
 
-async function localDeploy(
-  app: MockedZap,
-  appKeys: KeyPair,
-  deployer: KeyPair
-) {
+async function localDeploy(app: Zap, appKeys: KeyPair, deployer: KeyPair) {
   const tx = await Mina.transaction(deployer.publicKey, () => {
     AccountUpdate.fundNewAccount(deployer.publicKey);
     app.deploy({
@@ -37,7 +33,7 @@ async function localDeploy(
 }
 
 describe('Zap', () => {
-  let zap: MockedZap,
+  let zap: Zap,
     oracle: MockedOracle,
     deployer: KeyPair,
     zapKeys: KeyPair,
@@ -58,10 +54,6 @@ describe('Zap', () => {
   const metamaskSignature =
     '0x7f3943a698c1b4d732a6d24073ff2b9a68d17bd3f0a517ad3a11bc044d1b79ce5e83bfecb3a454fa189f1960bb8cb7dd53482f2b6dcf047ea8b8c3bfa65751c61b';
 
-  beforeAll(async () => {
-    if (proofsEnabled) await MockedZap.compile();
-  });
-
   beforeEach(async () => {
     // create local blockchain
     const Local = Mina.LocalBlockchain({ proofsEnabled });
@@ -73,7 +65,7 @@ describe('Zap', () => {
     user = Local.testAccounts[1];
 
     // Deploy the zap contract
-    zap = new MockedZap(zapKeys.publicKey);
+    zap = new Zap(zapKeys.publicKey);
     await localDeploy(zap, zapKeys, deployer);
 
     // Create a mock oracle
@@ -135,7 +127,7 @@ describe('Zap', () => {
           route: '/balance/:0xdac17f958d2ee523a2206206994597c13d831ec7',
           args: null,
           condition: {
-            type: 1, // <-- Change the condition type to 1 (lower than)
+            type: 1, // <-- condition type to 1 (lower than)
             targetValue: 600,
           },
         };

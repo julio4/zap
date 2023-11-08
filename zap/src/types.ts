@@ -7,12 +7,12 @@ type KeyPair = {
 };
 
 type DataOracleObject = {
-  privateData: Field;
-  hashRoute: Field;
+  privateData: Field; // The private data attesting the statement, it is coming from the trusted oracle
+  hashRoute: Field;   // The hash of the route corresponding to the statement
 };
 
 type OracleResult = {
-  data: DataOracleObject;
+  data: DataOracleObject; // The data attesting the statement from the trusted oracle
   signature: Signature;
   publicKey: PublicKey;
 };

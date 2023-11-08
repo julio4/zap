@@ -13,10 +13,6 @@ import {
   Poseidon,
 } from 'o1js';
 
-// The public key of our trusted data provider
-const ORACLE_PUBLIC_KEY =
-  'B62qoAE4rBRuTgC42vqvEyUqCGhaZsW58SKVW4Ht8aYqP9UTvxFWBgy';
-
 /**
  * ZAP: Zero-knowledge Attestation Protocol
  *
@@ -40,11 +36,8 @@ export class Zap extends SmartContract {
     });
   }
 
-  init() {
-    super.init();
-
-    // Initialize contract state
-    this.oraclePublicKey.set(PublicKey.fromBase58(ORACLE_PUBLIC_KEY));
+  @method setOraclePublicKey(publicKey: PublicKey) {
+    this.oraclePublicKey.set(publicKey);
   }
 
   @method verify(
@@ -97,7 +90,7 @@ export class Zap extends SmartContract {
     // STATEMENT VERIFICATION: END
 
     /* Generate the attestation and emit an event*/
-    // todo add timestamp
+    // todo add timestamp later
     // Attestation hash should contain information about the statement, so we can verify that this attestation corresponds to the right
     // statement
 
@@ -113,10 +106,9 @@ export class Zap extends SmartContract {
     // Emit an event only if everything is valid, containing the attestation hash and also the timestamp
     // Thus, external watchers can only see that "some proof" (but it is hashed so they don't know what statement it is) has been verified
     // at a certain time
-    // TODO add timestamp
     this.emitEvent(
       'verified',
-      attestationHash // todo add timestamp
+      attestationHash // todo add timestamp later
     );
   }
 }
