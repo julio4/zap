@@ -12,10 +12,11 @@ const MinaWallet = () => {
     try {
       console.log("Connecting to Mina wallet...")
       const network = await (window as any).mina.requestNetwork();
-      if (network !== "Berkeley") {
+      if (network.name !== "Berkeley") {
         setError(
           "Not connected to Berkeley Testnet. Please switch to Berkeley Testnet and try again."
         );
+        console.log("You are connected to the following network:", network);
         console.log("Mina wallet is not connected to Berkeley Testnet. Please switch to Berkeley Testnet and try again.")
         return;
       }
