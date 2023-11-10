@@ -34,13 +34,20 @@ export type Statement = {
   condition: StatementCondition;
 };
 
-export type HTMLInputSchema = {
-  name: string;
-  type: "text" | "number" | "textarea";
-  label: string;
-  placeholder: string;
-  value?: string;
-};
+export type HTMLInputSchema =
+  | {
+      name: string;
+      type: "text" | "number" | "textarea";
+      label: string;
+      placeholder: string;
+      value?: string;
+    }
+  | {
+      name: string;
+      type: "select";
+      label: string;
+      options: string[];
+    };
 
 export type StatementChoice = {
   route: OracleRoute;
@@ -80,9 +87,9 @@ export const StatementChoices: StatementChoice[] = [
       },
       {
         name: "blockchain",
-        type: "text",
+        type: "select",
         label: "Target Blockchain",
-        placeholder: "ethereum | polygon",
+        options: ["ethereum", "polygon"],
       },
     ],
     possibleConditions: [
@@ -184,7 +191,7 @@ export type PrivateData = {
   data: {
     value: number;
     hashRoute: string;
-  },
+  };
   signature: string;
   publicKey: string;
-}
+};
