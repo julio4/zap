@@ -8,6 +8,27 @@
       "feepayerAlias": "dev2",
       "fee": "0.1",
       "smartContract": "Zap"
+    },
+    "berkeley-new": {
+      "url": "https://proxy.berkeley.minaexplorer.com/graphql",
+      "keyPath": "keys/berkeley-new.json",
+      "feepayerKeyPath": "/home/julienbrs/.cache/zkapp-cli/keys/deployer-zap.json",
+      "feepayerAlias": "deployer-zap",
+      "fee": "0.1"
+    },
+    "deployer3": {
+      "url": "https://proxy.berkeley.minaexplorer.com/graphql",
+      "keyPath": "keys/deployer3.json",
+      "feepayerKeyPath": "/home/julienbrs/.cache/zkapp-cli/keys/deployer3.json",
+      "feepayerAlias": "deployer3",
+      "fee": "0.5"
+    },
+    "deployer6": {
+      "url": "https://proxy.berkeley.minaexplorer.com/graphql",
+      "keyPath": "keys/deployer6.json",
+      "feepayerKeyPath": "/home/julienbrs/.cache/zkapp-cli/keys/deployer6.json",
+      "feepayerAlias": "deployer6",
+      "fee": "0.5"
     }
   }
 }

@@ -68,7 +68,7 @@ export class MockedOracle {
       case Field(1).toString(): // getBalance
         data = {
           hashRoute: Poseidon.hash([stringToFields(routeString)[0]]),
-          privateData: Field(375),
+          privateData: Field(1),
         };
         break;
       case Field(2).toString(): // azukiHolder

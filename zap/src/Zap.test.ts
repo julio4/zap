@@ -44,8 +44,8 @@ describe('Zap', () => {
     route: '/balance', // todo: not necessary to put route here, see where it is used
     args: null,
     condition: {
-      type: 2,
-      targetValue: 300,
+      type: 3,
+      targetValue: 1,
     },
   };
 
@@ -66,6 +66,7 @@ describe('Zap', () => {
 
     // Deploy the zap contract
     zap = new Zap(zapKeys.publicKey);
+    await Zap.compile();
     await localDeploy(zap, zapKeys, deployer);
 
     // Create a mock oracle

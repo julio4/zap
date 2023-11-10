@@ -78,6 +78,13 @@ export default class ZkappWorkerClient {
     const result = await this._call("getOraclePublicKey", {});
     return result;
   }
+
+  async setOraclePublicKey({senderKey58, newOraclePublicKey58} : {senderKey58: string, newOraclePublicKey58: string}) {
+    await this._call("setOraclePublicKey", {
+      senderKey58: senderKey58,
+      newOraclePublicKey58: newOraclePublicKey58,
+    });
+  }
   // ---------------------------------------------------------------------------------------
 
   worker: Worker;

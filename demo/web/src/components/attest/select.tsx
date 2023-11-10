@@ -144,7 +144,6 @@ const SelectStep = () => {
           hashRoute: decoded_hashRoute
         }
       });
-      console.log("ATTEST", attest)
     } catch (e: any) {
       console.error("oracle error", e);
       setError(e.message);
@@ -239,7 +238,6 @@ const SelectStep = () => {
                           className="border-2 border-slate-500 rounded-md bg-slate-600/50 text-slate-100"
                           onChange={(e) => {
                             const selectedValue = e.target.value;
-                            console.log("newValue", selectedValue)
                             const argSchema = choice.args.find((a) => a.name === arg.name);
                             if (!argSchema) {
                               console.error("Argument schema not found");
