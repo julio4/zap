@@ -107,28 +107,20 @@ const SelectStep = () => {
       );
 
       const body = response.data as SignResponse;
-      console.log("select.tsx body", body)
 
       // const data = Encoding.stringToFields(body.data);
       const data = body.data.map(f => Field.from(f));
       attest.setPrivateDataInput(data);
-      console.log("select.tsx data", data.toString())
 
       // signature verification
       // TODO ASSERT(body.publicKey === node.process["ORACLE_PUBLIC_KEY"])
       // -> will be asserted in the proof as well so ok to skip it here
       const signature = Signature.fromBase58(body.signature);
-      console.log("select.tsx signature", signature.toBase58())
 
       const publicKey = PublicKey.fromBase58(body.publicKey);
-      console.log("select.tsx publicKey", publicKey.toBase58())
 
       const decoded_value = data[0].toString();
       const decoded_hashRoute = data[1].toString();
-      console.log("select.tsx decoded", {
-        value: decoded_value,
-        hashRoute: decoded_hashRoute
-      })
 
       // We can verify here but really the most important is to verify within the proof
       const verified = signature.verify(publicKey, data);

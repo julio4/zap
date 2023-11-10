@@ -25,12 +25,11 @@ const MinaWallet = () => {
       const publicKey = PublicKey.fromBase58(publicKeyBase58);
 
       console.log(`Using key:${publicKey.toBase58()}`);
-      console.log('Checking if fee payer account exists...');
+      // console.log('Checking if fee payer account exists...');
 
-      const res = await attest.zkappWorkerClient?.fetchAccount({
-        publicKey: publicKey!,
-      });
-      console.log(res);
+      // const res = await attest.zkappWorkerClient?.fetchAccount({
+      //   publicKey: publicKey!,
+      // });
 
       attest.setMinaWallet({
         isConnected: true,
