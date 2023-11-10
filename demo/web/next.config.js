@@ -33,7 +33,7 @@ const nextConfig = {
 
   env: {
     ORACLE_ENDPOINT: "http://localhost:3030/api",
-    ZK_APP: "B62qpoN99pXeN2UWDmZX2YSZiKCjApD6wadrwss281L6j7FzpNd2ypP",
+    ZK_APP: "B62qqFuxLPozXjeFfetsdFVM4f4gPxrAD1rgp5yvqP7FHqzvwPiiQJ4",
   },
 };
 
