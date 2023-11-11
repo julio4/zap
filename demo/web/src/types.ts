@@ -195,3 +195,12 @@ export type PrivateData = {
   signature: string;
   publicKey: string;
 };
+
+export type AttestationNote = {
+  attestationHash: string,
+  statement: string,
+  value: number,
+  targetValue: number,
+  conditionType: string,
+  hashRoute: string,
+}

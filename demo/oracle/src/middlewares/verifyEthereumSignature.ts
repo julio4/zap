@@ -31,8 +31,6 @@ export async function verifyEthereumSignature(
       if (normalizedSignerAddr != normalizedAddress) {
         throw new Error('Invalid signature');
       }
-
-      console.log('Signature verified');
     }
 
     await next();
