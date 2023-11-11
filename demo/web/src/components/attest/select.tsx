@@ -48,16 +48,19 @@ const SelectStep = () => {
       const t_arg = args.find((a) => a.name === arg.name);
       if (!t_arg) {
         setError(`Please fill in '${arg.label}'`);
+        console.log("Error: Please fill in", arg.label)
         return;
       }
       const value = t_arg.value;
       if (!value || value === "") {
         setError(`Please fill in '${arg.label}'`);
+        console.log("Error: Please fill in", arg.label)
         return;
       }
       if (arg.type === "number") {
         if (isNaN(Number(value))) {
           setError(`'${arg.label}' must be a number`);
+          console.log("Error: Must be a number", arg.label)
           return;
         }
       }
@@ -104,28 +107,20 @@ const SelectStep = () => {
       );
 
       const body = response.data as SignResponse;
-      console.log("select.tsx body", body)
 
       // const data = Encoding.stringToFields(body.data);
       const data = body.data.map(f => Field.from(f));
       attest.setPrivateDataInput(data);
-      console.log("select.tsx data", data.toString())
 
       // signature verification
       // TODO ASSERT(body.publicKey === node.process["ORACLE_PUBLIC_KEY"])
       // -> will be asserted in the proof as well so ok to skip it here
       const signature = Signature.fromBase58(body.signature);
-      console.log("select.tsx signature", signature.toBase58())
 
       const publicKey = PublicKey.fromBase58(body.publicKey);
-      console.log("select.tsx publicKey", publicKey.toBase58())
 
       const decoded_value = data[0].toString();
       const decoded_hashRoute = data[1].toString();
-      console.log("select.tsx decoded", {
-        value: decoded_value,
-        hashRoute: decoded_hashRoute
-      })
 
       // We can verify here but really the most important is to verify within the proof
       const verified = signature.verify(publicKey, data);
@@ -149,7 +144,6 @@ const SelectStep = () => {
           hashRoute: decoded_hashRoute
         }
       });
-      console.log("ATTEST", attest)
     } catch (e: any) {
       console.error("oracle error", e);
       setError(e.message);
@@ -161,13 +155,16 @@ const SelectStep = () => {
     });
   };
 
-  if (error)
-    return (
-      <div className="py-4 border-2 border-red-700/75 p-4 rounded-xl bg-red-600/50">
-        <p className="text-slate-600">Error: {error}</p>
-        <button onClick={reset} className="text-slate-600">Close</button>
-      </div>
-    );
+  // if (error)
+  //   return (
+  //     <div className="py-4 border-2 border-red-700/75 p-4 rounded-xl bg-red-600/50">
+  //       <p className="text-slate-600">Error: {error}</p>
+  //       {/* todo style of this button */}
+  //       <button onClick={reset} className="text-slate-600 underline mt-2 text-sm hover:text-slate-400 bg-transparent border-none">
+  //         Close
+  //       </button>
+  //     </div>
+  //   );
 
   if (waiting.status)
     return (
@@ -209,27 +206,66 @@ const SelectStep = () => {
             <hr className="w-48 h-1 mx-auto my-2 border-0 rounded md:my-4 dark:bg-slate-700" />
 
             <div className="flex flex-col gap-2">
-              {choice.args.map((arg) => (
-                <div key={arg.name} className="flex flex-row gap-2 justify-between">
-                  <label className="text-slate-400">{arg.label}</label>
-                  <input
-                    type={arg.type}
-                    value={args.find((a) => a.name === arg.name)?.value || ""}
-                    className="border-2 border-slate-500 rounded-md bg-slate-600/50 text-slate-100"
-                    onChange={(e) => {
-                      setArgs([
-                        ...args.filter((a) => a.name !== arg.name),
-                        {
-                          name: arg.name,
-                          schema: arg,
-                          value: e.target.value,
-                        },
-                      ]);
-                    }}
-                  />
-                </div>
-              ))}
+              {
+                choice.args.map((arg) => {
+                  if (arg.type === 'text') {
+                    return (
+                      <div key={arg.name} className="flex flex-row gap-2 justify-between">
+                        <label className="text-slate-400">{arg.label}</label>
+                        <input
+                          type={arg.type}
+                          value={args.find((a) => a.name === arg.name)?.value || ""}
+                          className="border-2 border-slate-500 rounded-md bg-slate-600/50 text-slate-100"
+                          onChange={(e) => {
+                            setArgs([
+                              ...args.filter((a) => a.name !== arg.name),
+                              {
+                                name: arg.name,
+                                schema: arg,
+                                value: e.target.value,
+                              },
+                            ]);
+                          }}
+                        />
+                      </div>
+                    );
+                  } else if (arg.type === 'select') {
+                    return (
+                      <div key={arg.name} className="flex flex-row gap-2 justify-between">
+                        <label className="text-slate-400">{arg.label}</label>
+                        <select
+                          value={args.find((a) => a.name === arg.name)?.value || ''}
+                          className="border-2 border-slate-500 rounded-md bg-slate-600/50 text-slate-100"
+                          onChange={(e) => {
+                            const selectedValue = e.target.value;
+                            const argSchema = choice.args.find((a) => a.name === arg.name);
+                            if (!argSchema) {
+                              console.error("Argument schema not found");
+                              return;
+                            }
+                            setArgs([
+                              ...args.filter((a) => a.name !== arg.name),
+                              {
+                                name: arg.name,
+                                schema: argSchema,
+                                value: selectedValue,
+                              },
+                            ]);
+                          }}
+                        >
+                          {arg.options.map((option) => (
+                            <option key={option} value={option}>
+                              {option}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    );
+                  }
+                })
+              }
             </div>
+
 
             <hr className="w-48 h-1 mx-auto my-2 border-0 rounded md:my-4 dark:bg-slate-700" />
 

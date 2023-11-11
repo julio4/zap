@@ -20,16 +20,20 @@ async function timeout(seconds: number): Promise<void> {
 const Attest = () => {
   const attest = useContext(AttestContext);
 
+  let trigger = true;
+  trigger = !trigger; // todo
+
   useEffect(() => {
     (async () => {
       if (!attest.zkappHasBeenSetup) {
         console.log("Loading web worker...");
         const zkappWorkerClient = new ZkappWorkerClient();
-        await timeout(5);
+        await timeout(20);
 
         console.log("Done loading web worker");
 
         await zkappWorkerClient.setActiveInstanceToBerkeley();
+        console.log("1")
         await zkappWorkerClient.loadContract();
 
         console.log("Compiling zkApp...");
@@ -43,14 +47,12 @@ const Attest = () => {
 
         console.log('Getting zkApp state...');
         await zkappWorkerClient.fetchAccount({ publicKey: zkappPublicKey });
-        // const currentNum = await zkappWorkerClient.getNum();
-        // console.log(`Current number in zkApp state: ${currentNum.toString()}`);
 
         console.log("Setting up finished");
         attest.setZkappWorkerClient(zkappWorkerClient);
       }
     })();
-  }, []);
+  }, [trigger]);
 
   // 1: Connect wallets
   const step1 = !(

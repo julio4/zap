@@ -1,4 +1,11 @@
-import { Field, Mina, PublicKey, Signature, fetchAccount } from "o1js";
+import {
+  Field,
+  Mina,
+  PrivateKey,
+  PublicKey,
+  Signature,
+  fetchAccount,
+} from "o1js";
 
 type Transaction = Awaited<ReturnType<typeof Mina.transaction>>;
 
@@ -20,6 +27,7 @@ const state = {
 
 const functions = {
   setActiveInstanceToBerkeley: async (args: {}) => {
+    console.log("in worker, setActiveInstanceToBerkeley")
     const Berkeley = Mina.Network(
       "https://proxy.berkeley.minaexplorer.com/graphql"
     );
@@ -101,6 +109,11 @@ const functions = {
         "in worker before callsc: signature",
         Signature.fromBase58(signature).toBase58()
       );
+      console.log(Field.from(conditionTypeNumber));
+      console.log(Field.from(targetValue));
+      console.log(Field.from(value));
+      console.log(Field.from(hashRoute));
+      console.log(Signature.fromBase58(signature));
 
       const transaction = await Mina.transaction(
         PublicKey.fromBase58(senderKey58),
@@ -125,6 +138,21 @@ const functions = {
   },
   getOraclePublicKey: async (args: {}) => {
     return state.zkapp!.getOraclePublicKey().toBase58();
+  },
+  setOraclePublicKey: async (args: { senderKey58: string, newOraclePublicKey58: string }) => {
+    const { senderKey58, newOraclePublicKey58 } = args;
+
+    try {
+      const transaction = await Mina.transaction(
+        PublicKey.fromBase58(senderKey58),
+        () => {
+          state.zkapp!.setOraclePublicKey(PublicKey.fromBase58(newOraclePublicKey58)); // B62qmN3EthPdRmnit65JWNSbdYdXSt9vt766rt2em2eLoAewf8o72V2
+        }
+      );
+      state.transaction = transaction;
+    } catch (error) {
+      console.log("error in zkapp worker for setoraclepublickey", error);
+    }
   },
   getTransactionJSON: async (args: {}) => {
     return state.transaction!.toJSON();
@@ -161,4 +189,4 @@ if (typeof window !== "undefined") {
   );
 }
 
-console.log("Web Worker Successfully Initialized.");
+console.log("Web Worker Successfully Initialized.");  //todo: are we sure about this?
