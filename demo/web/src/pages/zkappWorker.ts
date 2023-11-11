@@ -1,6 +1,8 @@
 import {
+  Encoding,
   Field,
   Mina,
+  Poseidon,
   PrivateKey,
   PublicKey,
   Signature,
@@ -27,7 +29,7 @@ const state = {
 
 const functions = {
   setActiveInstanceToBerkeley: async (args: {}) => {
-    console.log("in worker, setActiveInstanceToBerkeley")
+    console.log("in worker, setActiveInstanceToBerkeley");
     const Berkeley = Mina.Network(
       "https://proxy.berkeley.minaexplorer.com/graphql"
     );
@@ -35,7 +37,7 @@ const functions = {
     Mina.setActiveInstance(Berkeley);
   },
   loadContract: async (args: {}) => {
-    const { Zap } = await import("../../../../zap/build/src/Zap.js");
+    const { Zap } = await import("../../../../zap/build/Zap.js");
     state.Zap = Zap;
   },
   compileContract: async (args: {}) => {
@@ -54,9 +56,9 @@ const functions = {
     senderKey58: string;
     conditionType: Condition;
     targetValue: number;
-    value: number;
-    hashRoute: string;
-    signature: string;
+    value: Field;
+    hashRoute: Field;
+    signature: Signature;
   }) => {
     try {
       console.log(
@@ -71,6 +73,8 @@ const functions = {
         hashRoute,
         signature,
       } = args;
+
+      
 
       let conditionTypeNumber: number;
       switch (conditionType) {
@@ -89,44 +93,47 @@ const functions = {
         default:
           throw new Error("conditionType not supported");
       }
-      console.log(
-        "in worker before callsc: conditionTypeNumber",
-        Field.from(conditionTypeNumber).toString()
-      );
-      console.log(
-        "in worker before callsc: targetValue",
-        Field.from(targetValue).toString()
-      );
-      console.log(
-        "in worker before callsc: value",
-        Field.from(value).toString()
-      );
-      console.log(
-        "in worker before callsc: hashRoute",
-        Field.from(hashRoute).toString()
-      );
-      console.log(
-        "in worker before callsc: signature",
-        Signature.fromBase58(signature).toBase58()
-      );
-      console.log(Field.from(conditionTypeNumber));
-      console.log(Field.from(targetValue));
-      console.log(Field.from(value));
-      console.log(Field.from(hashRoute));
-      console.log(Signature.fromBase58(signature));
 
+      const zapKeys = {
+        publicKey: PublicKey.fromBase58(
+          "B62qnhBxxQr7h2AE9f912AyvzJwK1fhEJq7NMZXbzXbhoepUZ7z7237"
+        ),
+        privateKey: PrivateKey.fromBase58(
+          "EKEbbvoMY6Gswq9qXGJtSbyPLWxRbqmMsjpG3cncy2AUpFAtyCDL"
+        ),
+      };
+      const hashRouteMock = Poseidon.hash([Field(145)]);
+      const signatureOfOracle = Signature.create(zapKeys.privateKey, [
+        Field(1),
+        hashRouteMock,
+      ]);
+      const statementBalanceSup = {
+        route: "/balance", // todo: not necessary to put route here, see where it is used
+        args: null,
+        condition: {
+          type: 3,
+          targetValue: 1,
+        },
+      };
+      
       const transaction = await Mina.transaction(
         PublicKey.fromBase58(senderKey58),
         () => {
           state.zkapp!.verify(
-            Field.from(conditionTypeNumber),
-            Field.from(targetValue),
-            Field.from(value),
-            Field.from(hashRoute),
-            Signature.fromBase58(signature)
+            Field(statementBalanceSup.condition.type),
+            Field(statementBalanceSup.condition.targetValue),
+            hashRoute,
+            value,
+            signature
           );
         }
       );
+
+      /*                Field(statementBalanceSup.condition.type),
+            Field(statementBalanceSup.condition.targetValue),
+            hashRouteMock,
+            Field(1),
+            signatureOfOracle */
       state.transaction = transaction;
     } catch (error) {
       console.log("error in worker backend", error);
@@ -139,14 +146,19 @@ const functions = {
   getOraclePublicKey: async (args: {}) => {
     return state.zkapp!.getOraclePublicKey().toBase58();
   },
-  setOraclePublicKey: async (args: { senderKey58: string, newOraclePublicKey58: string }) => {
+  setOraclePublicKey: async (args: {
+    senderKey58: string;
+    newOraclePublicKey58: string;
+  }) => {
     const { senderKey58, newOraclePublicKey58 } = args;
 
     try {
       const transaction = await Mina.transaction(
         PublicKey.fromBase58(senderKey58),
         () => {
-          state.zkapp!.setOraclePublicKey(PublicKey.fromBase58(newOraclePublicKey58)); // B62qmN3EthPdRmnit65JWNSbdYdXSt9vt766rt2em2eLoAewf8o72V2
+          state.zkapp!.setOraclePublicKey(
+            PublicKey.fromBase58(newOraclePublicKey58)
+          ); // B62qmN3EthPdRmnit65JWNSbdYdXSt9vt766rt2em2eLoAewf8o72V2
         }
       );
       state.transaction = transaction;
@@ -189,4 +201,4 @@ if (typeof window !== "undefined") {
   );
 }
 
-console.log("Web Worker Successfully Initialized.");  //todo: are we sure about this?
+console.log("Web Worker Successfully Initialized."); //todo: are we sure about this?

@@ -29,6 +29,20 @@
       "feepayerKeyPath": "/home/julienbrs/.cache/zkapp-cli/keys/deployer6.json",
       "feepayerAlias": "deployer6",
       "fee": "0.5"
+    },
+    "deployer7": {
+      "url": "https://proxy.berkeley.minaexplorer.com/graphql",
+      "keyPath": "keys/deployer7.json",
+      "feepayerKeyPath": "/home/julienbrs/.cache/zkapp-cli/keys/deployer7.json",
+      "feepayerAlias": "deployer7",
+      "fee": "1"
+    },
+    "deployer10": {
+      "url": "https://proxy.berkeley.minaexplorer.com/graphql",
+      "keyPath": "keys/deployer10.json",
+      "feepayerKeyPath": "/home/julienbrs/.cache/zkapp-cli/keys/deployer10.json",
+      "feepayerAlias": "deployer10",
+      "fee": "1"
     }
   }
 }
