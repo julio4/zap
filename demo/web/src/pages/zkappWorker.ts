@@ -18,6 +18,11 @@ import type { Zap } from "zap/src/Zap";
 import { stringToFields } from "o1js/dist/node/bindings/lib/encoding.js";
 import { Condition } from "../types";
 
+import {
+  createAttestationObject,
+  decodeAttestationObject,
+} from "../utils/createBase64Attestation";
+
 const state = {
   Zap: null as null | typeof Zap,
   zkapp: null as null | Zap,
@@ -92,14 +97,6 @@ const functions = {
           throw new Error("conditionType not supported");
       }
 
-      console.log(
-        Field.from(conditionTypeNumber),
-        Field.from(targetValue),
-        Field.from(hashRoute),
-        Field.from(value),
-        Signature.fromBase58(signature)
-      )
-
       const transaction = await Mina.transaction(
         PublicKey.fromBase58(senderKey58),
         () => {
@@ -112,26 +109,10 @@ const functions = {
           );
         }
       );
-/*     const attestationHash = Poseidon.hash([
-      hashRoute,
-      conditionType,
-      targetValue,
-      this.sender.toFields()[0],
-      //timestamp
-    ]); */
-      // const expectedEventEmitted = Poseidon.hash([
-      //   hashRoute,
-      //   Field(statementBalanceSup.condition.type),
-      //   Field(statementBalanceSup.condition.targetValue),
-      //   PublicKey.fromBase58(senderKey58).toFields()[0],
-      // ]);
-
-      // console.log("expectedEventEmitted", expectedEventEmitted);
-      // console.log("expectedEventEmitted.toString()", expectedEventEmitted.toString());
-
       state.transaction = transaction;
+
     } catch (error) {
-      console.log("error in worker backend", error);
+      console.log("Error in createGenerateAttestationTransaction: ", error);
     }
   },
 

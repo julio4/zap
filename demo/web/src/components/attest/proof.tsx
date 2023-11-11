@@ -2,6 +2,8 @@
 import { useContext } from "react";
 import { AttestContext } from "../context/attestContext";
 import { Condition } from "../../types";
+import { createAttestationObject, decodeAttestationObject } from "../../utils/createBase64Attestation";
+import { Field, Poseidon, PublicKey } from "o1js";
 
 let transactionFee = 0.1;
 
@@ -45,12 +47,12 @@ const ProofStep = () => {
       signature: attest.privateData.signature,
     };
 
-    
+
     console.log("ArgsToGenerateAttestation", ArgsToGenerateAttestation);
     console.log("fetch oracle public key");
     const oraclePubKey = await attest.zkappWorkerClient!.getOraclePublicKey();
     console.log("oraclePubKey is:", oraclePubKey);
-    
+
     // console.log("setting oracle public key");
     // const newOraclePubKey = "B62qmN3EthPdRmnit65JWNSbdYdXSt9vt766rt2em2eLoAewf8o72V2"
     // const argsSetPublicKey = {
@@ -59,12 +61,9 @@ const ProofStep = () => {
     // };
     // await attest.zkappWorkerClient!.setOraclePublicKey(argsSetPublicKey);
 
-    console.log("just before createGenerateAttestationTransaction");
     await attest.zkappWorkerClient!.createGenerateAttestationTransaction(ArgsToGenerateAttestation);
-    console.log("just after createGenerateAttestationTransaction");
-    await new Promise((resolve) => setTimeout(resolve, 1000));
     console.log("seems to be done???");
-    
+
     attest.setDisplayText('Creating the proof...');
     console.log("Creating the proof...");
     await attest.zkappWorkerClient!.proveGenerateAttestationTransaction();
@@ -75,6 +74,47 @@ const ProofStep = () => {
     const transactionJSON = await attest.zkappWorkerClient!.getTransactionJSON();
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
+
+
+    let conditionTypeNumber: number;
+    switch (attest.statement!.condition.type) {
+      case Condition.LESS_THAN:
+        conditionTypeNumber = 1;
+        break;
+      case Condition.GREATER_THAN:
+        conditionTypeNumber = 2;
+        break;
+      case Condition.EQUAL:
+        conditionTypeNumber = 3;
+        break;
+      case Condition.DIFFERENT:
+        conditionTypeNumber = 4;
+        break;
+      default:
+        throw new Error("conditionType not supported");
+    }
+
+    const hashAttestation = Poseidon.hash([
+      Field.from(attest.privateData.data.hashRoute),
+      Field.from(conditionTypeNumber),
+      Field.from(attest.statement!.condition.targetValue),
+      PublicKey.fromBase58(attest.minaWallet.address).toFields()[0],
+    ]).toString();
+
+    const attestationHashBase64 = createAttestationObject(
+      attest.statement!.condition.type,
+      attest.statement!.condition.targetValue,
+      attest.privateData.data.value,
+      attest.privateData.data.hashRoute,
+      hashAttestation
+    );
+
+
+    console.log("Your attestationHash encoded in base64 is: ", attestationHashBase64);
+
+    const decodedAttestation = decodeAttestationObject(attestationHashBase64);
+
+    console.log("Your decodedAttestation is:", decodedAttestation);
     attest.setDisplayText('Getting transaction JSON...');
     console.log('Getting transaction JSON...');
     const { hash } = await (window as any).mina.sendTransaction({
@@ -85,7 +125,7 @@ const ProofStep = () => {
       },
     });
     await new Promise((resolve) => setTimeout(resolve, 1000));
-    attest.setFinalResult(hash);
+    attest.setFinalResult(hashAttestation);
   };
 
   return (
