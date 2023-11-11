@@ -1,12 +1,57 @@
 # Milestones
 
-- [x] ZAP Core contract
-- [x] Tests for ZAP Core contract 
-- [x] Ethereum Oracle with `Airstack`
-- [x] Example zkApp with the Ethereum Oracle
-- [x] Example frontend integration with the Ethereum Oracle
+## Milestone 0: Design Domain Model for ZAP
 
-- [ ] ZkProof recursion to combine statements together  
-- [ ] Open-source Attestation Explorer (extending the example frontend) 
-- [ ] Library package with improved typescript interface and helpers functions
-- [ ] Decentralized Oracle systems
+- Objective: Conceptualize and design the foundational structure of the Zero-Knowledge Attestation Protocol (ZAP), focusing on the privacy-preserving aspects and modular nature of ZAP.
+- Deliverables: A detailed formalisation and a written description outlining the components and their interactions within ZAP. This documentation can be found in [ZAP Protocol](./protocol.mdx) and in [Statement](./concepts/Statement.mdx) and [Attestation](./concepts/Attestation.mdx) concepts.
+
+## Milestone 1: ZAP Domain Model with o1js
+
+- Objective: Develop a domain model for ZAP with o1js. This lay down the project's foundation.
+- Deliverables: The ZAP Core contract and relevant types. See [ZAP Package](https://github.com/julio4/zap/tree/main/zap)
+
+## Milestone 2: Develop Unit Tests for the ZAP Domain Model
+
+- Objective: Ensure the reliability and functionality of each component within ZAP protocol.
+- Deliverables: A comprehensive suite of unit tests covering the ZAP core contract. See [ZAP Tests](https://github.com/julio4/zap/blob/main/zap/src/Zap.test.ts)
+
+## Milestone 3: Develop a example of a ZAP compatible Ethereum Oracle with Airstack
+
+- Objective: The Oracle can be used as a source of truth for the ZAP protocol for Ethereum and Polygon on-chain data.
+- Deliverables: Deployment of a REST API with Airstack accessible at https://zap-oracle.onrender.com/api
+
+## Milestone 4: Develop an frontend integration example with the ZAP Ethereum Oracle
+
+- Objective: Guarantee the overall functionality and bug-free operation of ZAP through comprehensive integration example using the ZAP Ethereum Oracle.
+- Deliverables: Deployment of a frontend integration example accessible at https://mina-zap.vercel.app/
+
+## Milestone 5: Draft Comprehensive Documentation for ZAP
+
+- Objective: Create an extensive set of documentation for ZAP to facilitate its usage and development.
+- Deliverables: The full documentation is available at [zap-docs.vercel.app](https://zap-docs.vercel.app/)
+
+# Futur Milestones
+
+## Recursive zk-attestation combination
+
+- Objective: Leverage the recursive nature of zk-SNARKs to combine multiple attestations into a single zk-attestation. This will allow to reuse existing attestations to create more complex ones.
+
+## Improve Test Coverage for ZAP
+
+- Objective: Achieve and maintain a high level of test coverage (e.g., 80% or more) for ZAP.
+
+## Educational Content for ZAP
+
+- Objective: Write comprehensive guide about ZAP and its usage (Oracle implementation, frontend integration, etc.). It will be accessible from the [Guides](./guides) page.
+
+## Attestation explorer
+
+- Objective: Create a decentralized attestation explorer that leverage the standardization of attestations and oracles to provide a user-friendly interface.
+
+## Npm helper package
+
+- Objective: Provide a npm package to facilitate the integration of ZAP in other zkApps.
+
+## Decentralized Oracle systems
+
+- Objective: Explore and research about a decentralized oracle system to provide even more security for the end users.
