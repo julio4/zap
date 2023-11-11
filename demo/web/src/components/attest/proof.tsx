@@ -2,7 +2,6 @@
 import { useContext } from "react";
 import { AttestContext } from "../context/attestContext";
 import { Condition } from "../../types";
-import { Field } from "o1js";
 
 let transactionFee = 0.1;
 
@@ -45,6 +44,7 @@ const ProofStep = () => {
       hashRoute: attest.privateData.data.hashRoute,
       signature: attest.privateData.signature,
     };
+
     
     console.log("ArgsToGenerateAttestation", ArgsToGenerateAttestation);
     console.log("fetch oracle public key");
@@ -59,7 +59,9 @@ const ProofStep = () => {
     // };
     // await attest.zkappWorkerClient!.setOraclePublicKey(argsSetPublicKey);
 
+    console.log("just before createGenerateAttestationTransaction");
     await attest.zkappWorkerClient!.createGenerateAttestationTransaction(ArgsToGenerateAttestation);
+    console.log("just after createGenerateAttestationTransaction");
     await new Promise((resolve) => setTimeout(resolve, 1000));
     console.log("seems to be done???");
     

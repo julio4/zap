@@ -56,14 +56,14 @@ export async function signResponse(ctx: ParameterizedContext, next: Next) {
   } as SignResponse;
 
   // Example of how to verify the signature
-  const response = ctx.body as SignResponse;
-  const response_data_fields = response.data.map((field_string) => Field.from(field_string));
-  const verify = Signature.fromBase58(response.signature).verify(PublicKey.fromBase58(response.publicKey), response_data_fields);
-  const response_data_fields_as_string = response_data_fields.map((field) => field.toString());
+  // const response = ctx.body as SignResponse;
+  // const response_data_fields = response.data.map((field_string) => Field.from(field_string));
+  // const verify = Signature.fromBase58(response.signature).verify(PublicKey.fromBase58(response.publicKey), response_data_fields);
+  // const response_data_fields_as_string = response_data_fields.map((field) => field.toString());
 
-  console.log(
-    'value:', response_data_fields_as_string[0],
-    'hashRoute:', Field.from(response_data_fields_as_string[1]).toString(),
-    'verified:', verify.toBoolean()
-  );
+  // console.log(
+  //   'value:', response_data_fields_as_string[0],
+  //   'hashRoute:', Field.from(response_data_fields_as_string[1]).toString(),
+  //   'verified:', verify.toBoolean()
+  // );
 }
