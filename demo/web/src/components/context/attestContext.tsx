@@ -17,8 +17,6 @@ type AttestContextType = {
   setPrivateData: (privateData: PrivateData) => void;
   privateDataInput: Field[];
   setPrivateDataInput: (privateDataInput: Field[]) => void;
-  mainArgs: {value: Field, hashRoute: Field}
-  setMainArgs: (mainArgs: {value: Field, hashRoute: Field}) => void;
   creatingTransaction: boolean;
   displayText: string;
   setDisplayText: (displayText: string) => void;
@@ -48,8 +46,6 @@ const defaultAttestContext: AttestContextType = {
   setPrivateData: () => {},
   privateDataInput: [],
   setPrivateDataInput: () => {},
-  mainArgs: {value: new Field(0), hashRoute: new Field(0)},
-  setMainArgs: () => {},
   creatingTransaction: false,
   displayText: "",
   setDisplayText: () => {},

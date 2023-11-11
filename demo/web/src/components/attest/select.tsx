@@ -111,8 +111,6 @@ const SelectStep = () => {
       // const data = Encoding.stringToFields(body.data);
       const data = body.data.map(f => Field.from(f));
       attest.setPrivateDataInput(data);
-      const args = body.args;
-      attest.setMainArgs(args);
 
       // signature verification
       // TODO ASSERT(body.publicKey === node.process["ORACLE_PUBLIC_KEY"])

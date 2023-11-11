@@ -61,10 +61,6 @@ const functions = {
     signature: Signature;
   }) => {
     try {
-      console.log(
-        "we are in createGenerateAttestationTransaction in worker backendd"
-      );
-      console.log("args", args);
       const {
         senderKey58,
         conditionType,
@@ -122,12 +118,28 @@ const functions = {
           state.zkapp!.verify(
             Field(statementBalanceSup.condition.type),
             Field(statementBalanceSup.condition.targetValue),
-            hashRoute,
-            value,
-            signature
+            hashRouteMock,
+            Field(1),
+            signatureOfOracle
           );
         }
       );
+/*     const attestationHash = Poseidon.hash([
+      hashRoute,
+      conditionType,
+      targetValue,
+      this.sender.toFields()[0],
+      //timestamp
+    ]); */
+      // const expectedEventEmitted = Poseidon.hash([
+      //   hashRoute,
+      //   Field(statementBalanceSup.condition.type),
+      //   Field(statementBalanceSup.condition.targetValue),
+      //   PublicKey.fromBase58(senderKey58).toFields()[0],
+      // ]);
+
+      // console.log("expectedEventEmitted", expectedEventEmitted);
+      // console.log("expectedEventEmitted.toString()", expectedEventEmitted.toString());
 
       /*                Field(statementBalanceSup.condition.type),
             Field(statementBalanceSup.condition.targetValue),
