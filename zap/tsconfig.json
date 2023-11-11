@@ -3,7 +3,7 @@
   "compilerOptions": {
     "plugins": [{ "name": "o1js" }],
     "outDir": "./build",
-    "rootDir": "."
+    "rootDir": "./src", 
   },
   "include": ["./src"],
   "exclude": ["node_modules", "./src/**/*.test.ts"]

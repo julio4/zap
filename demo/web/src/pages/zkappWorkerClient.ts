@@ -55,8 +55,8 @@ export default class ZkappWorkerClient {
     senderKey58: string;
     conditionType: Condition;
     targetValue: number;
-    value: number;
-    hashRoute: string;
+    value: Field;
+    hashRoute: Field;
     signature: string;
   }) {
     console.log("in worker createGenerateAttestationTransaction, before call");

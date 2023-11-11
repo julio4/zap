@@ -33,7 +33,6 @@ const Attest = () => {
         console.log("Done loading web worker");
 
         await zkappWorkerClient.setActiveInstanceToBerkeley();
-        console.log("1")
         await zkappWorkerClient.loadContract();
 
         console.log("Compiling zkApp...");

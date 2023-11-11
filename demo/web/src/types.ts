@@ -182,9 +182,10 @@ export const StatementChoices: StatementChoice[] = [
 ];
 
 export type SignResponse = {
-  data: string[]; // data.map((field) => Field.from(field))
-  signature: string; // Signature.fromBase58()
-  publicKey: string; // PublicKey.fromBase58()
+  data: string[]; // data.map((field) => field.toString())
+  signature: string; // Signature.toBase58()
+  publicKey: string; // PublicKey.toBase58()
+  args: {value: Field, hashRoute: Field};
 };
 
 export type PrivateData = {

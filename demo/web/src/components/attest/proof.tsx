@@ -2,6 +2,7 @@
 import { useContext } from "react";
 import { AttestContext } from "../context/attestContext";
 import { Condition } from "../../types";
+import { Field } from "o1js";
 
 let transactionFee = 0.1;
 
@@ -12,8 +13,8 @@ const ProofStep = () => {
     senderKey58: string;
     conditionType: Condition;
     targetValue: number;
-    value: number;
-    hashRoute: string;
+    value: Field;
+    hashRoute: Field;
     signature: string;
   }
 
@@ -40,29 +41,28 @@ const ProofStep = () => {
       senderKey58: attest.minaWallet.address,
       conditionType: attest.statement!.condition.type,
       targetValue: attest.statement!.condition.targetValue,
-      value: attest.privateData.data.value,
-      hashRoute: attest.privateData.data.hashRoute,
+      value: attest.mainArgs.value,
+      hashRoute: attest.mainArgs.hashRoute,
       signature: attest.privateData?.signature,
     };
-
+    
     console.log("ArgsToGenerateAttestation", ArgsToGenerateAttestation);
     console.log("fetct oracle public key");
     const oraclePubKey = await attest.zkappWorkerClient!.getOraclePublicKey();
     console.log("oraclePubKey is atm:", oraclePubKey);
-    console.log("setting oracle public key");
-
-    // const newOraclePubKey: string = "B62qmN3EthPdRmnit65JWNSbdYdXSt9vt766rt2em2eLoAewf8o72V2"
+    
+    // console.log("setting oracle public key");
+    // const newOraclePubKey = "B62qmN3EthPdRmnit65JWNSbdYdXSt9vt766rt2em2eLoAewf8o72V2"
     // const argsSetPublicKey = {
     //   senderKey58: attest.minaWallet.address,
     //   newOraclePublicKey58: newOraclePubKey,
     // };
     // await attest.zkappWorkerClient!.setOraclePublicKey(argsSetPublicKey);
 
-    console.log("just before createGenerateAttestationTransaction");
     await attest.zkappWorkerClient!.createGenerateAttestationTransaction(ArgsToGenerateAttestation);
-
-    console.log("seems to be done???")
-
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    console.log("seems to be done???");
+    
     attest.setDisplayText('Creating the proof...');
     console.log("Creating the proof...");
     await attest.zkappWorkerClient!.proveGenerateAttestationTransaction();
