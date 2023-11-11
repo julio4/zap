@@ -108,17 +108,13 @@ const SelectStep = () => {
 
       const body = response.data as SignResponse;
 
-      // const data = Encoding.stringToFields(body.data);
       const data = body.data.map(f => Field.from(f));
       attest.setPrivateDataInput(data);
-      const args = body.args;
-      attest.setMainArgs(args);
 
       // signature verification
       // TODO ASSERT(body.publicKey === node.process["ORACLE_PUBLIC_KEY"])
       // -> will be asserted in the proof as well so ok to skip it here
       const signature = Signature.fromBase58(body.signature);
-
       const publicKey = PublicKey.fromBase58(body.publicKey);
 
       const decoded_value = data[0].toString();
@@ -132,7 +128,6 @@ const SelectStep = () => {
 
       const localRouteFields = Encoding.stringToFields(JSON.stringify(statement.request))
       const localHashRoute = Poseidon.hash(localRouteFields).toString();
-
       if (decoded_hashRoute !== localHashRoute) {
         throw new Error('Hash route verification failed');
       }

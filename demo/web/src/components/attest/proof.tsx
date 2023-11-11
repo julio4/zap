@@ -13,8 +13,8 @@ const ProofStep = () => {
     senderKey58: string;
     conditionType: Condition;
     targetValue: number;
-    value: Field;
-    hashRoute: Field;
+    value: number;
+    hashRoute: string;
     signature: string;
   }
 
@@ -41,15 +41,15 @@ const ProofStep = () => {
       senderKey58: attest.minaWallet.address,
       conditionType: attest.statement!.condition.type,
       targetValue: attest.statement!.condition.targetValue,
-      value: attest.mainArgs.value,
-      hashRoute: attest.mainArgs.hashRoute,
-      signature: attest.privateData?.signature,
+      value: attest.privateData.data.value,
+      hashRoute: attest.privateData.data.hashRoute,
+      signature: attest.privateData.signature,
     };
     
     console.log("ArgsToGenerateAttestation", ArgsToGenerateAttestation);
-    console.log("fetct oracle public key");
+    console.log("fetch oracle public key");
     const oraclePubKey = await attest.zkappWorkerClient!.getOraclePublicKey();
-    console.log("oraclePubKey is atm:", oraclePubKey);
+    console.log("oraclePubKey is:", oraclePubKey);
     
     // console.log("setting oracle public key");
     // const newOraclePubKey = "B62qmN3EthPdRmnit65JWNSbdYdXSt9vt766rt2em2eLoAewf8o72V2"

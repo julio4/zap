@@ -1,16 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
+import { useRouter } from 'next/router';
 
 import { Header } from "../components/Header";
-import { LeftDetails } from "../components/home/LeftDetails";
-import { RightDetails } from "../components/home/RightDetails";
 import { FoldingBg, Magnify, People } from "../components/logo";
+import { Search } from "../components/Search";
 
 type HomeProps = {};
 
 export default function Home(props: HomeProps): JSX.Element {
+  const router = useRouter();
+  const { note } = router.query;
+
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
+  const [attestationNote, setAttestationNote] = useState("");
+
+  useEffect(() => {
+    if (note) {
+      setAttestationNote(note as string);
+    }
+  }, [note]);
 
   const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
@@ -21,7 +30,7 @@ export default function Home(props: HomeProps): JSX.Element {
 
   return (
     <>
-      <Header />
+      <Header showSearch={attestationNote != ""}/>
       <div className="overflow-hidden flex flex-col justify-center lg:h-screen bg-slate-900 dark:-mb-32 dark:mt-[-4.5rem] dark:pb-32 dark:pt-[4.5rem] dark:lg:mt-[-4.75rem] dark:lg:pt-[4.75rem]">
         <div className="py-16 sm:px-2 lg:relative lg:px-0 lg:py-20">
           <div className="mx-auto grid max-w-2xl grid-cols-1 items-center gap-x-8 gap-y-16 px-4 lg:max-w-7xl lg:grid-cols-2 lg:px-8 xl:gap-x-16 xl:px-12">
@@ -72,42 +81,51 @@ export default function Home(props: HomeProps): JSX.Element {
                   className="absolute -bottom-40 -right-44"
                 />
 
-                <div className="not-prose flex flex-row">
+                <div className="not-prose flex flex-row justify-center">
                   {/* Card */}
-                  <div
-                    className="group relative flex rounded-2xl transition-shadow hover:shadow-md bg-slate-800/75 hover:shadow-black/5"
-                    onMouseMove={handleMouseMove}
-                  >
-                    <div className="pointer-events-none">
-                      <div
-                        className="absolute inset-0 rounded-2xl bg-gradient-to-r opacity-0 transition duration-300 group-hover:opacity-100 to-[#161648] from-[#0c5553]"
-                        style={{
-                          maskImage: `radial-gradient(180px at ${cursorPosition.x}px ${cursorPosition.y}px, white, transparent)`,
-                        }}
-                      ></div>
-                    </div>
+                  {attestationNote != "" && (
+                    <div
+                      className="group relative flex rounded-2xl transition-shadow hover:shadow-md bg-slate-800/75 hover:shadow-black/5 z-50"
+                      onMouseMove={handleMouseMove}
+                    >
+                      <div className="pointer-events-none">
+                        <div
+                          className="absolute inset-0 rounded-2xl bg-gradient-to-r opacity-0 transition duration-300 group-hover:opacity-100 to-[#161648] from-[#0c5553]"
+                          style={{
+                            maskImage: `radial-gradient(180px at ${cursorPosition.x}px ${cursorPosition.y}px, white, transparent)`,
+                          }}
+                        ></div>
+                      </div>
 
-                    <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/10 group-hover:ring-white/20"></div>
-                    <div className="relative rounded-2xl px-4 pb-4 pt-4 bg-gradient-to-r from-slate-700 to-slate-600">
-                      <div className="flex flex-row justify-between mb-4">
-                        <h1 className="bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text font-display text-xl tracking-tight text-transparent">
-                          POAP
-                        </h1>
-                        <span className="text-sm font-semibold leading-7 text-white">
-                          {">"} 1
-                        </span>
-                      </div>
-                      <div className="flex flex-row justify-between">
-                        <label className="text-sm font-semibold leading-7 text-white">
-                          Timestamp
-                        </label>
-                        <span className="ml-8 text-sm font-semibold leading-7 text-white">
-                          {new Date().toLocaleString()}
-                        </span>
+                      <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/10 group-hover:ring-white/20"></div>
+                      <div className="relative rounded-2xl px-4 pb-4 pt-4 bg-gradient-to-r from-slate-700 to-slate-600">
+                        <div className="flex flex-row justify-between mb-4">
+                          <h1 className="bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text font-display text-xl tracking-tight text-transparent">
+                            POAP
+                          </h1>
+                          <span className="text-sm font-semibold leading-7 text-white">
+                            {">"} 1
+                          </span>
+                        </div>
+                        <div className="flex flex-row justify-between">
+                          <label className="text-sm font-semibold leading-7 text-white">
+                            Timestamp
+                          </label>
+                          <span className="ml-8 text-sm font-semibold leading-7 text-white">
+                            {new Date().toLocaleString()}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  )}
+
+                  {/* Search (move from Header) if no selected attestation */}
+                  {attestationNote == "" && (
+                    <Search />
+                  )}
+
                 </div>
+
               </div>
             </div>
           </div>

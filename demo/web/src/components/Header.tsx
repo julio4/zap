@@ -4,10 +4,12 @@ import { Github } from "./logo";
 
 const Header = ({
   MinaWalletComponent,
-  EthereumWalletComponent
+  EthereumWalletComponent,
+  showSearch = true
 }: {
   MinaWalletComponent?: JSX.Element;
-  EthereumWalletComponent?: JSX.Element
+  EthereumWalletComponent?: JSX.Element;
+  showSearch?: boolean;
 }) => {
   return (
     <header className="sticky top-0 z-50 flex flex-wrap items-center justify-between px-4 py-5 transition duration-500 sm:px-6 lg:px-8 bg-transparent">
@@ -26,7 +28,7 @@ const Header = ({
 
       {/* SEARCH */}
       <div className="-my-5 mr-6 sm:mr-8 md:mr-0">
-        <Search />
+        {showSearch && <Search />}
       </div>
 
       <div className="relative flex basis-0 items-center justify-end gap-6 sm:gap-8 md:flex-grow">

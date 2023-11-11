@@ -185,7 +185,6 @@ export type SignResponse = {
   data: string[]; // data.map((field) => field.toString())
   signature: string; // Signature.toBase58()
   publicKey: string; // PublicKey.toBase58()
-  args: {value: Field, hashRoute: Field};
 };
 
 export type PrivateData = {

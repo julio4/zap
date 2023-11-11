@@ -36,17 +36,21 @@ const functions = {
     console.log("Berkeley Instance Created");
     Mina.setActiveInstance(Berkeley);
   },
+
   loadContract: async (args: {}) => {
     const { Zap } = await import("../../../../zap/build/Zap.js");
     state.Zap = Zap;
   },
+
   compileContract: async (args: {}) => {
     await state.Zap!.compile();
   },
+
   fetchAccount: async (args: { publicKey58: string }) => {
     const publicKey = PublicKey.fromBase58(args.publicKey58);
     return await fetchAccount({ publicKey });
   },
+
   initZkappInstance: async (args: { publicKey58: string }) => {
     const publicKey = PublicKey.fromBase58(args.publicKey58);
     state.zkapp = new state.Zap!(publicKey);
@@ -56,13 +60,13 @@ const functions = {
     senderKey58: string;
     conditionType: Condition;
     targetValue: number;
-    value: Field;
-    hashRoute: Field;
-    signature: Signature;
+    value: number;
+    hashRoute: string;
+    signature: string;
   }) => {
     try {
       console.log(
-        "we are in createGenerateAttestationTransaction in worker backendd"
+        "we are in createGenerateAttestationTransaction in worker backend"
       );
       console.log("args", args);
       const {
@@ -73,8 +77,6 @@ const functions = {
         hashRoute,
         signature,
       } = args;
-
-      
 
       let conditionTypeNumber: number;
       switch (conditionType) {
@@ -94,58 +96,42 @@ const functions = {
           throw new Error("conditionType not supported");
       }
 
-      const zapKeys = {
-        publicKey: PublicKey.fromBase58(
-          "B62qnhBxxQr7h2AE9f912AyvzJwK1fhEJq7NMZXbzXbhoepUZ7z7237"
-        ),
-        privateKey: PrivateKey.fromBase58(
-          "EKEbbvoMY6Gswq9qXGJtSbyPLWxRbqmMsjpG3cncy2AUpFAtyCDL"
-        ),
-      };
-      const hashRouteMock = Poseidon.hash([Field(145)]);
-      const signatureOfOracle = Signature.create(zapKeys.privateKey, [
-        Field(1),
-        hashRouteMock,
-      ]);
-      const statementBalanceSup = {
-        route: "/balance", // todo: not necessary to put route here, see where it is used
-        args: null,
-        condition: {
-          type: 3,
-          targetValue: 1,
-        },
-      };
-      
+      console.log(
+        Field.from(conditionTypeNumber),
+        Field.from(targetValue),
+        Field.from(hashRoute),
+        Field.from(value),
+        Signature.fromBase58(signature)
+      )
+
       const transaction = await Mina.transaction(
         PublicKey.fromBase58(senderKey58),
         () => {
           state.zkapp!.verify(
-            Field(statementBalanceSup.condition.type),
-            Field(statementBalanceSup.condition.targetValue),
-            hashRoute,
-            value,
-            signature
+            Field.from(conditionTypeNumber),
+            Field.from(targetValue),
+            Field.from(hashRoute),
+            Field.from(value),
+            Signature.fromBase58(signature)
           );
         }
       );
 
-      /*                Field(statementBalanceSup.condition.type),
-            Field(statementBalanceSup.condition.targetValue),
-            hashRouteMock,
-            Field(1),
-            signatureOfOracle */
       state.transaction = transaction;
     } catch (error) {
       console.log("error in worker backend", error);
     }
   },
+
   proveGenerateAttestationTransaction: async (args: {}) => {
     console.log("in worker, proveGenerateAttestationTransaction");
     await state.transaction!.prove();
   },
+
   getOraclePublicKey: async (args: {}) => {
     return state.zkapp!.getOraclePublicKey().toBase58();
   },
+
   setOraclePublicKey: async (args: {
     senderKey58: string;
     newOraclePublicKey58: string;

@@ -41,7 +41,7 @@ const RightDetails = () => {
 
         {/* Card */}
         <Link
-          className="group relative flex rounded-2xl transition-shadow hover:shadow-md bg-slate-800/75 hover:shadow-black/5"
+          className="group relative flex rounded-2xl transition-shadow hover:shadow-md bg-slate-800/75 hover:shadow-black/5 z-50"
           href="/attest"
         >
           <div onMouseMove={handleMouseMove}>
@@ -68,8 +68,8 @@ const RightDetails = () => {
 
         {/* Card 2 */}
         <Link
-          className="group relative flex rounded-2xl transition-shadow hover:shadow-md bg-slate-800/75 hover:shadow-black/5"
-          href="/#TODO"
+          className="group relative flex rounded-2xl transition-shadow hover:shadow-md bg-slate-800/75 hover:shadow-black/5 z-50"
+          href="/verify"
           >
           <div onMouseMove={handleMouseMove}>
 
