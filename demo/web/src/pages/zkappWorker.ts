@@ -25,7 +25,6 @@ const state = {
 
 const functions = {
   setActiveInstanceToBerkeley: async (args: {}) => {
-    console.log("in worker, setActiveInstanceToBerkeley");
     const Berkeley = Mina.Network(
       "https://proxy.berkeley.minaexplorer.com/graphql"
     );
@@ -108,7 +107,6 @@ const functions = {
   },
 
   proveGenerateAttestationTransaction: async (args: {}) => {
-    console.log("in worker, proveGenerateAttestationTransaction");
     await state.transaction!.prove();
   },
 
@@ -133,7 +131,7 @@ const functions = {
       );
       state.transaction = transaction;
     } catch (error) {
-      console.log("error in zkapp worker for setoraclepublickey", error);
+      console.log("error in zkappWorker for setOraclePublicKey", error);
     }
   },
   getTransactionJSON: async (args: {}) => {
