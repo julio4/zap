@@ -107,7 +107,7 @@ const Attest = () => {
         </div>
       )}
       {step4 && (
-        <div className="flex flex-col py-4">
+        <div className="flex flex-col py-4 items-center">
           <h2 className="py-2 text-center inline bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text font-display text-6xl tracking-tight text-transparent">
             Attestation note!
           </h2>
@@ -129,7 +129,7 @@ const Attest = () => {
               const link = window.location.origin + "/verify?attestationNote=" + attest.finalResult;
               await navigator.clipboard.writeText(link);
             }}
-            className="w-36 p-2 bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text font-display tracking-tight text-transparent ring-1 rounded"
+            className="mt-2 w-36 p-2 bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text font-display tracking-tight text-transparent ring-1 rounded"
           >
             Copy link to verify
           </button>
