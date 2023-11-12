@@ -12,10 +12,20 @@ type HomeProps = {};
 
 export default function Home(props: HomeProps): JSX.Element {
   const router = useRouter();
-  const { note } = router.query;
+  const [note, setNote] = useState<string | string[] | undefined>(undefined);
 
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [attestationNote, setAttestationNote] = useState<AttestationNote | null>(null);
+
+
+  useEffect(() => {
+    if(router.isReady) {
+      const queryNote = router.query.attestationNote;
+      if (queryNote) {
+        setNote(queryNote);
+      }
+    }
+  }, [router.isReady, router.query]);
 
   useEffect(() => {
     if (note) {

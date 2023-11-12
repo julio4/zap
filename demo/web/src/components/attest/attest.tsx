@@ -87,7 +87,7 @@ const Attest = () => {
       {step2 && !step3 && (
         <div className="flex flex-col py-4">
           <h2 className="py-2 text-center inline bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text font-display text-6xl tracking-tight text-transparent">
-            Choose your statement 
+            Choose your statement
           </h2>
           <p className="font-light mt-3 text-sm text-center tracking-tight text-slate-400 max-w-xl mx-auto">
             The statement define the condition that will be attested on a specific data source.
@@ -120,19 +120,28 @@ const Attest = () => {
               e.currentTarget.select();
               await navigator.clipboard.writeText(e.currentTarget.value);
             }}
-            className="whitespace-pre-wrap font-light mt-3 text-sm text-center tracking-tight text-slate-400 mx-auto max-w-4xl"
+            className="w-full h-32 p-4 text-sm text-gray-700 bg-white border-0 shadow-lg rounded-lg mt-3 mx-auto max-w-4xl"
             value={attest.finalResult}
             readOnly
           />
-          <button
-            onClick={async () => {
-              const link = window.location.origin + "/verify?attestationNote=" + attest.finalResult;
-              await navigator.clipboard.writeText(link);
-            }}
-            className="mt-2 w-36 p-2 bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text font-display tracking-tight text-transparent ring-1 rounded"
-          >
-            Copy link to verify
-          </button>
+          <div className="flex space-x-2 mt-3">
+            <button
+              onClick={async () => {
+                await navigator.clipboard.writeText(attest.finalResult);
+              }}
+              className="w-36 p-2 bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text font-display tracking-tight text-transparent ring-1 rounded hover:ring-2 hover:ring-indigo-500 transition duration-300"
+            >
+              Copy Attestation Hash
+            </button>
+            <button
+              onClick={() => {
+                window.location.href = `/verify?attestationNote=${attest.finalResult}`;
+              }}
+              className="w-36 p-2 bg-indigo-500 text-white font-bold rounded hover:bg-indigo-700 transition duration-300"
+            >
+              Verify Attestation
+            </button>
+          </div>
         </div>
       )}
     </div>
