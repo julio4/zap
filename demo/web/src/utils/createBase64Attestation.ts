@@ -25,9 +25,12 @@ export const createAttestationNoteEncoded = (
 ): string => {
   const operation = getConditionString(conditionType);
 
+  // todo: we should put in the statement "I, ${Mina address}, ..." and use that addres to fetch events (faster) + better ux
   const attestation: AttestationNote = {
     attestationHash: hashAttestation,
-    statement: `I attest that my value is ${operation} ${targetValue} for ${request.route} with ${JSON.stringify(request.args)}.`,
+    statement: `I attest that my value is ${operation} ${targetValue} for ${
+      request.route
+    } with ${JSON.stringify(request.args)}.`,
     value: value,
     targetValue: targetValue,
     conditionType: conditionType,
@@ -38,7 +41,9 @@ export const createAttestationNoteEncoded = (
   return Buffer.from(jsonString).toString("base64");
 };
 
-export const decodeAttestationNote = (base64Attestation: string): AttestationNote => {
+export const decodeAttestationNote = (
+  base64Attestation: string
+): AttestationNote => {
   const jsonString = Buffer.from(base64Attestation, "base64").toString("utf-8");
   const attestation = JSON.parse(jsonString);
 
@@ -55,4 +60,4 @@ export const decodeAttestationNote = (base64Attestation: string): AttestationNot
   }
 
   return attestation as AttestationNote;
-}
+};

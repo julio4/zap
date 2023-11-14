@@ -22,7 +22,7 @@ const Attest = () => {
   const attest = useContext(AttestContext);
 
   let trigger = true;
-  trigger = !trigger; // todo
+  trigger = !trigger; // todo: get rid of this
 
   useEffect(() => {
     (async () => {

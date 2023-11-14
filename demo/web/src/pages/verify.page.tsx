@@ -1,27 +1,83 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from 'next/router';
+import { AttestContext } from "../components/context/attestContext";
 
 import { Header } from "../components/Header";
 import { FoldingBg } from "../components/logo";
 import { Search } from "../components/Search";
 import { decodeAttestationNote } from "../utils/createBase64Attestation";
 import { AttestationNote } from "../types";
+import { Zap } from "../../../../zap/build/Zap.js";
+import { Mina, ProvablePure, PublicKey, UInt32 } from "o1js";
+import { stringFromFields } from "o1js/dist/node/bindings/lib/encoding";
 
 type HomeProps = {};
+type MinaEvent = {
+  type: string;
+  event: {
+    data: ProvablePure<any>;
+    transactionInfo: {
+      transactionHash: string;
+      transactionStatus: string;
+      transactionMemo: string;
+    };
+  };
+  blockHeight: UInt32;
+  blockHash: string;
+  parentBlockHash: string;
+  globalSlot: UInt32;
+  chainStatus: string;
+}
+
+
+
+async function timeout(seconds: number): Promise<void> {  // todo: put in utils
+  return new Promise<void>((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, seconds * 1000);
+  });
+}
 
 export default function Home(props: HomeProps): JSX.Element {
+  const attest = useContext(AttestContext);
   const router = useRouter();
   const [note, setNote] = useState<string | string[] | undefined>(undefined);
+  const [resultVerification, setResultVerification] = useState<boolean | undefined>(undefined)
 
+  const [workerSet, setWorkerSet] = useState(false);  // todo: use this to show loading spinner
+  const [eventsFetched, setEventsFetched] = useState<MinaEvent[] | undefined>(undefined);
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [attestationNote, setAttestationNote] = useState<AttestationNote | null>(null);
 
+  let trigger = true;
+  trigger = !trigger; // todo
 
   useEffect(() => {
-    if(router.isReady) {
-      const queryNote = router.query.attestationNote;
+    (async () => {
+      if (!workerSet) {
+        const MINAURL = "https://proxy.berkeley.minaexplorer.com/graphql";
+        const ARCHIVEURL = "https://archive.berkeley.minaexplorer.com";
+        const network = Mina.Network({
+          mina: MINAURL,
+          archive: ARCHIVEURL,
+        });
+        Mina.setActiveInstance(network);
+
+        const publicKeySender = PublicKey.fromBase58("B62qm3bbCSy8ixuacL8FJzWdoj9MBjQGgrzHwiHtksBHTtmFWhidKxS")
+        const zkapp = new Zap(PublicKey.fromBase58("B62qnhBxxQr7h2AE9f912AyvzJwK1fhEJq7NMZXbzXbhoepUZ7z7237"))
+        const minaEvents: MinaEvent[] = await zkapp.fetchEvents(UInt32.from(0))
+        setEventsFetched(minaEvents)
+      }
+    })();
+  }, [trigger]);
+
+  useEffect(() => {
+    if (router.isReady) {
+      const queryNote = router.query.note;
       if (queryNote) {
+        console.log("Note found:", queryNote)
         setNote(queryNote);
       }
     }
@@ -32,7 +88,6 @@ export default function Home(props: HomeProps): JSX.Element {
       try {
         // replace all spaces with + (url encoded)
         const decoded_note = decodeAttestationNote(note.toString().replace(/ /g, "+"));
-        console.log("decoded_note", decoded_note);
         setAttestationNote(decoded_note);
       } catch (e) {
         // clear url parameter
@@ -48,9 +103,23 @@ export default function Home(props: HomeProps): JSX.Element {
     setCursorPosition({ x, y });
   };
 
+  const verifyAttestation = (events: MinaEvent[], hashAttestation: string) => {
+    for (let event of events) {
+      let valueArray = event.event.data.value;
+      const currentHash = valueArray[1][1]
+      if (BigInt(currentHash) === BigInt(hashAttestation)) {
+        console.log("AttestationHash Found!")
+        return true;
+      }
+    }
+    console.log("Attestation not found. Be sure that your transaction has been validated")
+    return false;
+  };
+
+
   return (
     <>
-      <Header showSearch={attestationNote != null}/>
+      <Header showSearch={attestationNote != null} />
       <div className="overflow-hidden flex flex-col justify-center lg:h-screen bg-slate-900 dark:-mb-32 dark:mt-[-4.5rem] dark:pb-32 dark:pt-[4.5rem] dark:lg:mt-[-4.75rem] dark:lg:pt-[4.75rem]">
         <div className="py-16 sm:px-2 lg:relative lg:px-0 lg:py-20">
           <div className="mx-auto grid max-w-2xl grid-cols-1 items-center gap-x-8 gap-y-16 px-4 lg:max-w-7xl lg:grid-cols-2 lg:px-8 xl:gap-x-16 xl:px-12">
@@ -146,13 +215,31 @@ export default function Home(props: HomeProps): JSX.Element {
                         <div className="flex justify-center mb-2 break-words">
                           <button
                             onClick={() => {
-                              console.log("Verify attestation, TODO")
-                              console.log("Just need to fetch the event to see if the hashAttestation is on chain")
+                              if (!eventsFetched){
+                                console.log("No events fetched")
+                                return
+                              }
+                              setResultVerification(verifyAttestation(eventsFetched, attestationNote.attestationHash))
                             }}
                             className="w-36 p-2 bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text font-display tracking-tight text-transparent ring-1 rounded">
                             Verify Attestation
                           </button>
                         </div>
+                        {
+                          resultVerification === true && (
+                            <div className="text-center text-green-500">
+                              Verified
+                            </div>
+                          )
+                        }
+                        {
+                          resultVerification === false && (
+                            <div className="text-center text-red-500">
+                              Not Verified
+                            </div>
+                          )
+                        }
+
                       </div>
                     </div>
                   )}
