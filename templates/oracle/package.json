@@ -1,0 +1,44 @@
+{
+  "name": "@template/oracle",
+  "version": "1.0.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "keywords": [
+    "mina-zkapp",
+    "mina-zk-app",
+    "mina-dapp",
+    "zkapp",
+    "zkoracle"
+  ],
+  "type": "module",
+  "main": "build/src/index.js",
+  "types": "build/src/index.d.ts",
+  "scripts": {
+    "dev": "tsc && node .",
+    "start": "tsc && node .",
+    "build": "tsc",
+    "buildw": "tsc --watch",
+    "format": "prettier --write --ignore-unknown **/*",
+    "lint": "npx eslint src/** --fix"
+  },
+  "dependencies": {
+    "@koa/cors": "^4.0.0",
+    "@koa/router": "^12.0.0",
+    "dotenv": "^16.3.1",
+    "ethers": "^6.6.3",
+    "graphql": "^16.7.1",
+    "graphql-request": "^6.1.0",
+    "koa": "^2.14.2",
+    "koa-helmet": "^7.0.2",
+    "o1js": "^0.13.1"
+  },
+  "devDependencies": {
+    "@packages/tsconfig": "workspace:*",
+    "@types/koa": "^2.13.6",
+    "@types/koa__cors": "^4.0.0",
+    "@types/koa__router": "^12.0.0",
+    "@types/node": "^18.11.17",
+    "eslint-config-custom": "workspace:*",
+    "koa-body": "^6.0.1"
+  }
+}
