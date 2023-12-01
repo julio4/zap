@@ -49,6 +49,7 @@ const Search = () => {
           <input
             ref={inputRef}
             type="text"
+            maxLength={1000}
             style={{opacity: isOpen ? 1 : 0, width: isOpen ? "100%" : "0"}}
             className="font-thin cursor-pointer flex-auto ml-2.5 text-slate-100 placeholder-slate-400 bg-transparent focus:outline-none focus:ring-0"
             placeholder="Verify attestation..."

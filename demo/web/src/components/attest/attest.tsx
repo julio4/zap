@@ -8,6 +8,7 @@ import ZkappWorkerClient from "../../pages/zkappWorkerClient";
 import { PublicKey } from "o1js";
 import { MinaWallet } from "../MinaWallet";
 import { EthereumWallet } from "../EthereumWallet";
+import Link from "next/link";
 
 async function timeout(seconds: number): Promise<void> {
   return new Promise<void>((resolve) => {
@@ -114,9 +115,24 @@ const Attest = () => {
             Your attestation note is ready! You can now share it with your recipient.
             Be aware that it is impossible to recover it if you lose it, so make sure to keep it safe. :D
           </p>
-          <pre className="whitespace-pre-wrap font-light mt-3 text-sm text-center tracking-tight text-slate-400 max-w-xl mx-auto">
-            {attest.finalResult}
-          </pre>
+          <textarea
+            onClick={async (e) => {
+              e.currentTarget.select();
+              await navigator.clipboard.writeText(e.currentTarget.value);
+            }}
+            className="whitespace-pre-wrap font-light mt-3 text-sm text-center tracking-tight text-slate-400 mx-auto max-w-4xl"
+            value={attest.finalResult}
+            readOnly
+          />
+          <button
+            onClick={async () => {
+              const link = window.location.origin + "/verify?attestationNote=" + attest.finalResult;
+              await navigator.clipboard.writeText(link);
+            }}
+            className="w-36 p-2 bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text font-display tracking-tight text-transparent ring-1 rounded"
+          >
+            Copy link to verify
+          </button>
         </div>
       )}
     </div>

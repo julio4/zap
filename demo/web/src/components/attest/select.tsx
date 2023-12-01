@@ -152,16 +152,16 @@ const SelectStep = () => {
     });
   };
 
-  // if (error)
-  //   return (
-  //     <div className="py-4 border-2 border-red-700/75 p-4 rounded-xl bg-red-600/50">
-  //       <p className="text-slate-600">Error: {error}</p>
-  //       {/* todo style of this button */}
-  //       <button onClick={reset} className="text-slate-600 underline mt-2 text-sm hover:text-slate-400 bg-transparent border-none">
-  //         Close
-  //       </button>
-  //     </div>
-  //   );
+  if (error)
+    return (
+      <div className="py-4 border-2 border-red-700/75 p-4 rounded-xl bg-red-600/50">
+        <p className="text-slate-600">Error: {error}</p>
+        {/* todo style of this button */}
+        <button onClick={reset} className="text-slate-600 underline mt-2 text-sm hover:text-slate-400 bg-transparent border-none">
+          Close
+        </button>
+      </div>
+    );
 
   if (waiting.status)
     return (
@@ -262,7 +262,6 @@ const SelectStep = () => {
                 })
               }
             </div>
-
 
             <hr className="w-48 h-1 mx-auto my-2 border-0 rounded md:my-4 dark:bg-slate-700" />
 

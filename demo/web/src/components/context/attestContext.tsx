@@ -104,6 +104,12 @@ const AttestProvider = ({ children }: { children: React.ReactNode }) => {
         ...prevAttest,
         finalResult,
       }));
+    },
+    setDisplayText: (displayText: string) => {
+      setAttest((prevAttest) => ({
+        ...prevAttest,
+        displayText,
+      }));
     }
   });
 
