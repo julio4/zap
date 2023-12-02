@@ -44,12 +44,12 @@ export const decodeAttestationNote = (base64Attestation: string): AttestationNot
 
   // Throw error if the attestation is not valid (i.e wrong type with AttetationNote)
   if (
-    !attestation.hasOwnProperty("attestationHash") ||
-    !attestation.hasOwnProperty("statement") ||
-    !attestation.hasOwnProperty("value") ||
-    !attestation.hasOwnProperty("targetValue") ||
-    !attestation.hasOwnProperty("conditionType") ||
-    !attestation.hasOwnProperty("hashRoute")
+    !Object.hasOwn(attestation, "attestationHash") ||
+    !Object.hasOwn(attestation, "statement") ||
+    !Object.hasOwn(attestation, "value") ||
+    !Object.hasOwn(attestation, "targetValue") ||
+    !Object.hasOwn(attestation, "conditionType") ||
+    !Object.hasOwn(attestation, "hashRoute")
   ) {
     throw new Error("Invalid note");
   }

@@ -1,9 +1,6 @@
 import {
-  Encoding,
   Field,
   Mina,
-  Poseidon,
-  PrivateKey,
   PublicKey,
   Signature,
   fetchAccount,
@@ -15,13 +12,7 @@ type Transaction = Awaited<ReturnType<typeof Mina.transaction>>;
 
 // import type { Zap } from '../../../contracts/src/Zap';
 import type { Zap } from "zap/src/Zap";
-import { stringToFields } from "o1js/dist/node/bindings/lib/encoding.js";
 import { Condition } from "../types";
-
-import {
-  createAttestationObject,
-  decodeAttestationObject,
-} from "../utils/createBase64Attestation";
 
 const state = {
   Zap: null as null | typeof Zap,
