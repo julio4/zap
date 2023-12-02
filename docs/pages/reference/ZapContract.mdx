@@ -1,16 +1,16 @@
 # ZAP Contract
 
-In the ZAP zkApp, the generation of the attestation is computed off-chain in a private way in the client web-browser.
+The generation of the attestation is computed off-chain in a private way in the client web-browser.
 In order to make it available on-chain, the attestation need to be verified on-chain in a transaction.
 
 The ZAP contract is the contract that allows to verify the attestation on-chain.
 To enable trustless verification of the attestation,
-the ZAP contract is responsible of verifying that the data used in the attestation comes from the designated trusted oracle
+the ZAP contract is responsible of verifying that the data used in the attestation comes from the designated source
 and that all the rules of the statement are validated.
 
 ## State
 
-- `oraclePublicKey`: The public key of the trusted oracle
+- `sourcePublicKey`: The public key of the trusted source
 
 ## Events
 
@@ -25,10 +25,10 @@ and that all the rules of the statement are validated.
   // The statement to attest
   conditionType: Field,
   targetValue: Field,
-  // The private data attesting the statement from the trusted oracle
+  // The private data attesting the statement from the given source
   hashRoute: Field,
   privateData: Field,
-  // The signature that allows us to be sure that the private data are coming from our trusted oracle
+  // The signature that allows us to be sure that the private data are coming from the given source
   signature: Signature
 );
 ```

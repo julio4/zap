@@ -1,4 +1,5 @@
 {
   "Statement": "Statement",
-  "Attestation": "Attestation"
+  "Attestation": "Attestation",
+  "ZAPSource": "ZAP Source"
 }
