@@ -5,7 +5,6 @@ import {
   AccountUpdate,
   Signature,
   Poseidon,
-  PublicKey,
 } from 'o1js';
 import { KeyPair, OracleResult, Statement } from './types';
 import { MockedOracle } from './utils/mockOracle';
@@ -45,8 +44,8 @@ describe('Zap', () => {
     route: '/balance', // todo: not necessary to put route here, see where it is used
     args: null,
     condition: {
-      type: 3,
-      targetValue: 1,
+      type: 2,
+      targetValue: 600,
     },
   };
 
@@ -80,7 +79,7 @@ describe('Zap', () => {
 
   describe('Attestations creation', () => {
     describe('Modularity of requests', () => {
-      it.only('emits the correct event for a valid statement: balance of user is 375, targetValue 300, operationType ">"', async () => {
+      it.only('emits the correct event for a valid statement: balance of user is 700, targetValue 600, operationType ">"', async () => {
         const oracleResult: OracleResult = await oracle.generateStatement(
           Field(1), // ApiRequestId corresponding to `getBalance`
           true, // will return a high result (true for holder, big balance for assets, etc.), so statement is valid
@@ -88,54 +87,34 @@ describe('Zap', () => {
           ethereumAddress
         );
 
-        // const txn = await Mina.transaction(user.publicKey, () => {
-        //   zap.verify(
-        //     Field(statementBalanceSup.condition.type),
-        //     Field(statementBalanceSup.condition.targetValue),
-        //     oracleResult.data.hashRoute,
-        //     oracleResult.data.privateData,
-        //     oracleResult.signature ??
-        //       fail('something is wrong with the signature')
-        //   );
-        // });
-        // await txn.prove();
-        // await txn.sign([user.privateKey]).send();
+        console.log("targetValue: ", statementBalanceSup.condition.targetValue)
+        console.log("privateData: ", oracleResult.data.privateData)
+        console.log("conditionType: ", statementBalanceSup.condition.type)
+        const txn = await Mina.transaction(user.publicKey, () => {
+          zap.verify(
+            Field(statementBalanceSup.condition.type),
+            Field(statementBalanceSup.condition.targetValue),
+            oracleResult.data.hashRoute,
+            oracleResult.data.privateData,
+            oracleResult.signature ??
+              fail('something is wrong with the signature')
+          );
+        });
+        await txn.prove();
+        await txn.sign([user.privateKey]).send();
 
 
-        const zapKeysmock = {
-          publicKey: PublicKey.fromBase58(
-            'B62qnhBxxQr7h2AE9f912AyvzJwK1fhEJq7NMZXbzXbhoepUZ7z7237'
-          ),
-          privateKey: PrivateKey.fromBase58(
-            'EKEbbvoMY6Gswq9qXGJtSbyPLWxRbqmMsjpG3cncy2AUpFAtyCDL'
-          ),
-        };
-        const hashRoute = Poseidon.hash([Field(145)]);
-        const signatureOfOracle = Signature.create(zapKeysmock.privateKey, [
-          Field(1),
-          hashRoute,
-        ]);
-        let feePayerKey = PrivateKey.fromBase58(
-          'EKEbYs4F39yogmXFCJUaDpxWN9prL4XUKy8UpXaqEJga4q77bGBy'
-        );
-        let feePayerAddress = feePayerKey.toPublicKey();
         const expectedDataInEvent = Poseidon.hash([
-          hashRoute,
+          oracleResult.data.hashRoute,
           Field(statementBalanceSup.condition.type),
           Field(statementBalanceSup.condition.targetValue),
-          feePayerAddress.toFields()[0],
+          user.publicKey.toFields()[0],
         ]);
 
-        console.log("EXPECTED DATA IN EVENT", expectedDataInEvent);
-        console.log("EXPECTED DATA IN EVENT TO STRING", expectedDataInEvent.toString());
-        const fetched = "4134629382046509823814175209138532597215402099130430678254925580778627385386"
-        console.log("WE FETCHED:", fetched);
-        console.log("is it equal?", fetched === expectedDataInEvent.toString());
-
-        // const eventsFetched = await zap.fetchEvents();
-        // const dataInEventFetched = eventsFetched[0].event.data;
-        // expect(eventsFetched[0].type).toEqual('verified');
-        // expect(dataInEventFetched).toEqual(expectedDataInEvent);
+        const eventsFetched = await zap.fetchEvents();
+        const dataInEventFetched = eventsFetched[0].event.data;
+        expect(eventsFetched[0].type).toEqual('verified');
+        expect(dataInEventFetched).toEqual(expectedDataInEvent);
       });
 
       it('emits the correct event for a valid statement: balance of user is 500, targetValue 600, operationType "<"', async () => {
