@@ -1,4 +1,4 @@
-import { Field, Mina, PublicKey, Signature, UInt32, fetchAccount } from "o1js";
+import { Field, Mina, PublicKey, Signature, fetchAccount } from "o1js";
 
 type Transaction = Awaited<ReturnType<typeof Mina.transaction>>;
 
@@ -18,7 +18,7 @@ const state = {
 // ---------------------------------------------------------------------------------------
 
 const functions = {
-  setActiveInstanceToBerkeley: async (args: {}) => {
+  setActiveInstanceToBerkeley: async () => {
     const Berkeley = Mina.Network({
       mina: "https://proxy.berkeley.minaexplorer.com/graphql",
       archive: "https://api.minascan.io/archive/berkeley/v1/graphql",
@@ -27,12 +27,12 @@ const functions = {
     Mina.setActiveInstance(Berkeley);
   },
 
-  loadContract: async (args: {}) => {
+  loadContract: async () => {
     const { Zap } = await import("../../../../zap/build/Zap.js");
     state.Zap = Zap;
   },
 
-  compileContract: async (args: {}) => {
+  compileContract: async () => {
     await state.Zap!.compile();
   },
 
@@ -100,11 +100,11 @@ const functions = {
     }
   },
 
-  proveGenerateAttestationTransaction: async (args: {}) => {
+  proveGenerateAttestationTransaction: async () => {
     await state.transaction!.prove();
   },
 
-  getOraclePublicKey: async (args: {}) => {
+  getOraclePublicKey: async () => {
     return state.zkapp!.getOraclePublicKey().toBase58();
   },
 
@@ -128,7 +128,7 @@ const functions = {
       console.log("error in zkappWorker for setOraclePublicKey", error);
     }
   },
-  getTransactionJSON: async (args: {}) => {
+  getTransactionJSON: async () => {
     return state.transaction!.toJSON();
   },
 };

@@ -10,9 +10,9 @@ const EthereumWallet = () => {
 
   const handleConnect = async () => {
     try {
-      await (window as any).ethereum.send("eth_requestAccounts");
+      await window.ethereum.send("eth_requestAccounts");
       const provider = new ethers.BrowserProvider(
-        (window as any).ethereum,
+        window.ethereum,
         "any"
       );
       const network = await provider.getNetwork();
@@ -36,13 +36,14 @@ const EthereumWallet = () => {
         signer,
       });
       console.log(`Set connected eth account: ${normalizedAddress}`);
-    } catch (err: any) {
-      // If the user has a wallet installed but has not created an account, an
-      // exception will be thrown. Consider showing "not connected" in your UI.
-      console.log(err.message);
-      setError(
-        "Error connecting to Ethereum wallet. See logs for details."
-      );
+    } catch (err) {
+      if (err instanceof Error) {
+        console.log(err.message);
+        setError("Error connecting to Ethereum wallet. See logs for details.");
+      } else {
+        console.log('An unexpected error occurred');
+        setError("An unknown error occurred.");
+      }
     }
   };
 
@@ -57,7 +58,7 @@ const EthereumWallet = () => {
   if (error) return (
     <span
       className="h-5 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full bg-red-900 text-red-300">
-        {error}
+      {error}
     </span>
   )
 

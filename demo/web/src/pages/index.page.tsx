@@ -5,9 +5,7 @@ import { LeftDetails } from "../components/home/LeftDetails";
 import { RightDetails } from "../components/home/RightDetails";
 import { FoldingBg } from "../components/logo";
 
-type HomeProps = {};
-
-export default function Home(props: HomeProps): JSX.Element {
+export default function Home(): JSX.Element {
   return (
     <>
       <Header />
