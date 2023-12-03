@@ -1,4 +1,4 @@
-export type RequestBody = {
+export type ResponseBody = {
   value: number;
   route: string;
 };

@@ -7,24 +7,25 @@ import {
   Poseidon,
 } from 'o1js';
 
-import { RequestBody, SignedResponse } from '../types';
+import { ResponseBody, SignedResponse } from '../types';
 
 export async function signResponse(ctx: ParameterizedContext, next: Next) {
   await next();
 
-  // Encode the JSON data as fields
-  const { value, route } = ctx.body as RequestBody;
+  // We return `value` for the route `route`
+  const { value, route } = ctx.body as ResponseBody;
+
   const routeObj = {
     route: route,
     args: ctx.state.args,
   };
-  const routeFields = Encoding.stringToFields(JSON.stringify(routeObj));
-  const hashRouteField = Poseidon.hash(routeFields);
-  const hashRoute = hashRouteField.toString();
+
+  const routeFields: Field[] = Encoding.stringToFields(JSON.stringify(routeObj));
+  const hashRoute: Field = Poseidon.hash(routeFields);
 
   const data = [
-    Math.round(value), // TODO: Need to work with decimal to avoid rounding errors
-    hashRoute,
+    value,
+    hashRoute.toString(),
   ];
   const data_fields = data.map((value) => Field.from(value));
   const data_field_as_string = data_fields.map((field) => field.toString());
