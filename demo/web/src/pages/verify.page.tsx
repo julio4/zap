@@ -146,7 +146,8 @@ export default function Home(props: HomeProps): JSX.Element {
                         <div className="flex justify-center mb-2 break-words">
                           <button
                             onClick={() => {
-                              console.log("verify attestation, TODO")
+                              console.log("Verify attestation, TODO")
+                              console.log("Just need to fetch the event to see if the hashAttestation is on chain")
                             }}
                             className="w-36 p-2 bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text font-display tracking-tight text-transparent ring-1 rounded">
                             Verify Attestation
