@@ -1,10 +1,4 @@
-import {
-  Field,
-  Mina,
-  PublicKey,
-  Signature,
-  fetchAccount,
-} from "o1js";
+import { Field, Mina, PublicKey, Signature, UInt32, fetchAccount } from "o1js";
 
 type Transaction = Awaited<ReturnType<typeof Mina.transaction>>;
 
@@ -25,9 +19,10 @@ const state = {
 
 const functions = {
   setActiveInstanceToBerkeley: async (args: {}) => {
-    const Berkeley = Mina.Network(
-      "https://proxy.berkeley.minaexplorer.com/graphql"
-    );
+    const Berkeley = Mina.Network({
+      mina: "https://proxy.berkeley.minaexplorer.com/graphql",
+      archive: "https://api.minascan.io/archive/berkeley/v1/graphql",
+    });
     console.log("Berkeley Instance Created");
     Mina.setActiveInstance(Berkeley);
   },
@@ -100,7 +95,6 @@ const functions = {
         }
       );
       state.transaction = transaction;
-
     } catch (error) {
       console.log("Error in createGenerateAttestationTransaction: ", error);
     }
