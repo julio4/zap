@@ -1,23 +1,30 @@
 <a name="readme-top"></a>
-[![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/julio4/zap)
 
-<br />
-<div align="center" display="flex" flex-direction="row" justify-content="center" align-items="center">
-  <a href="https://minaprotocol.com/" style="margin-left: 55px">
+[![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/julio4/zap) [![Live Demo](https://img.shields.io/website?down_color=lightgrey&down_message=offline&style=for-the-badge&up_message=online&url=https%3A%2F%2Fmina-zap.vercel.app)](https://mina-zap.vercel.app/)
+
+# Welcome to ZAP 🚀
+
+<div align="center">
+  <a href="https://minaprotocol.com/">
     <img src="assets/mina-logo.png" alt="Mina Protocol" width="80" height="80">
   </a>
 </div>
 
-<p>
-ZAP aims to be the first Zero-Knowledge Attestation Protocol on Mina, allowing protocols to verify statements about anything without revealing unnecessary information.
-ZAP is module-based, meaning that anyone can plug in an "oracle", either centralized or decentralized, as a source of truth for the statement.
-Currently, we have implemented a centralized oracle that queries AirStack's API to verify the statement, signs the result and returns it to the user, and we plan to release a decentralized version in the future alongside with others kind of data providers (such as web2 proof: email auths, social medias, ...).
-</p>
+ZAP aims to be the **first Zero-Knowledge Attestation Protocol on Mina**, enabling secure and private verification processes. Our protocol is flexible, with module-based construction for easy integration of various oracles.
 
-## Additional Resources
+Currently, ZAP features a **centralized oracle** interacting with AirStack's API for robust attestations. Future updates will introduce a **decentralized oracle**, expanding our data providers' network to include **web2 proof mechanisms**.
 
-For those interested in getting hands-on with ZAP or exploring more about the protocol, here are some quick links:
+## 🌟 Highlights
+- **First of its kind on Mina Protocol**
+- **Module-based design** for easy oracle integration
+- **Privacy-centric** attestations with zero-knowledge proofs
 
-- **Full Documentation:** You can find the detailed documentation of ZAP [here](https://zap-docs.vercel.app/).
-- **Video Example:** Watch a video demonstration of ZAP in action [here](https://zap-docs.vercel.app/guides/user).
-- **Testing Locally:** For instructions on how to set up and test ZAP locally, please see our [Local Testing Guide](https://zap-docs.vercel.app/guides/localenv).
+## 🚀 Getting Started
+Visit our live application at [https://mina-zap.vercel.app/](https://mina-zap.vercel.app/) to test and experience ZAP firsthand.
+
+## 🔍 Explore More
+
+- **Full Documentation:** [ZAP Docs](https://zap-docs.vercel.app/)
+- **Video Demo:** [See ZAP in Action](https://zap-docs.vercel.app/guides/user)
+- **Local Testing:** [Set Up Guide](https://zap-docs.vercel.app/guides/localenv)
+
