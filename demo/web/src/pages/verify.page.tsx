@@ -9,7 +9,7 @@ import { Search } from "../components/Search";
 import { decodeAttestationNote } from "../utils/createBase64Attestation";
 import { AttestationNote } from "../types";
 import { Zap } from "../../../../zap/build/Zap.js";
-import { Mina, ProvablePure, PublicKey, UInt32 } from "o1js";
+import { Mina, Provable, ProvablePure, PublicKey, UInt32 } from "o1js";
 import { stringFromFields } from "o1js/dist/node/bindings/lib/encoding";
 
 type HomeProps = {};
@@ -105,8 +105,9 @@ export default function Home(props: HomeProps): JSX.Element {
 
   const verifyAttestation = (events: MinaEvent[], hashAttestation: string) => {
     for (let event of events) {
-      let valueArray = event.event.data.value;
-      const currentHash = valueArray[1][1]
+      let valueArray: Provable<any> = event.event.data;
+      
+      const currentHash = (valueArray as any).value[1][1]
       if (BigInt(currentHash) === BigInt(hashAttestation)) {
         console.log("AttestationHash Found!")
         return true;
