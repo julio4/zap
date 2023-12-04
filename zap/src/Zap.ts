@@ -1,9 +1,9 @@
 import {
   Field,
   SmartContract,
-  state,
+  state,  // eslint-disable-line
   State,
-  method,
+  method, // eslint-disable-line
   DeployArgs,
   Permissions,
   PublicKey,
