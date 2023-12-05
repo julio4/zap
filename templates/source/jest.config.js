@@ -1,13 +1,11 @@
-// jest.config.js
+/** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
-  globals: {
-    'ts-jest': {
-      tsconfig: 'tsconfig.json',
-    },
+  moduleNameMapper: {
+    axios: 'axios/dist/node/axios.cjs',
   },
 };

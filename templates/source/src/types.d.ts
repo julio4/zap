@@ -1,4 +1,5 @@
 export type ZapRequestParams = {
+  mina_address: string;
   args: {
     [key: string]: string;
   }
@@ -14,7 +15,8 @@ type SourceResponseBody<T> = {
   route: string;
 };
 // Supported response types
-export type ZapResponse = SourceResponseBody<number>;
+export type SupportedValue = number;
+export type ZapResponse = SourceResponseBody<SupportedValue>;
 
 export type Route = {
   route: string;
@@ -33,10 +35,14 @@ export type ZapHashedResponse = SourceHashedResponse<number>;
 /*
  * Signed Response Object
  * This is what should be sent and received by the client
+ * The integrity of `data` is ensured by the `signature` and `publicKey`
  */
 export type SignedResponse<T> = {
-  data: T; 
+  data: T;
   signature: string;  // Signature.toBase58()
   publicKey: string;  // PublicKey.toBase58()
 };
+
+// This is the response that the client will receive
+// In it, data contains the value and the corresponding route (with args)
 export type ZapSignedResponse = SignedResponse<ZapHashedResponse>;
