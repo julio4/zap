@@ -19,9 +19,15 @@ import {
   verifyPoapHolder,
   verifyXMTPenabled,
 } from './endpoints.js';
-
+import { init } from "@airstack/node";
 import * as dotenv from 'dotenv';
+
 dotenv.config();
+if (!process.env.AIRSTACK_API_KEY) {
+  throw new Error('AIRSTACK_API_KEY not set');
+}
+
+init(process.env.AIRSTACK_API_KEY);
 
 /**
  * Returns a Koa application instance with middleware and routes configured.
