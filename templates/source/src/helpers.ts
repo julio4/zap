@@ -10,7 +10,6 @@ import {
 } from "o1js";
 
 import {
-  ZapRequestParams,
   ZapResponse,
   ZapHashedResponse,
   ZapSignedResponse,
@@ -18,13 +17,12 @@ import {
 
 export const signResponse = (
   res: ZapResponse,
-  routeParams: ZapRequestParams,
   privateKey: PrivateKey
 ): ZapSignedResponse => {
   const publicKey = privateKey.toPublicKey().toBase58();
 
   // Compute the hash of the route and format the response data
-  const data = hashResponse(res, routeParams.args);
+  const data = hashResponse(res);
 
   const signature = Signature.create(
     privateKey,
@@ -47,15 +45,9 @@ export const verifyResponseSignature = (res: ZapSignedResponse): boolean => {
 };
 
 export const hashResponse = (
-  res: ZapResponse,
-  args: ZapRequestParams["args"]
+  res: ZapResponse
 ): ZapHashedResponse => {
-  const route = {
-    path: res.route,
-    args: args,
-  };
-
-  const routeAsFields: Field[] = Encoding.stringToFields(JSON.stringify(route));
+  const routeAsFields: Field[] = Encoding.stringToFields(JSON.stringify(res));
   const hashRoute: Field = Poseidon.hash(routeAsFields);
 
   return {
