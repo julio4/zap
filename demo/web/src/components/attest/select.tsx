@@ -99,11 +99,10 @@ const SelectStep = () => {
       signature: attest.ethereumWallet.signature,
       args: statement.request.args,
     };
-
     try {
       const response = await axios.post(
         `${ORACLE_ENDPOINT}${statement.request.route}`,
-        request_data
+        request_data,
       );
 
       const body = response.data as SignResponse;

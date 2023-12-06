@@ -1,7 +1,12 @@
 export type AirstackTokenBalance = {
-  TokenBalance: {
-    formattedAmount: number;
-  } | null;
+  TokenBalances: {
+    TokenBalance: Array<{
+      token: {
+        id: string;
+      };
+      formattedAmount: number;
+    }>;
+  };
 };
 
 export type AirstackPoapHolder = {

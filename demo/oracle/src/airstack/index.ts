@@ -1,4 +1,5 @@
-import { request, gql } from 'graphql-request';
+import { request, gql, GraphQLClient } from 'graphql-request';
+import util from 'util';
 import {
   AirstackEnsHolder,
   AirstackNFTSaleTransactions,
@@ -10,32 +11,21 @@ import {
   BlockchainName,
 } from './types';
 import Mock from './mocked.js';
-import { fetchQuery } from '@airstack/node';
+import { config } from "dotenv";
 
+config();
+const AIRSTACK_API_KEY = process.env.AIRSTACK_API_KEY;
 import { AIRSTACK_ENDPOINT, defaultBlockchain } from './config.js';
 
-interface QueryResponse {
-  data?: any;
-  error?: Error;
+if (!AIRSTACK_API_KEY) {
+  throw new Error('Missing AIRSTACK_API_KEY');
 }
 
-interface Data {
-  Wallet: Wallet;
-}
-
-interface Error {
-  message: string;
-}
-
-interface Wallet {
-  socials: Social[];
-  addresses: string[];
-}
-
-interface Social {
-  dappName: "lens" | "farcaster";
-  profileName: string;
-}
+const graphQLClient = new GraphQLClient(AIRSTACK_ENDPOINT, {
+  headers: {
+    Authorization: AIRSTACK_API_KEY,
+  },
+});
 
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -61,7 +51,7 @@ export async function getBalance(
     throw new Error('No token specified');
   }
 
-  const balanceQuery = `
+  const balanceQuery = gql`
     query MyQuery {
       TokenBalances(
         input: {
@@ -82,15 +72,12 @@ export async function getBalance(
     }
   `;
 
-  console.log('query: ', balanceQuery);
-  const { data, error }: QueryResponse = await fetchQuery(balanceQuery);
-
-  if (error) {
-    throw new Error(error.message);
+  try {
+    const res = await graphQLClient.request<AirstackTokenBalance>(balanceQuery);
+    return res.TokenBalances.TokenBalance[0].formattedAmount || 0;
+  } catch (e) {
+    throw new Error((e as Error)?.message)
   }
-  console.log('data: ', data);
-  return data.TokenBalances.TokenBalance?.formattedAmount || 0;
-  // return res.TokenBalance?.formattedAmount || 0;
 }
 
 export async function isPoapHolder(
@@ -356,13 +343,3 @@ export async function getNftSaleVolume(owner: string): Promise<number> {
 
   return totalVolume;
 }
-
-const regularQuery = async (query: any) => {
-  const { data, error }: QueryResponse = await fetchQuery(query);
-
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  console.log(data);
-};
