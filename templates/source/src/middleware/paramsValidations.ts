@@ -13,23 +13,25 @@ export const validateParams = (
 ) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    next(new Error(
-      "Validation error:\n" +
-        errors
-          .formatWith(
-            (error) =>
-              "- " +
-              (error.type === "field"
-                ? ` (${(error as FieldValidationError).path} with value '${
-                    (error as FieldValidationError).value
-                  }'):`
-                : "") +
-              " " +
-              error.msg
-          )
-          .array()
-          .join("\n")
-    ));
+    next(
+      new Error(
+        "Validation error:\n" +
+          errors
+            .formatWith(
+              (error) =>
+                "- " +
+                (error.type === "field"
+                  ? ` (${(error as FieldValidationError).path} with value '${
+                      (error as FieldValidationError).value
+                    }'):`
+                  : "") +
+                " " +
+                error.msg
+            )
+            .array()
+            .join("\n")
+      )
+    );
   }
   next();
 };
@@ -45,7 +47,7 @@ export const validationErrorHandler = (
   } else {
     next(err);
   }
-}
+};
 
 export const minaAddress = body("mina_address")
   .notEmpty()
@@ -61,6 +63,7 @@ export const idArg = body("args.id")
   .isInt()
   .withMessage("arg.id must be an integer");
 
+// Example of a argument validation
 export const ethereumAddressArg = body("args.ethereum_address")
   .notEmpty()
   .withMessage("arg.ethereum_address is required")
