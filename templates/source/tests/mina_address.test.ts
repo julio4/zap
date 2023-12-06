@@ -1,7 +1,7 @@
 import request from "supertest";
-import app from "../src/app"; // Adjust the path accordingly
+import app from "../src/app";
 
-describe("Core", () => {
+describe("mina_address", () => {
   it("mina_address missing", async () => {
     const res = await request(app).get("/api").send({});
     expect(res.status).toBe(400);
