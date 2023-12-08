@@ -1,5 +1,162 @@
 # Implement a ZAP Source
 
-> This part is currently work in progress
+In this section, we will see how you can implement your own [ZAP Source](../concepts/ZAPSource)
+using the ZAP Source Template that you can find in the repo at `./templates/source`.
+If you didn't read the [ZAP Source](../concepts/ZAPSource) section, you should do it before continuing reading this section!
 
-In this section, we will see how you can implement your own ZAP Source.
+## Prerequisites and Setup
+
+The template is a express.js application, so you need to have [Node.js](https://nodejs.org/en/) installed with npm.
+
+You can copy the `./templates/source` directory and install the dependencies with `npm install`.
+
+Rename the `.env.example` file to `.env` and follow the instructions in the next section to configure the source keys.
+
+## Configuration of the Source keys
+
+You need to generate a new key pair for the source. You can do this by running `npm run generate-keys` in the source directory.
+
+Example output:
+
+```bash
+PRIVATE KEY:  EKEmMc9T7hr11udYGZmHCi9arLAbBCAg2A3J4KZyodeEaLtRaRsC
+PUBLIC KEY:   B62qkrTgjqBTjpb5GNUPhso42DFTgA1axmPJgssbD7GJRsA5fCRdLCf
+```
+
+You can fill in the `PRIVATE_KEY` variable in the `.env` file.
+The public key can be derived from the private key, so you don't need it.
+But you may save it somewhere as the public key is necessary to register the source to ZAP.
+
+You should be able to run the source with `npm run dev` by now.
+
+## Architecture
+
+You can find different files and folders in the template `src` directory:
+
+```bash
+src
+├── app.ts
+├── controllers
+│   └── exampleController.ts
+├── endpoints
+│   ├── exampleEndpoints.ts
+│   └── index.ts
+├── helpers.ts
+├── index.ts
+├── middlewares
+│   ├── paramsValidations.ts
+│   └── zapMiddleware.ts
+├── services
+│   └── randomService.ts
+└── types.d.ts
+```
+
+### Endpoints
+
+Endpoints are used to define the available routes of the source and the controllers that will handle the requests.
+They are registered in the `endpoints/index.ts` file as group.
+
+For instance the `exampleEndpoints.ts` file defines the `/api/example/*` routes.
+
+### Controllers
+
+Controllers are used to handle the requests, get the data from the services, optionally format the data and send the response.
+
+The `exampleController.ts` file is an example of a controller that handles the `/api/example/*` routes and uses the `RandomService` to return the requested data.
+
+Controllers functions **must** return a `Promise<SupportedValue>` with `res.json(value)`.
+Without the `res.json` call, the response will not be signed and the request will fail.
+
+### Services
+
+Services are used to implement the logic of getting the external data.
+
+The `RandomService` is an example of a service that gets data from the external API at `https://fakerapi.it/api/`. It uses `axios` to make HTTP requests, but feel free to use whatever you need.
+
+### Middlewares
+
+Middleware are used to add specific logic to the routes.
+
+For instance, the `zapMiddleware` is registered on all routes and is used to sign the response with the source private key and ensure that both requests and responses are following the ZAP interface.
+
+The `paramsValidations` are used to validate the parameters of the request, see the [Parameters Validation](#parameters-validation) section for more details.
+
+If you need to add specific checks for multiple routes, you can create a middleware and register it in your endpoints.
+
+For example, if you want the user to authenticate with an ethereum address, you can create a middleware that checks if the `ethereum_signature` is valid and authenticate the user with the `ethereum_address` parameter.
+That way you can provide authenticated data about a specific ethereum user without the need to add it as argument (thus, allowing the use of attestations for theses endpoints with the ethereum address as private inputs).
+
+### Others
+
+The `helpers.ts` file contains some helper functions that can be used in the controllers.
+The `types.d.ts` file contains the typescript types that are used in the source.
+
+They will soon move in a dedicated `zap` package.
+The main goal is to provide a common interface for both sources and frontends.
+You don't have to use them, but they can be useful.
+
+## Parameters Validation
+
+In ZAP, every parameters/arguments of the endpoints are defined inside the `args` object of the request body.
+This is to ensure that the response is signed with the same parameters that were used to make the request so that no one can tamper some data by modifying the parameters.
+
+For parameters validation, we use the [express-validator](https://express-validator.github.io/docs/) library.
+
+When adding new endpoints, it is important to add parameters validation middlewares to the routes and always end the route with the `validateParams`.
+
+First, you need to define the parameters validation middlewares in the `middlewares/paramsValidations.ts` file.
+
+Let's say we want to add the `/nb` endpoint that takes an id integer argument. We can define the validation middleware as follow:
+
+```typescript
+export const idArg = body("args.ethereum_address")
+  .notEmpty()
+  .withMessage("arg.ethereum_address is required")
+  .isEthereumAddress()
+  .withMessage("arg.ethereum_address must be a valid ethereum address");
+```
+
+Then, for each validation middleware, you need to add it to the route and end the route with the `validateParams` middleware.
+For example, to add the `/nb` endpoint, you can do the following:
+
+```typescript
+router.get('/nb', idArg, <additionnal_validators...>, validateParams, getNumber);
+```
+
+And finally, you can safely use the validated parameters in the `getNumber` controller function:
+
+```typescript
+const id = parseInt(req.body.args.id);
+```
+
+## Testing the endpoints
+
+It's crucial to test the endpoints to ensure that the source is working as expected.
+We use `jest` and `supertest` to test the endpoints. The tests are located in the `tests` folder.
+
+Core tests such as `keys_signature.test.ts` and `request_params.test.ts` are already implemented and should not be modified as they are used to ensure that the source is following the ZAP interface.
+
+Endpoints tests are located in the `tests/endpoints` folder. You can add your own tests for your endpoints in this folder.
+You can follow the `example/nb.tests.ts` file to see how to test your endpoints.
+
+Verify the tests with `npm run test`.
+
+## Quick guide to implement a new endpoint
+
+- Define the `path` and required `args`. This constitute the endpoint route.
+- Register the endpoint: Either create a new endpoints file or add the endpoint to an existing one in the `endpoints` folder. (register the endpoint in the `endpoints/index.ts` file if you create a new endpoints file)
+- Add the parameters validation middlewares from `middlewares/paramsValidations.ts` to the route and end the route with the `validateParams` middleware.
+- Create the controller function in the `controllers` folder. Be sure to return a `Promise<SupportedValue>` with `res.json(value)`.
+- Optionnaly create a service in the `services` folder to get the data from an external source. The service is called from the controller.
+- Add tests for the endpoint in the `tests/endpoints` folder.
+
+## Build and deploy
+
+You can build the source with `npm run build`, it will create a `dist` folder with the compiled source.
+You can start a production server with `npm run start`.
+
+You can deploy the source on any server that can run node.js applications.
+
+Be sure to keep your private key secret and never commit the `.env` file in a public repository.
+
+> Registration of new sources is not yet implemented in ZAP, stay tuned!

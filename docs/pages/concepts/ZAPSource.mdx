@@ -1,5 +1,7 @@
 #### ZAP Source
 
+> Need to build a ZAP Source? Check out the [ZAP Source Guide](../guides/source)!
+
 Currently, HTTP requests inside a proof is **NOT-SUPPORTED** by Mina.
 
 We need a workaround: The *ZAP Sources*! They are a subset of the possible sources that can be used during the off-chain proof generation.
@@ -17,3 +19,51 @@ The user generate a proof that he has more than a specific amount on his bank ac
 
 > This is the only part where there is a privacy issue: The ZAP Source can see the user's bank account balance and authentification token. 
 > We are researching a solution to this problem and open to suggestions/ideas!
+
+## Interface of a ZAP Source
+
+Each request body must be of type `ZapRequestParams` and contain the `mina_address` of the user that made the request:
+
+```typescript
+export type ZapRequestParams = {
+  mina_address: string;
+  args?: {
+    [key: string]: any;
+  }
+}
+```
+
+The `args` object contains the arguments of the request. The `args` object is optional and can be omitted if the endpoint doesn't require any arguments.
+The `path` of the request correspond to the full path of the endpoint, for example `/api/example/number`.
+
+The `args` and `path` are used to sign the response with the source private key and ensure that the response is not tampered.
+This can be represented as an object of type `Route`:
+
+```typescript
+export type Route = {
+  path: string;
+  args?: {
+    [key: string]: any;
+  }
+};
+```
+
+The returned value must be of type `SupportedValue` (currently, only `number` is supported), which is the data returned by the endpoint and that will be used inside the attestation and verified in the ZAP contract.
+But this value must be wrapped in an object of type `ZapSignedResponse` with a signature of the response data with the source private key and the `hashRoute`.
+
+That way, for a given Route, value and signature, we can verify that the value comes from the oracle of public key `P` by computing `hash(Route.path, Route.args)` and checking that `signature == sign({value, hash(Route.path, Route.args)}, P)`.
+
+The definitive response is of type `ZapSignedResponse`:
+
+```typescript
+type ZapSignedResponse = {
+    data: {
+      value: number;
+      hashRoute: hash(Route.path, Route.args);
+    };
+    signature: string;
+    publicKey: string;
+}
+```
+
+The express.js `zapMiddleware` of the source template can be used to automatically wrap `SupportedValue` responses in a `ZapSignedResponse` object. Follow the [ZAP Source Guide](../guides/source) for more information.

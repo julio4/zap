@@ -1,6 +1,6 @@
 import express, { Router } from 'express';
 import { getNumber } from '../controllers/exampleController';
-import { idArg, validateParams } from '../middleware/paramsValidations';
+import { idArg, validateParams } from '../middlewares/paramsValidations';
 
 const router: Router = express.Router();
 

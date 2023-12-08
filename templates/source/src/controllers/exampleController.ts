@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import RandomService from '../service/randomService';
+import RandomService from '../services/randomService';
 import { SupportedValue, ZapRequestParams } from '../types';
 
 export const getNumber = async (req: Request<ZapRequestParams>, res: Response<SupportedValue>) => {
