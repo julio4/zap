@@ -8,7 +8,6 @@
  */
 
 import {
-  Field,
   PrivateKey,
   Mina,
   AccountUpdate,

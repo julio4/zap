@@ -1,12 +1,5 @@
 import { ParameterizedContext, Next } from 'koa';
-import {
-  PrivateKey,
-  Signature,
-  Encoding,
-  Field,
-  PublicKey,
-  Poseidon,
-} from 'o1js';
+import { PrivateKey, Signature, Encoding, Field, Poseidon } from 'o1js';
 
 type body = {
   value: number;
@@ -19,6 +12,18 @@ type SignResponse = {
   publicKey: string; // PublicKey.toBase58()
 };
 
+/**
+ * Signs a response with a private key.
+ *
+ * This function takes the Koa context, extracts the body, and signs
+ * the specified fields (value and route). It uses the private key
+ * from environment variables to generate a signature and public key.
+ * This signature is then appended to the response.
+ *
+ * @param {ParameterizedContext} ctx - Koa context containing the response data.
+ * @param {Next} next - The next middleware function in the Koa stack.
+ * @returns {Promise<void>} A promise that resolves when the function has completed.
+ */
 export async function signResponse(ctx: ParameterizedContext, next: Next) {
   await next();
 
@@ -54,16 +59,4 @@ export async function signResponse(ctx: ParameterizedContext, next: Next) {
     signature,
     publicKey,
   } as SignResponse;
-
-  // Example of how to verify the signature
-  // const response = ctx.body as SignResponse;
-  // const response_data_fields = response.data.map((field_string) => Field.from(field_string));
-  // const verify = Signature.fromBase58(response.signature).verify(PublicKey.fromBase58(response.publicKey), response_data_fields);
-  // const response_data_fields_as_string = response_data_fields.map((field) => field.toString());
-
-  // console.log(
-  //   'value:', response_data_fields_as_string[0],
-  //   'hashRoute:', Field.from(response_data_fields_as_string[1]).toString(),
-  //   'verified:', verify.toBoolean()
-  // );
 }
