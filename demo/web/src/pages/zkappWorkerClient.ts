@@ -1,11 +1,11 @@
-import { fetchAccount, PublicKey, Field } from "o1js";
+import { fetchAccount, PublicKey } from "o1js";
 
 import type {
   ZkappWorkerRequest,
   ZkappWorkerReponse,
   WorkerFunctions,
 } from "./zkappWorker";
-import { Condition, OracleRequest, StatementCondition } from "../types";
+import { Condition } from "../types";
 
 export default class ZkappWorkerClient {
   // ---------------------------------------------------------------------------------------
@@ -78,7 +78,13 @@ export default class ZkappWorkerClient {
     return result;
   }
 
-  async setOraclePublicKey({senderKey58, newOraclePublicKey58} : {senderKey58: string, newOraclePublicKey58: string}) {
+  async setOraclePublicKey({
+    senderKey58,
+    newOraclePublicKey58,
+  }: {
+    senderKey58: string;
+    newOraclePublicKey58: string;
+  }) {
     await this._call("setOraclePublicKey", {
       senderKey58: senderKey58,
       newOraclePublicKey58: newOraclePublicKey58,

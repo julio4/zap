@@ -10,7 +10,7 @@ import {
   BlockchainName,
 } from './types';
 import Mock from './mocked.js';
-import { AIRSTACK_ENDPOINT, defaultBlockchain } from './config';
+import { AIRSTACK_ENDPOINT, defaultBlockchain } from './config.js';
 
 const mockMiddleware = (args: any[], fn: (...args: any[]) => any) =>
   (Mock as any)[fn.name](...args);

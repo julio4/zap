@@ -4,7 +4,7 @@ const defaultBlockchain = 'ethereum';
 
 // pagination limits, API keys, etc.
 
-module.exports = {
+export {
   AIRSTACK_ENDPOINT,
   defaultBlockchain,
 };

@@ -1,5 +1,8 @@
 import { JsonRpcSigner } from "ethers";
-import { Field, PublicKey, Signature } from "o1js";
+
+declare global {
+  interface Window { ethereum: any; mina: any; }
+}
 
 export type MinaWallet = {
   isConnected: boolean;

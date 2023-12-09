@@ -8,7 +8,6 @@ import ZkappWorkerClient from "../../pages/zkappWorkerClient";
 import { PublicKey } from "o1js";
 import { MinaWallet } from "../MinaWallet";
 import { EthereumWallet } from "../EthereumWallet";
-import Link from "next/link";
 
 async function timeout(seconds: number): Promise<void> {
   return new Promise<void>((resolve) => {
@@ -40,9 +39,13 @@ const Attest = () => {
         await zkappWorkerClient.compileContract();
         console.log("zkApp compiled");
 
-        const zkappAddress = process.env["ZK_APP"];
+        const zkappAddress = process.env["ZK_APP"] || "";
+        if (zkappAddress === "") {
+          console.log("zkApp address not set");
+          return;
+        }
         console.log("zkAppAddress", zkappAddress);
-        const zkappPublicKey = PublicKey.fromBase58(zkappAddress!);
+        const zkappPublicKey = PublicKey.fromBase58(zkappAddress);
         await zkappWorkerClient.initZkappInstance(zkappPublicKey);
 
         console.log('Getting zkApp state...');
