@@ -1,7 +1,7 @@
 import { ParameterizedContext, Next } from 'koa';
 import { ethers } from 'ethers';
 
-const normalizeAddress = (address: string) => {
+export const normalizeAddress = (address: string) => {
   return ethers.getAddress(address);
 };
 
@@ -32,13 +32,11 @@ export async function verifyEthereumSignature(
         throw new Error('Invalid signature');
       }
     }
-
     await next();
   } catch (error) {
     if (typeof error === 'object' && error !== null && 'message' in error) {
       ctx.throw(401, (error as { message: string }).message);
-    }
-    else {
+    } else {
       ctx.throw(401, 'Unauthorized');
     }
   }

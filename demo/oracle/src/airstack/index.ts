@@ -9,23 +9,117 @@ import {
   AirstackTokenBalance,
   AirstackXmtpEnabled,
   BlockchainName,
+  TokenBalance,
+  TokenBalancesResponse,
 } from './types';
 import Mock from './mocked.js';
 import { AIRSTACK_ENDPOINT, defaultBlockchain } from './config.js';
-import { config } from "dotenv";
+import { config } from 'dotenv';
 config();
 
-const AIRSTACK_API_KEY = process.env["AIRSTACK_API_KEY"];
+const AIRSTACK_API_KEY = process.env['AIRSTACK_API_KEY'];
 
 if (!AIRSTACK_API_KEY) {
   throw new Error('Missing AIRSTACK_API_KEY');
 }
 
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockMiddleware = (args: any[], fn: (...args: any[]) => any) =>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (Mock as any)[fn.name](...args);
+
+export async function getAllTokens(owner: string): Promise<TokenBalance[]> {
+  const balanceQueryPolygon = gql`
+      query TokenBalancesPolygon {
+        TokenBalances(
+          input: {
+            filter: {
+              owner: { _eq: "${owner}" }
+              formattedAmount: { _gt: 0 }
+            }
+            blockchain: polygon
+          }
+        ) {
+          TokenBalance {
+            tokenAddress
+            formattedAmount
+            token {
+              id
+              isSpam
+              logo {
+                small
+              }
+              name
+            }
+          }
+        }
+      }
+    `;
+
+  const balanceQueryEthereum = gql`
+      query TokenBalancesEthereum {
+        TokenBalances(
+          input: {
+            filter: {
+              owner: { _eq: "${owner}" }
+              formattedAmount: { _gt: 0 }
+            }
+            blockchain: ethereum
+          }
+        ) {
+          TokenBalance {
+            tokenAddress
+            formattedAmount
+            token {
+              id
+              isSpam
+              logo {
+                small
+              }
+              name
+            }
+          }
+        }
+      }
+    `;
+
+  try {
+    if (!AIRSTACK_API_KEY) {
+      throw new Error('Missing AIRSTACK_API_KEY');
+    }
+    const graphQLClient = new GraphQLClient(AIRSTACK_ENDPOINT, {
+      headers: {
+        Authorization: AIRSTACK_API_KEY,
+      },
+    });
+
+    const resPolygon = await graphQLClient.request<TokenBalancesResponse>(
+      balanceQueryPolygon
+    );
+
+    const resEthereum = await graphQLClient.request<TokenBalancesResponse>(
+      balanceQueryEthereum
+    );
+
+    // filter to keep only non-spam tokens
+    const tokensPolygon = resPolygon.TokenBalances.TokenBalance.filter(
+      (token) => !token.token.isSpam
+    );
+    const tokensEthereum = resEthereum.TokenBalances.TokenBalance.filter(
+      (token) => !token.token.isSpam
+    );
+
+    const tokens = tokensPolygon.concat(tokensEthereum);
+
+    // sort by balance
+    tokens.sort((a, b) => b.formattedAmount - a.formattedAmount);
+
+    return tokens;
+  } catch (e) {
+    console.log('Error in getBalances: ', e);
+    throw new Error((e as Error)?.message);
+  }
+}
 
 export async function getBalance(
   owner: string,
@@ -76,9 +170,15 @@ export async function getBalance(
       },
     });
     const res = await graphQLClient.request<AirstackTokenBalance>(balanceQuery);
-    return res.TokenBalances.TokenBalance[0].formattedAmount || 0;
+
+    if (!res.TokenBalances.TokenBalance) {
+      console.log('No token balance found');
+      return 0;
+    }
+
+    return res.TokenBalances.TokenBalance[0].formattedAmount;
   } catch (e) {
-    throw new Error((e as Error)?.message)
+    throw new Error((e as Error)?.message);
   }
 }
 

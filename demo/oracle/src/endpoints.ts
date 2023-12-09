@@ -1,6 +1,7 @@
 import { ParameterizedContext } from 'koa';
 
 import {
+  getAllTokens,
   getBalance,
   getNftSaleVolume,
   isEnsHolder,
@@ -12,6 +13,21 @@ import {
 } from './airstack/index.js';
 
 
+export async function getListBalances(ctx: ParameterizedContext) {
+  try {
+    const { address } = ctx.state;
+    // console ctx.state
+    console.log("state:", ctx.state);
+    const tokens = await getAllTokens(address);
+
+    ctx.body = {
+      value: tokens,
+      route: '/listBalances',
+    };
+  } catch (error) {
+    ctx.throw(404);
+  }
+}
 
 export async function getUserBalance(ctx: ParameterizedContext) {
   try {
