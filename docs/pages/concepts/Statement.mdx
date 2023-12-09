@@ -18,10 +18,9 @@ We can assign the values for each variables of a statement as a vector $v = (v_1
 We note $V$ the set of all possible vectors possible, $V = \mathbb{R}^n$. So $\forall v, v \in V$.
 
 The logic rules are represented as a set $\cal R$ of logical propositions.
-Each rule $r_i$ can involves any variables $v_i$ (atleast one), and can be expressed using logical operators ($\land$, $\lor$, $\lnot$) and comparison operators ($=$, $>$, $<$, $\geq$, $\leq$).
+Each rule $r_i$ can involves any variables $v_i$ (atleast one), and can only be expressed using logical operators ($\land$, $\lor$, $\lnot$) and/or comparison operators ($=$, $>$, $<$, $\geq$, $\leq$).
 
 The function $s$ can be defined as the following:
-
 $$
 s(v) =
 \begin{cases} 
@@ -31,16 +30,15 @@ s(v) =
 $$
 
 Example:
-
 $$
-n = 1, V = \{\text{age}\}, \cal R = \{r_1\} \text{ with } r_1 = \text{age} > 18
+n = 1, V = \{\text{age}\}, \cal R = \{r_1\} \text{ with } r_1 = "\text{age} > 18"
 $$
 
-In logic, a statement is named a **predicate**.
+A statement is analogous to a **predicate** in logic.
 
 Some observations:
 - If there is two rules that are mutually exclusive, then $s$ cannot be true for any $v$.
-- If there's a variable $v_i$ that is not used in any rule, then $s$ is equivalent to the a statement that does not contain $v_i$ but has the same set of rules.
+- If there's a variable $v_i$ that is not used in any rule, then $s$ is equivalent to the statement that does not contain $v_i$ but has the same set of rules.
 
 ### Zero-knowledge statement
 
@@ -51,3 +49,9 @@ We redefine the statement function $s$ as the prover that returns a new proof $p
 $$\large s: (V_{private}, V_{public}) \rightarrow P$$, with $P$ the set of all possible proofs of the statement $s$.
 
 We say that $p$ is an [Attestation proof](./Attestation).
+
+Example: We can rewrite the previous statement as
+
+$$
+n = 1, V_{private} = \{\text{age}\}, V_{public} = \emptyset, \cal R = \{r_1\} \text{ with } r_1 = "\text{age} > 18"
+$$

@@ -1,0 +1,19 @@
+#### ZAP Source
+
+Currently, HTTP requests inside a proof is **NOT-SUPPORTED** by Mina.
+
+We need a workaround: The *ZAP Sources*! They are a subset of the possible sources that can be used during the off-chain proof generation.
+Source only refers to the HTTP endpoints used to fetch the data.
+
+Zap Sources are web2 API. They expose endpoints that wraps specific HTTP requests and gets the result on behalf of the user.
+The response is signed with a pair of keys.
+
+This allow the user to make the HTTP request in an unsafe environment (outside of the proof) and use the response inside the proof.
+During the verification, the ZAP Source public key is used to verify the signature of the response, thus emulating an HTTP request inside a proof.
+
+Following the loan example, a `Bank` ZAP Source is deployed. The user makes a HTTP request to this source with his bank authentification token.
+The ZAP source relays the request to the bank, and send back the response signed with its private key.
+The user generate a proof that he has more than a specific amount on his bank account using the value returned by the source, and the proof is verified on-chain against the source public key.
+
+> This is the only part where there is a privacy issue: The ZAP Source can see the user's bank account balance and authentification token. 
+> We are researching a solution to this problem and open to suggestions/ideas!
