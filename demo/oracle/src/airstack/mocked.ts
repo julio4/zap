@@ -1,34 +1,34 @@
 import { randomInt } from 'crypto';
 
-const getBalance = (owner: string, token: string): number => {
+const getBalance = (): number => {
   return randomInt(100000);
 };
 
-const isPoapHolder = (owner: string, poapId: string): number => {
+const isPoapHolder = (): number => {
   return randomInt(2);
 };
 
-const isNftHolder = (owner: string, nftAddress: string): number => {
+const isNftHolder = (): number => {
   return randomInt(3);
 };
 
-const isXMTPenabled = (owner: string): number => {
+const isXMTPenabled = (): number => {
   return randomInt(2);
 };
 
-const isEnsHolder = (owner: string): number => {
+const isEnsHolder = (): number => {
   return randomInt(2);
 };
 
-const isLensHolder = (owner: string): number => {
+const isLensHolder = (): number => {
   return randomInt(2);
 };
 
-const isFarcasterHolder = (owner: string): number => {
+const isFarcasterHolder = (): number => {
   return randomInt(2);
 };
 
-const getUserNftVolumeSales = (owner: string): number => {
+const getUserNftVolumeSales = (): number => {
   return randomInt(100000);
 };
 

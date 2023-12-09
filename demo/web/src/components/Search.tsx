@@ -4,17 +4,24 @@ import { useRouter } from 'next/router';
 
 const Search = () => {
   const router = useRouter();
+  const formRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [search, setSearch] = useState<string>("");
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!search || search == "") return;
-
+    if (!search || search === "") return;
+  
     // TODO: validate search
     router.push('/verify?note=' + search);
   }
+
+  const handleDivClick = () => {
+    if (formRef.current) {
+      formRef.current.requestSubmit();
+    }
+  };
 
   const setFocus = () => {
     setIsOpen(true);
@@ -32,7 +39,7 @@ const Search = () => {
       }}
     >
       <form
-        onSubmit={handleSubmit}
+        ref={formRef} onSubmit={handleSubmit}
         onKeyUp={(e) => {
           if (e.key === "Escape") {
             setIsOpen(false);
@@ -41,7 +48,7 @@ const Search = () => {
         }}
         className="group flex h-6 w-6 items-center justify-center sm:justify-start md:h-auto md:w-80 md:flex-none md:rounded-lg md:py-2.5 md:pl-4 md:pr-3.5 md:text-sm md:ring-1 md:ring-slate-200 md:hover:ring-slate-300 dark:md:bg-slate-800/75 dark:md:ring-inset dark:md:ring-white/5 dark:md:hover:bg-slate-700/40 dark:md:hover:ring-slate-500 lg:w-96 z-50">
         {/* Search Icon */}
-        <div onClick={handleSubmit}>
+        <div onClick={handleDivClick}>
           <Magnify />
         </div>
 
