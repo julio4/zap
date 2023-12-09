@@ -74,3 +74,5 @@ export type AirstackNFTSaleTransactions = {
 export type AirstackResponse<T> = {
   data: T;
 };
+
+export type BlockchainName = 'ethereum' | 'polygon';

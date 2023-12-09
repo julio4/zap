@@ -4,15 +4,13 @@ import {
   AirstackNFTSaleTransactions,
   AirstackNftHolder,
   AirstackPoapHolder,
-  AirstackResponse,
   AirstackSocialsHolder,
   AirstackTokenBalance,
   AirstackXmtpEnabled,
+  BlockchainName,
 } from './types';
 import Mock from './mocked.js';
-
-const AIRSTACK_ENDPOINT =
-  process.env['AIRSTACK_ENDPOINT'] || 'https://api.airstack.xyz/gql/';
+import { AIRSTACK_ENDPOINT, defaultBlockchain } from './config';
 
 const mockMiddleware = (args: any[], fn: (...args: any[]) => any) =>
   (Mock as any)[fn.name](...args);
@@ -20,15 +18,15 @@ const mockMiddleware = (args: any[], fn: (...args: any[]) => any) =>
 export async function getBalance(
   owner: string,
   token: string,
-  blockchain: string
+  blockchain: BlockchainName
 ): Promise<number> {
   if (process.env['NODE_ENV'] === 'development') {
     return mockMiddleware([owner, token], getBalance);
   }
 
   if (!blockchain) {
-    console.log('No blockchain specified, defaulting to ethereum');
-    blockchain = 'ethereum';
+    console.log(`No blockchain specified, defaulting to ${defaultBlockchain}`);
+    blockchain = defaultBlockchain;
   }
 
   if (token == undefined) {
@@ -94,15 +92,15 @@ export async function isPoapHolder(
 export async function isNftHolder(
   owner: string,
   nftAddress: string, // address
-  blockchain: string // ethereum or polygon
+  blockchain: BlockchainName // ethereum or polygon
 ): Promise<number> {
   if (process.env['NODE_ENV'] === 'development') {
     return mockMiddleware([owner, nftAddress], isNftHolder);
   }
 
   if (!blockchain) {
-    console.log('No blockchain specified, defaulting to ethereum');
-    blockchain = 'ethereum';
+    console.log(`No blockchain specified, defaulting to ${defaultBlockchain}`);
+    blockchain = defaultBlockchain;
   }
 
   if (nftAddress == undefined) {
@@ -276,9 +274,9 @@ export async function getNftSaleVolume(owner: string): Promise<number> {
   if (process.env['NODE_ENV'] === 'development') {
     return mockMiddleware([owner], getNftSaleVolume);
   }
-  let cursor: string = ''; // initialize cursor
+  let cursor = ''; // initialize cursor
 
-  let totalVolume: number = 0; // initialize total amount
+  let totalVolume = 0; // initialize total amount
 
   while (true) {
     const totalNftVolumeQuery = gql`
