@@ -1,0 +1,55 @@
+This section aims to provides a high-level introduction to the use of Oracles on blockchain and how ZkOracles can solve some of the problems that are currently faced by Oracles.
+
+If you are already familiar with ZkOracles, feel free to skip directly to the [ZAP Overview](./)
+
+To make it easy to follow this introduction, we will take an example that will be used throughout this section: **Web3 loan with Web2 bank collatoral**.
+An user would like to take a loan from a dApp with collateral from his Web2 bank account.
+The dApp needs to verify his bank account balance on-chain, but the bank only provide a bank statement.
+
+### Oracle
+
+In the context of blockchains, an Oracle is a third-party service that brings external data to the blockchain.
+They acts as a bridge between the blockchain, that operates within a closed environment, and the outside world.
+Oracles are *interfaces* to the real world.
+
+However, Oracles on traditional blockchain comes with a few problems.
+
+##### The Availability problem
+
+As there are no way to predict at what specific time some data will be needed, Oracles need to continually update the state on the blockchain in order to stay available.
+
+For example, to operate a price feed on Ethereum, the Oracle needs to pay the gas fees for each `update` transaction, even if there's no usage of the price feed at that moment.
+This is exponentially expensive with the frequency of the update and with the size of the data.
+
+##### The Cooperation problem
+
+Oracle are a single point of trust, so it's crucial for users of an app to easily know what Oracle is used and what data is sent to it.
+The most trustless way would be Oracles operated by their web2 counterpart, but almost all of them are not willing to cooperate.
+
+In the case of the bank statement, the dApp would want to only trust the bank itself directly.
+But we doubt that bank would be willing to operate an Oracle by themselve.
+
+> For data that don't depend on a single source (i.e. a price feed), there is decentralized Oracles systems that allow multiple participants to ensure a maximal trustless setup. However this is currently not possible for most of the web2 data.
+
+##### The Privacy problem
+
+The last and most important point is that Oracle are not privacy-preserving: if an Oracle is used to provide some kind of data about a specific user, both the request and the response are public on the blockchain.
+
+In the context of the loan, if the bank operates an Oracle that provides the bank account balance of a user, the user's bank account balance would be public on the blockchain.
+
+### ZkOracles
+
+Thanks to the zero-knowledge primitives of Mina, we can build a new kind of Oracle named **ZkOracle**.
+A ZkOracle splits the Oracle in two parts:
+
+- Off-chain proof: This prove that some data was fetched from a specific source, and additionally that some computation was done.
+- On-chain verification: This verify the proof and the validity of the data. That data is never actually posted on-chain, but attest that "the external data used for this computation was fetched from this specific source".
+
+ZkOracles allows to solve the problems of traditional Oracles:
+- Availability: Instead of having a continous feed, users can fetch for free the data at any time during the proof generation (off-chain)
+- Cooperation: A new trustless intermediary is introduced between the user and the web2 data source that analyze and sign web requests.
+- Privacy: Everything is done off-chain, so the data is never posted on-chain.
+
+In the case of the loan, the user generate a proof in which he proves that he made a HTTP request to his bank and that the response value is greater than a specific amount provided by the loan dApp.
+This attest that the user has access to a bank account with more than a specific amount, without revealing the actual amount nor any private information about his bank account.
+This attestation is enough for the loan dApp to ensure that the user has the required collateral while preserving the user privacy and solving the cooperation problem.

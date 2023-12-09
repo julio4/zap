@@ -1,13 +1,51 @@
 # Overview
 
-ZAP is the first Zero-Knowledge Attestation Protocol built on Mina. It's a **module-based**, **scalable** and **intuitive** protocol that enables developers to build privacy-preserving applications on Mina.
+ZAP is the first Zero-Knowledge Attestation Protocol built on Mina. It's a **module-based**, **scalable** and **intuitive** protocol that enables developers to build privacy-preserving applications on Mina by using ZkOracles.
+
+At the core, ZAP is a **standardization of the usage of ZkOracles by providing a robust attestation-verification system** for zkApps on Mina.
+
+If you are not familiar with ZkOracles please read the [What are (Zk)Oracles?](/intro) introduction first.
+
+### What is ZAP?
+
+Mina unlocks a variety of new applications thanks to the use of zero knowledge.
+Specifically, there's a lot of new potential [zkApp's use cases](./#use-cases) by being able to verify some kind of attestation based on private datas from *outside of Mina*.
+
+ZkOracles solves most of the current problems faced by Oracles while providing a trustless and privacy-preserving way to interact with the real world.
+But each zkApp has to implement its own ZkOracles verification system which is a complex and time-consuming task.
+
+There's less separation of concerns that adds unnecessary complexity: this often leads to less secure and less reliable protocols because of the lack of standardization.
+
+We want to separate the complexity of using ZkOracles so that:
+- zkApps developers can focus on building their application without having to worry about the Oracle part.
+- Oracle developers can focus on building ZAP sources without having to worry about the Zk part.
+- Users can use zkApps while having a standard, transparent and comprehensible format of the process.
+
+For this, ZAP introduces a new **attestation-verification standard:** it aims to be another layer of abstraction on top of Mina that allows developers to easily create and use zk-attestations on Mina about any kind of data with minimal effort and maximum flexibility.
+It abstracts the whole Oracle systems to reduce the complexity of using ZkOracles.
+
+With ZAP, zkApps developers can focus on the logic rules by creating statements, and users can use zkApps by creating attestations of these statements.
+You can let ZAP handle the rest!
+
+Currently, we need to restrict the potential data sources by using only ZAP Sources.
+ZAP provides a default `Airstack Ethereum Source` as a first example, but anyone can build and use new ZAP Sources.
+Please refers to the [ZAP Sources](.) page.
+
+#### Contributing to the whole Mina Ecosystem
+
+ZAP is a non-profit solution and operates as a public good for the Mina ecosystem.
+
+ZAP aims to be integrated in many different projects in the Mina ecosystem.
+We specifically want to focus on the following points:
+1. **Streamlined Development:** ZAP simplifies the creation of zero-knowledge attestation about any kind of data on Mina, making development of complex zkApps more accessible for developers.
+2. **Improved User Experience and Safety:** ZAP has a strong focus on user experience. It aims to provide an open-source attestations explorer, allowing both users and developers to easily interact and verify attestation's informations without the need to build extra infrastructures.
 
 ### What is a Zero-Knowledge Attestation ?
 
-To fully understand what is the goal behind ZAP, we need to understand what is a statement, an attestation, and a zero-knowledge proof.
+To fully understand what is the abstraction behind ZAP, we need to understand what is a statement, an attestation, and a zero-knowledge proof.
 
 - [Statement](./definitions/Statement): a logical expression that contains one or more variables and that can be either true or false.
-- [Attestation](./definitions/Attestation): the truth value of a statement when all the variables are given a value.
+- [Attestation](./definitions/Attestation): the truth value of a statement when all the variables of that statement are given a value.
 
 Zero-Knowledge Proofs are a novel type of cryptographic proofs that have two components: a **prover** and a **verifier**.
 The prover generates a proof based on both private and public inputs, and the verifier is able to verify the validity of the proof based on the public inputs only.
@@ -19,37 +57,14 @@ This is a significant step in the direction of privacy-preserving applications, 
 
 ### Mina Protocol
 
-Mina is a lightweight and efficient blockchain, with a focus on privacy with the ability to develop **zkApps**
+Mina is a lightweight and efficient blockchain, with a focus on privacy with the ability to develop **zkApps**.
 
 Here's the key characteristics of Mina:
 1. **Lightweight Blockchain:** Mina's constant-sized blockchain ensures scalability.
-2. **Zero-knowledge primitives:** Mina possess all the needed zk-SNARKs primitives in order to easily build zkApps.
+2. **Zero-knowledge primitives:** Mina possess all the needed cryptographic primitives in order to easily build zkApps.
 3. **Decentralized and Secure:** Mina's robust security and decentralization are critical for the reliability and trustless nature of any privacy preserving application.
 
 Mina provides a strong foundation that abstract lots of complex cryptography and blockchain concepts.
-
-### What is ZAP?
-
-Most of zkApps on Mina involve the verification of some kind of attestation based on private datas.
-But each zkApp has to implement its own oracle-contract verification system which is a complex time-consuming task.
-Additionaly, there's less separation of concerns that adds unnecessary complexity: this often leads to less secure and less reliable protocols because of the lack of standardization.
-
-**ZAP is the standardization of an attestation verification system for zkApps on Mina:** it aims to be another layer of abstraction on top of Mina that allows developers to easily create and use zk-attestations on Mina about any kind of data with minimal effort and maximum flexibility.
-It abstracts the complexity of handling private data (Oracle keys/Data validity/Conditions verifications) during the generation of the attestation and the verification of the proof.
-
-With ZAP, developers can focus on the logic rules of the statement and let ZAP handle the rest.
-
-ZAP provides a default `Airstack Ethereum Oracle` as a first example, but developers are free to implement and use their own data sources.
-From the ZAP point of view, oracles are always considered as trusted, so it's the developer's responsibility to ensure that the oracle is reliable and inform its users.
-
-> We want to research ways of decentralizing the oracle systems in the futur, and providing more safety for users (explicitly show what data is sent to the oracle, etc.)
-
-#### ZAP: Contributing to the whole Mina Ecosystem
-
-ZAP aims to be integrated in many different projects in the Mina ecosystem.
-We specifically want to focus on the following points:
-1. **Streamlined Development:** ZAP simplifies the creation and deployment of zero-knowledge attestation about any kind of data on Mina, making development of complex zkApps more accessible for developers.
-2. **Improved User Experience and Safety:** ZAP has a strong focus on user experience. It aims to provide an open-source attestations explorer, allowing both users and developers to easily interact and verify attestation's informations without the need to build extra infrastructures.
 
 ### Use cases
 
@@ -59,16 +74,16 @@ While we provides some examples here, we are more than excited to see what you w
 The main idea to keep in mind is that ZAP allow you to **verify some kind of information about your users in a privacy-preserving way**.
 
 > Be careful that the smaller the set of possible private data is, the easier it is to deanonymize the user.
-> For example, "Owner of a specific NFT" is a very small set of data, and it's easy to restrict the set of possible values (especially if combining with other condition).
+> For example, "Owner of a specific NFT" is a very small set, and it's easy to restrict the set of possible values (especially when combining with other condition).
 
-#### On-chain data
+#### On-chain
 
 - **Proof of Holding**: Verify asset holdings without exposing amounts.
 - **Proof of Profit**: Confirm profitable wallet without revealing address.
 - **Proof of Activity**: Validate user activity on the blockchain, such as volume or transaction count.
 - **Proof of Ownership**: Attest to owning specific tokens or NFTs (ERC20, ERC721, etc.).
 
-#### Off-chain data
+#### Off-chain / Web2
 
 - **Signatures (Email, ...)**: Verify the authenticity of digital communications.
 - **API Keys/Auth Tokens/Session Keys**: Confirm valid authentication without exposing the actual credentials.
@@ -76,24 +91,23 @@ The main idea to keep in mind is that ZAP allow you to **verify some kind of inf
 
 #### Decentralized identity
 
-Prove identity claims without revealing sensitive personal information, useful for building sybil-resistant applications, reputation systems, and proof of humanity.
+Prove identity claims without revealing sensitive personal information, useful for building sybil-resistant applications, reputation systems, proof of humanity, ...
 
-#### Additional Applications
+#### Additional Ideas
 
 Some additional ideas that can use ZAP:
-- **Educational Credentials**: Verify academic achievements discreetly.
-- **Employment History**: Confirm past employment without detailing specific roles.
-- **Age Verification**: Attest legal age requirements are met, maintaining privacy.
-- **Location Verification**: Verify geographical compliance for digital content access.
+- **Educational Credentials**: Verify academic achievements.
+- **Employment History**: Confirm past employment without detailing specific roles, locations, teams, ...
+- **Age Verification**: Attest legal age requirements are met.
+- **Location Verification**: Verify geographical compliance.
 - **Supply Chain Authenticity**: Attest to the origin of products in a supply chain.
 - **Compliance**: Demonstrate adherence to regulations (Zk-Kyc, ...)
 - **Subscription**: Verify access rights to subscription-based services.
 - **Social Influence Verification**: Validate follower counts anonymously.
 - **Energy Consumption Validation**: Confirm energy usage for eco-incentives.
-- **E-Commerce Buyer and Seller Verification**: Confirm credibility of e-commerce participants.
 - ... and many more!
 
-### Example: Credit-score attestation
+### Official example: Credit-score attestation
 
 Let's review the official [Mina Oracle example](https://docs.minaprotocol.com/zkapps/tutorials/oracle) where an user wants to attest that he has more than 700 credit score (provided by a specific API).
 We see that this process is quite complex and requires a lot of steps to be done by the user:
@@ -114,7 +128,7 @@ In the example, the condition is manually checked in the smart contract:
 // Check that the provided credit score is greater than 700
 creditScore.assertGreaterThanOrEqual(Field(700));
 ```
-There's no upgradability, and the developer needs to adds new logic in the smart contract each time he wants to attest a new statement.
+There's no upgradability, and the developer needs to new logic in the smart contract and redeploy each time he wants to attest a new statement.
 
 With ZAP, the developer can focus on the logic of the statement and let ZAP handle the rest.
 The developer can create a new statement in a few lines of code (simplified):
@@ -156,7 +170,7 @@ const { hash } = await window.mina.sendTransaction(transaction);
 // Wait for 'verified' event matching the corresponding attestation
 ```
 
-> Because we can define a common interface for all the oracles, we plan to provide a single package that will even more simplify the process for the developer
+> Because we can define a common interface for all the oracles, we plan to provide a single package that will simplify the process for the developer
 > by providing helpers to create the statements and attestations, handling the oracle calls, verification of the proofs and frontend integration.
 
 ## Project status
