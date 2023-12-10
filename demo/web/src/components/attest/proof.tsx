@@ -42,26 +42,33 @@ const ProofStep = () => {
     if (attest.privateData === null) {
       throw new Error("privateData is not defined");
     }
+    if (attest.statement === null) {
+      throw new Error("statement is not defined");
+    }
 
     ArgsToGenerateAttestation = {
       senderKey58: attest.minaWallet.address,
-      conditionType: attest.statement!.condition.type,
-      targetValue: attest.statement!.condition.targetValue,
+      conditionType: attest.statement.condition.type,
+      targetValue: attest.statement.condition.targetValue,
       value: attest.privateData.data.value,
       hashRoute: attest.privateData.data.hashRoute,
       signature: attest.privateData.signature,
     };
 
-    await attest.zkappWorkerClient!.createGenerateAttestationTransaction(ArgsToGenerateAttestation);
+    if (!attest.zkappWorkerClient) {
+      throw new Error("zkappWorkerClient is not defined");
+    }
+
+    await attest.zkappWorkerClient.createGenerateAttestationTransaction(ArgsToGenerateAttestation);
 
     attest.setDisplayText('Creating the proof...');
-    await attest.zkappWorkerClient!.proveGenerateAttestationTransaction();
+    await attest.zkappWorkerClient.proveGenerateAttestationTransaction();
 
     attest.setDisplayText('Requesting send transaction...');
-    const transactionJSON = await attest.zkappWorkerClient!.getTransactionJSON();
+    const transactionJSON = await attest.zkappWorkerClient.getTransactionJSON();
 
     let conditionTypeNumber: number;
-    switch (attest.statement!.condition.type) {
+    switch (attest.statement.condition.type) {
       case Condition.LESS_THAN:
         conditionTypeNumber = 1;
         break;
@@ -81,22 +88,22 @@ const ProofStep = () => {
     const hashAttestation = Poseidon.hash([
       Field.from(attest.privateData.data.hashRoute),
       Field.from(conditionTypeNumber),
-      Field.from(attest.statement!.condition.targetValue),
+      Field.from(attest.statement.condition.targetValue),
       PublicKey.fromBase58(attest.minaWallet.address).toFields()[0],
     ]).toString();
 
 
     const attestationHashBase64 = createAttestationNoteEncoded(
-      attest.statement!.condition.type,
-      attest.statement!.condition.targetValue,
+      attest.statement.condition.type,
+      attest.statement.condition.targetValue,
       attest.privateData.data.value,
-      attest.statement!.request,
+      attest.statement.request,
       attest.privateData.data.hashRoute,
       hashAttestation
     );
 
     attest.setDisplayText('Getting transaction JSON...');
-    const { hash } = await (window as any).mina.sendTransaction({
+    const { hash } = await window.mina.sendTransaction({
       transaction: transactionJSON,
       feePayer: {
         fee: transactionFee,
@@ -112,7 +119,7 @@ const ProofStep = () => {
 
   return (
     <div className="flex flex-col pt-4 z-50">
-      {!attest.zkappHasBeenSetup && (
+      {attest.zkappHasBeenSetup && (
         <p className="animate-pulse text-red-500 text-center">
           The contract is currently compiling, please wait...
         </p>
