@@ -1,12 +1,13 @@
-import express, { Express, Request, Response } from "express";
-import bodyParser from 'body-parser';
+import express, { Express } from "express";
 import endpoints from "./endpoints"
+import { minaAddress, validationErrorHandler } from "./middleware/paramsValidations";
 
 const app: Express = express();
 
 app.use(express.json());
-app.use(bodyParser.json());
 
-app.use("/api", endpoints);
+app.use("/api", minaAddress, endpoints);
+
+app.use(validationErrorHandler);
 
 export default app;
