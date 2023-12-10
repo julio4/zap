@@ -10,10 +10,10 @@ import { AttestationNote } from "../types";
 import { Zap } from "../../../../zap/build/Zap.js";
 import { Mina, Provable, ProvablePure, PublicKey, UInt32 } from "o1js";
 
-type HomeProps = {};
 type MinaEvent = {
   type: string;
   event: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data: ProvablePure<any>;
     transactionInfo: {
       transactionHash: string;
@@ -91,8 +91,9 @@ export default function Home(): JSX.Element {
 
   const verifyAttestation = (events: MinaEvent[], hashAttestation: string) => {
     for (let event of events) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let valueArray: Provable<any> = event.event.data;
-      
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const currentHash = (valueArray as any).value[1][1]
       if (BigInt(currentHash) === BigInt(hashAttestation)) {
         console.log("AttestationHash Found!")

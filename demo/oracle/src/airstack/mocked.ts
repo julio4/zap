@@ -32,7 +32,7 @@ const getUserNftVolumeSales = (): number => {
   return randomInt(100000);
 };
 
-export default {
+const exportObject = {
   getBalance,
   isPoapHolder,
   isNftHolder,
@@ -42,3 +42,5 @@ export default {
   isFarcasterHolder,
   getUserNftVolumeSales,
 };
+
+export default exportObject;

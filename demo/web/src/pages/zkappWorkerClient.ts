@@ -95,6 +95,7 @@ export default class ZkappWorkerClient {
   worker: Worker;
 
   promises: {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [id: number]: { resolve: (res: any) => void; reject: (err: any) => void };
   };
 
@@ -111,6 +112,7 @@ export default class ZkappWorkerClient {
     };
   }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   _call(fn: WorkerFunctions, args: any) {
     return new Promise((resolve, reject) => {
       this.promises[this.nextId] = { resolve, reject };

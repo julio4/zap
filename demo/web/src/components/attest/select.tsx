@@ -141,9 +141,14 @@ const SelectStep = () => {
           hashRoute: decoded_hashRoute
         }
       });
-    } catch (e: any) {
-      console.error("oracle error", e);
-      setError(e.message);
+    } catch (err) {
+      if (err instanceof Error) {
+        console.error("oracle error", err);
+        setError(err.message);
+      } else {
+        console.log('An unexpected error occurred');
+        setError("An unknown error occurred.");
+      }
     }
 
     setWaiting({

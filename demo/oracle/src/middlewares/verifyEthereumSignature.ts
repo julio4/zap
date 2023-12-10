@@ -34,7 +34,12 @@ export async function verifyEthereumSignature(
     }
 
     await next();
-  } catch (error: any) {
-    ctx.throw(401, error.message);
+  } catch (error) {
+    if (typeof error === 'object' && error !== null && 'message' in error) {
+      ctx.throw(401, (error as { message: string }).message);
+    }
+    else {
+      ctx.throw(401, 'Unauthorized');
+    }
   }
 }

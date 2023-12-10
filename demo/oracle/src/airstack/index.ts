@@ -12,7 +12,9 @@ import {
 import Mock from './mocked.js';
 import { AIRSTACK_ENDPOINT, defaultBlockchain } from './config.js';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockMiddleware = (args: any[], fn: (...args: any[]) => any) =>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
   (Mock as any)[fn.name](...args);
 
 export async function getBalance(
@@ -21,7 +23,7 @@ export async function getBalance(
   blockchain: BlockchainName
 ): Promise<number> {
   if (process.env['NODE_ENV'] === 'development') {
-    return mockMiddleware([owner, token], getBalance);
+    return mockMiddleware([owner, token], Mock.getBalance);
   }
 
   if (!blockchain) {
@@ -60,7 +62,7 @@ export async function isPoapHolder(
   poapId: string // eventId
 ): Promise<number> {
   if (process.env['NODE_ENV'] === 'development') {
-    return mockMiddleware([owner, poapId], isPoapHolder);
+    return mockMiddleware([owner, poapId], Mock.isPoapHolder);
   }
   if (poapId == undefined) {
     throw new Error('No poapId specified');
@@ -95,7 +97,7 @@ export async function isNftHolder(
   blockchain: BlockchainName // ethereum or polygon
 ): Promise<number> {
   if (process.env['NODE_ENV'] === 'development') {
-    return mockMiddleware([owner, nftAddress], isNftHolder);
+    return mockMiddleware([owner, nftAddress], Mock.isNftHolder);
   }
 
   if (!blockchain) {
@@ -142,7 +144,7 @@ export async function isNftHolder(
 
 export async function isXMTPenabled(owner: string): Promise<number> {
   if (process.env['NODE_ENV'] === 'development') {
-    return mockMiddleware([owner], isXMTPenabled);
+    return mockMiddleware([owner], Mock.isXMTPenabled);
   }
   const XMTPquery = gql`
     query GetSocial {
@@ -169,7 +171,7 @@ export async function isXMTPenabled(owner: string): Promise<number> {
 
 export async function isEnsHolder(owner: string): Promise<number> {
   if (process.env['NODE_ENV'] === 'development') {
-    return mockMiddleware([owner], isEnsHolder);
+    return mockMiddleware([owner], Mock.isEnsHolder);
   }
   const EnsQuery = gql`
     query GetSocial {
@@ -202,7 +204,7 @@ export async function isEnsHolder(owner: string): Promise<number> {
 
 export async function isLensHolder(owner: string): Promise<number> {
   if (process.env['NODE_ENV'] === 'development') {
-    return mockMiddleware([owner], isLensHolder);
+    return mockMiddleware([owner], Mock.isLensHolder);
   }
   const LensQuery = gql`
     query GetSocial {
@@ -237,7 +239,7 @@ export async function isLensHolder(owner: string): Promise<number> {
 
 export async function isFarcasterHolder(owner: string): Promise<number> {
   if (process.env['NODE_ENV'] === 'development') {
-    return mockMiddleware([owner], isFarcasterHolder);
+    return mockMiddleware([owner], Mock.isFarcasterHolder);
   }
   const FarcasterQuery = gql`
     query GetSocial {
@@ -272,7 +274,7 @@ export async function isFarcasterHolder(owner: string): Promise<number> {
 
 export async function getNftSaleVolume(owner: string): Promise<number> {
   if (process.env['NODE_ENV'] === 'development') {
-    return mockMiddleware([owner], getNftSaleVolume);
+    return mockMiddleware([owner], Mock.getUserNftVolumeSales);
   }
   let cursor = ''; // initialize cursor
 
