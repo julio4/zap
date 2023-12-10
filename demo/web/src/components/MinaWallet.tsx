@@ -11,7 +11,7 @@ const MinaWallet = () => {
   const handleConnect = async () => {
     try {
       console.log("Connecting to Mina wallet...")
-      const network = await (window as any).mina.requestNetwork();
+      const network = await window.mina.requestNetwork();
       if (network.name !== "Berkeley") {
         setError(
           "Not connected to Berkeley Testnet. Please switch to Berkeley Testnet and try again."
@@ -21,7 +21,7 @@ const MinaWallet = () => {
         return;
       }
       // Accounts is an array of string Mina addresses.
-      const publicKeyBase58 = (await (window as any).mina.requestAccounts())[0];
+      const publicKeyBase58 = (await window.mina.requestAccounts())[0];
       const publicKey = PublicKey.fromBase58(publicKeyBase58);
 
       console.log(`Using key:${publicKey.toBase58()}`);
@@ -35,15 +35,21 @@ const MinaWallet = () => {
         isConnected: true,
         address: publicKeyBase58,
       });
-    } catch (err: any) {
-      // If the user has a wallet installed but has not created an account, an
-      // exception will be thrown. Consider showing "not connected" in your UI.
-      console.log(err.message);
-      console.log("Either Mina wallet not installed, no account created or connection refused.")
-      setError("Connection Error. See console for details.");
+
+    } catch (err) {
+      if (err instanceof Error) {
+        console.log(err.message);
+        console.log("Error connecting to Ethereum wallet. See logs for details.");
+        setError("Connection Error. See console for details.");
+
+      } else {
+        console.log('An unexpected error occurred');
+        setError("An unknown error occurred.");
+      }
     }
   };
 
+  // Todo
   /*   const handleDisconnect = () => {
       attest.setMinaWallet({
         isConnected: false,

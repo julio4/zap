@@ -1,7 +1,6 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from 'next/router';
-import { AttestContext } from "../components/context/attestContext";
 
 import { Header } from "../components/Header";
 import { FoldingBg } from "../components/logo";
@@ -10,12 +9,11 @@ import { decodeAttestationNote } from "../utils/createBase64Attestation";
 import { AttestationNote } from "../types";
 import { Zap } from "../../../../zap/build/Zap.js";
 import { Mina, Provable, ProvablePure, PublicKey, UInt32 } from "o1js";
-import { stringFromFields } from "o1js/dist/node/bindings/lib/encoding";
 
-type HomeProps = {};
 type MinaEvent = {
   type: string;
   event: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data: ProvablePure<any>;
     transactionInfo: {
       transactionHash: string;
@@ -30,23 +28,12 @@ type MinaEvent = {
   chainStatus: string;
 }
 
-
-
-async function timeout(seconds: number): Promise<void> {  // todo: put in utils
-  return new Promise<void>((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, seconds * 1000);
-  });
-}
-
-export default function Home(props: HomeProps): JSX.Element {
-  const attest = useContext(AttestContext);
+export default function Home(): JSX.Element {
   const router = useRouter();
   const [note, setNote] = useState<string | string[] | undefined>(undefined);
   const [resultVerification, setResultVerification] = useState<boolean | undefined>(undefined)
 
-  const [workerSet, setWorkerSet] = useState(false);  // todo: use this to show loading spinner
+  const [workerSet] = useState(false);  // todo: use this to show loading spinner
   const [eventsFetched, setEventsFetched] = useState<MinaEvent[] | undefined>(undefined);
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [attestationNote, setAttestationNote] = useState<AttestationNote | null>(null);
@@ -65,7 +52,6 @@ export default function Home(props: HomeProps): JSX.Element {
         });
         Mina.setActiveInstance(network);
 
-        const publicKeySender = PublicKey.fromBase58("B62qm3bbCSy8ixuacL8FJzWdoj9MBjQGgrzHwiHtksBHTtmFWhidKxS")
         const zkapp = new Zap(PublicKey.fromBase58("B62qnhBxxQr7h2AE9f912AyvzJwK1fhEJq7NMZXbzXbhoepUZ7z7237"))
         const minaEvents: MinaEvent[] = await zkapp.fetchEvents(UInt32.from(0))
         setEventsFetched(minaEvents)
@@ -105,8 +91,9 @@ export default function Home(props: HomeProps): JSX.Element {
 
   const verifyAttestation = (events: MinaEvent[], hashAttestation: string) => {
     for (let event of events) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let valueArray: Provable<any> = event.event.data;
-      
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const currentHash = (valueArray as any).value[1][1]
       if (BigInt(currentHash) === BigInt(hashAttestation)) {
         console.log("AttestationHash Found!")

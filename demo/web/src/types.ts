@@ -1,5 +1,9 @@
 import { JsonRpcSigner } from "ethers";
-import { Field, PublicKey, Signature } from "o1js";
+
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  interface Window { ethereum: any; mina: any; }
+}
 
 export type MinaWallet = {
   isConnected: boolean;
@@ -70,6 +74,7 @@ export enum OracleRoute {
 
 export type OracleRequest = {
   route: OracleRoute;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   args: { [key: string]: any };
 };
 

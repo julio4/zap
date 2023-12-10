@@ -2,7 +2,7 @@ import { ParameterizedContext } from 'koa';
 
 export async function logger(
   ctx: ParameterizedContext,
-  next: () => Promise<any>
+  next: () => Promise<void>
 ) {
   console.log(
     `-> [${new Date().toString()}] ${ctx.method} ${ctx.url}: ${JSON.stringify(

@@ -1,4 +1,4 @@
-import { Field, Mina, PublicKey, Signature, UInt32, fetchAccount } from "o1js";
+import { Field, Mina, PublicKey, Signature, fetchAccount } from "o1js";
 
 type Transaction = Awaited<ReturnType<typeof Mina.transaction>>;
 
@@ -18,7 +18,7 @@ const state = {
 // ---------------------------------------------------------------------------------------
 
 const functions = {
-  setActiveInstanceToBerkeley: async (args: {}) => {
+  setActiveInstanceToBerkeley: async () => {
     const Berkeley = Mina.Network({
       mina: "https://proxy.berkeley.minaexplorer.com/graphql",
       archive: "https://api.minascan.io/archive/berkeley/v1/graphql",
@@ -27,13 +27,16 @@ const functions = {
     Mina.setActiveInstance(Berkeley);
   },
 
-  loadContract: async (args: {}) => {
+  loadContract: async () => {
     const { Zap } = await import("../../../../zap/build/Zap.js");
     state.Zap = Zap;
   },
 
-  compileContract: async (args: {}) => {
-    await state.Zap!.compile();
+  compileContract: async () => {
+    if (!state.Zap) {
+      throw new Error("Contract not loaded");
+    }
+    await state.Zap.compile();
   },
 
   fetchAccount: async (args: { publicKey58: string }) => {
@@ -43,7 +46,10 @@ const functions = {
 
   initZkappInstance: async (args: { publicKey58: string }) => {
     const publicKey = PublicKey.fromBase58(args.publicKey58);
-    state.zkapp = new state.Zap!(publicKey);
+    if (!state.Zap) {
+      throw new Error("Contract not loaded");
+    }
+    state.zkapp = new state.Zap(publicKey);
   },
 
   createGenerateAttestationTransaction: async (args: {
@@ -85,7 +91,10 @@ const functions = {
       const transaction = await Mina.transaction(
         PublicKey.fromBase58(senderKey58),
         () => {
-          state.zkapp!.verify(
+          if (!state.zkapp) {
+            throw new Error("zkapp not initialized");
+          }
+          state.zkapp.verify(
             Field.from(conditionTypeNumber),
             Field.from(targetValue),
             Field.from(hashRoute),
@@ -100,12 +109,18 @@ const functions = {
     }
   },
 
-  proveGenerateAttestationTransaction: async (args: {}) => {
-    await state.transaction!.prove();
+  proveGenerateAttestationTransaction: async () => {
+    if (!state.transaction) {
+      throw new Error("transaction not created");
+    }
+    await state.transaction.prove();
   },
 
-  getOraclePublicKey: async (args: {}) => {
-    return state.zkapp!.getOraclePublicKey().toBase58();
+  getOraclePublicKey: async () => {
+    if (!state.zkapp) {
+      throw new Error("zkapp not initialized");
+    }
+    return state.zkapp.getOraclePublicKey().toBase58();
   },
 
   setOraclePublicKey: async (args: {
@@ -118,7 +133,10 @@ const functions = {
       const transaction = await Mina.transaction(
         PublicKey.fromBase58(senderKey58),
         () => {
-          state.zkapp!.setOraclePublicKey(
+          if (!state.zkapp) {
+            throw new Error("zkapp not initialized");
+          }
+          state.zkapp.setOraclePublicKey(
             PublicKey.fromBase58(newOraclePublicKey58)
           ); // B62qmN3EthPdRmnit65JWNSbdYdXSt9vt766rt2em2eLoAewf8o72V2
         }
@@ -128,8 +146,11 @@ const functions = {
       console.log("error in zkappWorker for setOraclePublicKey", error);
     }
   },
-  getTransactionJSON: async (args: {}) => {
-    return state.transaction!.toJSON();
+  getTransactionJSON: async () => {
+    if (!state.transaction) {
+      throw new Error("transaction not created");
+    }
+    return state.transaction.toJSON();
   },
 };
 
@@ -140,11 +161,13 @@ export type WorkerFunctions = keyof typeof functions;
 export type ZkappWorkerRequest = {
   id: number;
   fn: WorkerFunctions;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   args: any;
 };
 
 export type ZkappWorkerReponse = {
   id: number;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any;
 };
 

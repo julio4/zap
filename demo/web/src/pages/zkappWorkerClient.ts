@@ -1,11 +1,11 @@
-import { fetchAccount, PublicKey, Field } from "o1js";
+import { fetchAccount, PublicKey } from "o1js";
 
 import type {
   ZkappWorkerRequest,
   ZkappWorkerReponse,
   WorkerFunctions,
 } from "./zkappWorker";
-import { Condition, OracleRequest, StatementCondition } from "../types";
+import { Condition } from "../types";
 
 export default class ZkappWorkerClient {
   // ---------------------------------------------------------------------------------------
@@ -78,7 +78,13 @@ export default class ZkappWorkerClient {
     return result;
   }
 
-  async setOraclePublicKey({senderKey58, newOraclePublicKey58} : {senderKey58: string, newOraclePublicKey58: string}) {
+  async setOraclePublicKey({
+    senderKey58,
+    newOraclePublicKey58,
+  }: {
+    senderKey58: string;
+    newOraclePublicKey58: string;
+  }) {
     await this._call("setOraclePublicKey", {
       senderKey58: senderKey58,
       newOraclePublicKey58: newOraclePublicKey58,
@@ -89,6 +95,7 @@ export default class ZkappWorkerClient {
   worker: Worker;
 
   promises: {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [id: number]: { resolve: (res: any) => void; reject: (err: any) => void };
   };
 
@@ -105,6 +112,7 @@ export default class ZkappWorkerClient {
     };
   }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   _call(fn: WorkerFunctions, args: any) {
     return new Promise((resolve, reject) => {
       this.promises[this.nextId] = { resolve, reject };
