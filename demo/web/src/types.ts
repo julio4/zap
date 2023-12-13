@@ -2,7 +2,10 @@ import { JsonRpcSigner } from "ethers";
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  interface Window { ethereum: any; mina: any; }
+  interface Window {
+    ethereum: any;
+    mina: any;
+  }
 }
 
 export type MinaWallet = {
@@ -85,16 +88,16 @@ export const StatementChoices: StatementChoice[] = [
     description: "Statement on a target ERC20 token balance",
     args: [
       {
-        name: "token",
-        type: "text",
-        label: "Target ERC20 Token Address",
-        placeholder: "0x...",
-      },
-      {
         name: "blockchain",
         type: "select",
         label: "Target Blockchain",
         options: ["ethereum", "polygon"],
+      },
+      {
+        name: "token",
+        type: "text",
+        label: "Target ERC20 Token Address",
+        placeholder: "0x...",
       },
     ],
     possibleConditions: [
@@ -202,18 +205,39 @@ export type PrivateData = {
 };
 
 export type AttestationNote = {
-  attestationHash: string,
-  statement: string,
-  value: number,
-  targetValue: number,
-  conditionType: string,
-  hashRoute: string,
-  sender: string,
-}
+  attestationHash: string;
+  statement: string;
+  value: number;
+  targetValue: number;
+  conditionType: string;
+  hashRoute: string;
+  sender: string;
+};
 
 export type ArgsHashAttestationCalculator = {
   conditionType: string | number;
   hashRoute: string;
   targetValue: number;
   sender: string;
-}
+};
+
+export type TokenBalancesResponse = {
+  TokenBalances: {
+    TokenBalance: TokenBalance[];
+  };
+};
+
+export type TokenBalance = {
+  tokenAddress: string;
+  formattedAmount: number;
+  token: {
+    id: string;
+    isSpam: boolean;
+    logo: Logo | null;
+    name: string;
+  };
+};
+
+export type Logo = {
+  small: string | null;
+};

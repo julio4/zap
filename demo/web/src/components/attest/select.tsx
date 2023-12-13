@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import axios from "axios";
 
 import {
@@ -11,7 +11,9 @@ import {
   SignResponse,
 } from "../../types";
 import { AttestContext } from "../context/attestContext";
+import { UserDataContext } from "../context/userDataContext";
 import { Encoding, Field, Poseidon, PublicKey, Signature } from "o1js";
+import TokenModal from "./tokenModal"
 
 const ORACLE_ENDPOINT = process.env["ORACLE_ENDPOINT"];
 if (!ORACLE_ENDPOINT) throw new Error("ORACLE_ENDPOINT is not set");
@@ -19,6 +21,8 @@ if (!ORACLE_ENDPOINT) throw new Error("ORACLE_ENDPOINT is not set");
 // Select the attestation choice and sign
 const SelectStep = () => {
   const attest = useContext(AttestContext);
+  const userData = useContext(UserDataContext);
+  const { setTokenBalances } = useContext(UserDataContext);
   const [choice, setChoice] = useState<StatementChoice | null>(null);
   const [args, setArgs] = useState<
     {
@@ -27,6 +31,7 @@ const SelectStep = () => {
       value: string;
     }[]
   >([]);
+  const [isTokenModalOpen, setIsTokenModalOpen] = useState(false);
   const [condition, setCondition] = useState<Condition>(Condition.GREATER_THAN);
   const [targetValue, setTargetValue] = useState<number>(0);
   const [error, setError] = useState<string | null>(null);
@@ -43,28 +48,17 @@ const SelectStep = () => {
     setCondition(Condition.GREATER_THAN);
   };
 
-  const getAllTokens = async () => {
-    const request_data = {
-      address: attest.ethereumWallet.address
-    };
-
-    try {
-      const response = await axios.post(
-        `${ORACLE_ENDPOINT}/listBalances`,
-        request_data,
-      );
-
-      const body = response.data as SignResponse;
-
-    } catch (err) {
-      if (err instanceof Error) {
-        console.error("oracle error", err);
-        setError(err.message);
-      } else {
-        console.log('An unexpected error occurred');
-        setError("An unknown error occurred.");
-      }
-    }
+  const handleTokenSelect = (tokenAddress: string) => {
+    setIsTokenModalOpen(false);
+    console.log("the chosen token is", tokenAddress)
+    // setArgs([
+    //   ...args.filter((a) => a.name !== 'token'),
+    //   {
+    //     name: 'token',
+    //     schema: choice.args.find((a) => a.name === 'token'),
+    //     value: tokenAddress,
+    //   },
+    // ]);
   };
 
   const handleSelect = async () => {
@@ -180,6 +174,38 @@ const SelectStep = () => {
     });
   };
 
+  const getAllTokens = async () => {
+    const request_data = {
+      address: attest.ethereumWallet.address,
+      signature: attest.ethereumWallet.signature,
+    };
+    try {
+      const response = await axios.post(
+        `${ORACLE_ENDPOINT}/listBalances`,
+        request_data,
+      );
+      console.log("getAllTokens response", response);
+      console.log("response.data", response.data.value)
+      const tokenBalancesEthereum = response.data.value[0];
+      const tokenBalancesPolygon = response.data.value[1];
+      setTokenBalances(response.data.value[0], response.data.value[1]);
+    } catch (err) {
+      if (err instanceof Error) {
+        console.error("oracle error", err);
+        setError(err.message);
+      } else {
+        console.log('An unexpected error occurred');
+        setError("An unknown error occurred.");
+      }
+    }
+  };
+
+
+  useEffect(() => {
+    console.log("useEffect getAllTokens");
+    getAllTokens();
+  }, []);
+
   if (error)
     return (
       <div className="py-4 border-2 border-red-700/75 p-4 rounded-xl bg-red-600/50">
@@ -233,7 +259,22 @@ const SelectStep = () => {
             <div className="flex flex-col gap-2">
               {
                 choice.args.map((arg) => {
-                  if (arg.type === 'text') {
+                  if (arg.type === 'text' && arg.name === 'token') {
+                    return (
+                      <div key={arg.name} className="flex flex-row gap-2 justify-between">
+                        <label className="text-slate-400">{arg.label}</label>
+                        <button
+                          className="border-2 border-slate-500 rounded-md bg-slate-600/50 text-slate-100"
+                          onClick={() => setIsTokenModalOpen(true)}
+                        >
+                          Select Token
+                        </button>
+                        {/* Display selected token address if available */}
+                        <span>{args.find((a) => a.name === 'token')?.value}</span>
+                      </div>
+                    );
+                  }
+                  else if (arg.type === 'text') {
                     return (
                       <div key={arg.name} className="flex flex-row gap-2 justify-between">
                         <label className="text-slate-400">{arg.label}</label>
@@ -329,17 +370,29 @@ const SelectStep = () => {
 
             <div className="flex flex-col gap-2">
               <button
-                onClick={getAllTokens}
+                onClick={() => console.log("Updated userData", userData)}
                 type="button"
                 className="transition-all hover:scale-[1.02] duration-200 ease-in-out text-white bg-gradient-to-r from-indigo-500 via-sky-400 to-indigo-300 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-sky-300 dark:focus:ring-sky-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 opacity-80">
-                getAllTokens
+                Log userData
               </button>
 
             </div>
           </div>
         </div>
+      )
+      }
+      {isTokenModalOpen && (
+        <TokenModal
+          tokens={userData.tokenBalancesEthereum}
+          onSelect={(tokenAddress: string) => {
+            handleTokenSelect(tokenAddress);
+            setIsTokenModalOpen(false);
+          }}
+          onClose={() => setIsTokenModalOpen(false)}
+        />
       )}
-    </div>
+
+    </div >
   );
 }
 
