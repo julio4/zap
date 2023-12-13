@@ -233,7 +233,7 @@ export type TokenBalance = {
   token: {
     id: string;
     isSpam: boolean;
-    logo: Logo | null;
+    logo: Logo;
     name: string;
   };
 };

@@ -7,6 +7,18 @@ interface TokenModalProps {
     onClose: () => void;
 }
 
+const fetchLogo = (token: TokenBalance) => {
+    if (token.token.logo.small == null) {
+        return "/placeholder-question-mark.png"
+    }
+    else {
+        const externalImageUrl = token.token.logo.small;
+        const proxiedImageUrl = `/api/image-proxy?url=${encodeURIComponent(externalImageUrl)}`;
+        console.log("proxiedImageUrl", proxiedImageUrl);
+        return proxiedImageUrl;
+    }
+}
+
 const TokenModal: React.FC<TokenModalProps> = ({ tokens, onSelect, onClose }) => {
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
@@ -15,13 +27,21 @@ const TokenModal: React.FC<TokenModalProps> = ({ tokens, onSelect, onClose }) =>
                     <h3 className="text-lg font-semibold text-white">Select a Token</h3>
                 </div>
                 <ul className="max-h-64 overflow-y-auto">
-                    {tokens.map((token) => (
+                    {tokens.map((token, index) => (
                         <li
                             key={token.tokenAddress}
                             onClick={() => onSelect(token.tokenAddress)}
                             className="cursor-pointer hover:bg-slate-700 p-4 border-b border-slate-600 text-white"
                         >
-                            {token.token.name}
+                            <div className="flex justify-between items-center">
+
+                                <div className="flex items-center">
+                                    {<img src={(fetchLogo(token as any))} alt="" className="w-6 h-6 mr-2" />}
+
+                                    <h4 className="text-sm font-semibold">{token.token.name}</h4>
+                                </div>
+                                <div className="text-sm font-semibold">{token.formattedAmount}</div>
+                            </div>
                         </li>
                     ))}
                 </ul>
