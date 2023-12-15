@@ -5,6 +5,13 @@ export type ZapRequestParams = {
   }
 }
 
+export type Route = {
+  path: string;
+  args: {
+    [key: string]: string;
+  }
+};
+
 /*
  * Response Object (Unsigned)
  */
@@ -12,16 +19,11 @@ export type ZapRequestParams = {
 // The response body that each controller will return in the res.json() call
 type SourceResponseBody<T> = {
   value: T;
-  route: string;
+  route: Route;
 };
 // Supported response types
 export type SupportedValue = number;
 export type ZapResponse = SourceResponseBody<SupportedValue>;
-
-export type Route = {
-  route: string;
-  args: ZapRequestParams['args'];
-};
 
 // The response body with hashed route
 // @see helpers#hashResponse
