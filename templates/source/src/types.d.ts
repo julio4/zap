@@ -1,14 +1,16 @@
+import { Request, Response } from "express";
+
 export type ZapRequestParams = {
   mina_address: string;
-  args: {
-    [key: string]: string;
+  args?: {
+    [key: string]: any;
   }
 }
 
 export type Route = {
   path: string;
-  args: {
-    [key: string]: string;
+  args?: {
+    [key: string]: any;
   }
 };
 
@@ -48,3 +50,8 @@ export type SignedResponse<T> = {
 // This is the response that the client will receive
 // In it, data contains the value and the corresponding route (with args)
 export type ZapSignedResponse = SignedResponse<ZapHashedResponse>;
+
+// For express
+export type ZapResponseExpress = Response<SupportedValue>;
+// The ZapMiddleware will transform the ZapResponseExpress into Response<ZapSignedResponse>
+export type ZapRequestExpress = Request<any, ZapResponse, ZapRequestParams>;

@@ -1,31 +1,36 @@
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
 
 import { PrivateKey } from "o1js";
 
-import { SupportedValue, ZapRequestParams, ZapResponse, ZapSignedResponse } from "../types";
+import {
+  SupportedValue,
+  ZapResponse,
+  ZapSignedResponse,
+  ZapRequestExpress,
+} from "../types";
 import { signResponse } from "../helpers";
 
-// This zap middleware will hash the route, 
+// This zap middleware will transform the response from ZapResponseExpress to Response<ZapSignedResponse>
 export const zapMiddleware = (
-  req: Request<ZapRequestParams>,
+  req: ZapRequestExpress,
   res: Response,
   next: NextFunction
 ) => {
   const originalJson = res.json.bind(res);
 
   // Override the json method
-  res.json = (
-    body: SupportedValue
-  ): Response<ZapSignedResponse, Record<string, any>> => {
+  res.json = (body: SupportedValue): Response<ZapSignedResponse> => {
+    const requestPath = req.baseUrl + req.path;
+
     if (!body) {
-      throw new Error("Invalid response body for path: " + req.path);
+      throw new Error("Invalid response body for path: " + requestPath);
     }
 
     const response: ZapResponse = {
       value: body,
       route: {
-        path: req.path,
-        args: req.params.args,
+        path: requestPath,
+        args: req.body.args,
       },
     };
 
@@ -38,7 +43,7 @@ export const zapMiddleware = (
     const signedResponse = signResponse(response, privateKey);
 
     // Call the original json method with the signed response
-    return originalJson(signedResponse);
+    return originalJson(signedResponse) as Response<ZapSignedResponse>;
   };
 
   next();

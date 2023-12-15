@@ -13,6 +13,7 @@ import {
   ZapResponse,
   ZapHashedResponse,
   ZapSignedResponse,
+  Route,
 } from "./types";
 
 export const signResponse = (
@@ -36,25 +37,22 @@ export const signResponse = (
   };
 };
 
-export const verifyResponseSignature = (res: ZapSignedResponse): boolean => {
+export const verifyResponseSignature = (res: ZapSignedResponse, publicKey: PublicKey): boolean => {
   const data = encodeResAsFields(res.data);
   const signature = Signature.fromBase58(res.signature);
-  const publicKey = PublicKey.fromBase58(res.publicKey);
 
   return signature.verify(publicKey, data).toBoolean();
 };
 
-export const hashResponse = (
-  res: ZapResponse
-): ZapHashedResponse => {
-  const routeAsFields: Field[] = Encoding.stringToFields(JSON.stringify(res));
-  const hashRoute: Field = Poseidon.hash(routeAsFields);
-
-  return {
-    value: res.value,
-    hashRoute: hashRoute.toString(),
-  };
+export const hashRoute = (route: Route): Field => {
+  const routeAsFields: Field[] = Encoding.stringToFields(JSON.stringify(route));
+  return Poseidon.hash(routeAsFields);
 };
+
+export const hashResponse = (res: ZapResponse): ZapHashedResponse => ({
+  value: res.value,
+  hashRoute: hashRoute(res.route).toString(),
+});
 
 export const encodeResAsFields = (res: ZapHashedResponse): Field[] => {
   const data = [res.value, res.hashRoute];
@@ -63,4 +61,8 @@ export const encodeResAsFields = (res: ZapHashedResponse): Field[] => {
 
 export const fieldsToStrings = (fields: Field[]): string[] => {
   return fields.map((field) => field.toString());
+};
+
+export const fieldStrToStrings = (field: string): string => {
+  return Field.from(field).toString();
 };

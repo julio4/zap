@@ -4,7 +4,9 @@ import { validateParams } from '../middleware/paramsValidations';
 
 const router: Router = express.Router();
 
-router.use('/', validateParams, (req, res) => {
+// This 'hello' endpoint can be used to test the connection to the server
+// And the validation rules for all endpoints
+router.use('/hello', validateParams, (req, res) => {
   res.send('Hello World!');
 })
 
