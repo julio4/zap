@@ -1,6 +1,6 @@
 import express, { Router } from 'express';
 import exampleEndpoints from './exampleEndpoints';
-import { validateParams } from '../middleware/paramsValidations';
+import { validateParams } from '../middlewares/paramsValidations';
 
 const router: Router = express.Router();
 

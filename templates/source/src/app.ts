@@ -1,7 +1,7 @@
 import express, { Express } from "express";
 import endpoints from "./endpoints"
-import { minaAddress, validationErrorHandler } from "./middleware/paramsValidations";
-import { zapMiddleware } from "./middleware/zapMiddleware";
+import { minaAddress, validationErrorHandler } from "./middlewares/paramsValidations";
+import { zapMiddleware } from "./middlewares/zapMiddleware";
 
 const app: Express = express();
 
