@@ -1,4 +1,6 @@
 import { ParameterizedContext } from 'koa';
+import { fetchQuery } from '@airstack/node';
+
 import {
   getBalance,
   getNftSaleVolume,
@@ -9,6 +11,8 @@ import {
   isPoapHolder,
   isXMTPenabled,
 } from './airstack/index.js';
+
+
 
 export async function getUserBalance(ctx: ParameterizedContext) {
   try {
