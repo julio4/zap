@@ -208,4 +208,5 @@ export type AttestationNote = {
   targetValue: number,
   conditionType: string,
   hashRoute: string,
+  sender: string,
 }
