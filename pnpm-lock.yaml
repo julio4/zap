@@ -41,9 +41,6 @@ importers:
 
   demo/oracle:
     dependencies:
-      '@airstack/node':
-        specifier: ^0.0.5
-        version: 0.0.5
       '@koa/cors':
         specifier: ^4.0.0
         version: 4.0.0
@@ -71,6 +68,9 @@ importers:
       o1js:
         specifier: ^0.13.1
         version: 0.13.1
+      util:
+        specifier: ^0.12.5
+        version: 0.12.5
     devDependencies:
       '@packages/tsconfig':
         specifier: workspace:*
@@ -337,14 +337,6 @@ packages:
 
   /@adraffy/ens-normalize@1.9.2:
     resolution: {integrity: sha512-0h+FrQDqe2Wn+IIGFkTCd4aAwTJ+7834Ek1COohCyV26AXhwQ7WQaz+4F/nLOeVl/3BtWHOHLPsq46V8YB46Eg==}
-    dev: false
-
-  /@airstack/node@0.0.5:
-    resolution: {integrity: sha512-bvRE2AaIxLPB4oX3VJe8lA1kXVGNuYt9T9KJngOxxx+6E7zxne5FDMjB//ngTvxm+UqCmAF3rkoVJXx/HN0ExQ==}
-    engines: {node: '>=14.17.0'}
-    dependencies:
-      '@types/node': 14.14.30
-      graphql: 16.7.1
     dev: false
 
   /@ampproject/remapping@2.2.1:
@@ -2880,10 +2872,6 @@ packages:
 
   /@types/ms@0.7.33:
     resolution: {integrity: sha512-AuHIyzR5Hea7ij0P9q7vx7xu4z0C28ucwjAZC0ja7JhINyCnOw8/DnvAPQQ9TfOlCtZAmCERKQX9+o1mgQhuOQ==}
-    dev: false
-
-  /@types/node@14.14.30:
-    resolution: {integrity: sha512-gUWhy8s45fQp4PqqKecsnOkdW0kt1IaKjgOIR3HPokkzTmQj9ji2wWFID5THu1MKrtO+d4s2lVrlEhXUsPXSvg==}
     dev: false
 
   /@types/node@18.11.10:
@@ -6073,6 +6061,14 @@ packages:
     dependencies:
       is-alphabetical: 2.0.1
       is-decimal: 2.0.1
+    dev: false
+
+  /is-arguments@1.1.1:
+    resolution: {integrity: sha512-8Q7EARjzEnKpt/PCD7e1cgUS0a6X8u5tdSiMqXhojOdoV9TsMsiO+9VLC5vAmO8N7/GmXn7yjR8qnA6bVAEzfA==}
+    engines: {node: '>= 0.4'}
+    dependencies:
+      call-bind: 1.0.2
+      has-tostringtag: 1.0.0
     dev: false
 
   /is-array-buffer@3.0.2:
@@ -9957,6 +9953,16 @@ packages:
   /util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
     dev: true
+
+  /util@0.12.5:
+    resolution: {integrity: sha512-kZf/K6hEIrWHI6XqOFUiiMa+79wE/D8Q+NCNAWclkyg3b4d2k7s0QGepNjiABc+aR3N1PAyHL7p6UcLY6LmrnA==}
+    dependencies:
+      inherits: 2.0.4
+      is-arguments: 1.1.1
+      is-generator-function: 1.0.10
+      is-typed-array: 1.1.12
+      which-typed-array: 1.1.11
+    dev: false
 
   /uuid@9.0.1:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
