@@ -6,10 +6,10 @@ import { Header } from "../components/Header";
 import { FoldingBg } from "../components/logo";
 import { Search } from "../components/Search";
 import { decodeAttestationNote } from "../utils/createBase64Attestation";
-import { AttestationNote } from "../types";
+import { ArgsHashAttestationCalculator, AttestationNote } from "../types";
 import { Zap } from "../../../../zap/build/Zap.js";
-import { Mina, Provable, ProvablePure, PublicKey, UInt32, Poseidon, Field } from "o1js";
-import { Condition } from "../types";
+import { Mina, Provable, ProvablePure, PublicKey, UInt32 } from "o1js";
+import { calculateAttestationHash } from "../utils/calculateAttestationHash";
 
 
 type MinaEvent = {
@@ -34,6 +34,7 @@ export default function Home(): JSX.Element {
   const router = useRouter();
   const [note, setNote] = useState<string | string[] | undefined>(undefined);
   const [resultVerification, setResultVerification] = useState<boolean | undefined>(undefined)
+  const [error, setError] = useState<string | undefined>(undefined);
 
   const [workerSet] = useState(false);  // todo: use this to show loading spinner
   const [eventsFetched, setEventsFetched] = useState<MinaEvent[] | undefined>(undefined);
@@ -93,40 +94,22 @@ export default function Home(): JSX.Element {
 
   const verifyAttestation = (events: MinaEvent[], hashAttestation: string) => {
     // First we verify that the base64 displayed in the frontend corresponds to the event
-    console.log("attestation:", attestationNote)
-
-    const noteHashRoute = attestationNote?.hashRoute
-    const noteConditionType = attestationNote?.conditionType
-    const noteTargetValue = attestationNote?.targetValue
-    const noteSender = attestationNote?.sender
-
-    let conditionTypeNumber: number;
-    switch (attestationNote?.conditionType) {
-      case Condition.LESS_THAN:
-        conditionTypeNumber = 1;
-        break;
-      case Condition.GREATER_THAN:
-        conditionTypeNumber = 2;
-        break;
-      case Condition.EQUAL:
-        conditionTypeNumber = 3;
-        break;
-      case Condition.DIFFERENT:
-        conditionTypeNumber = 4;
-        break;
-      default:
-        throw new Error("conditionType not supported");
+    if (attestationNote == null) {
+      console.log("Attestation note is null")
+      return false;
     }
+    const argsToCalculateHash: ArgsHashAttestationCalculator = {
+      conditionType: attestationNote.conditionType,
+      hashRoute: attestationNote.hashRoute,
+      targetValue: attestationNote.targetValue,
+      sender: attestationNote.sender,
+    };
 
-    const recalculateHash = Poseidon.hash([
-      Field.from(attestationNote!.hashRoute),
-      Field.from(conditionTypeNumber),
-      Field.from(attestationNote!.targetValue),
-      PublicKey.fromBase58(attestationNote!.sender).toFields()[0],
-    ]).toString();
-
+    const recalculateHash = calculateAttestationHash(argsToCalculateHash);
+    
     if (recalculateHash !== hashAttestation) {
-      console.log("Hashes don't match")
+      setError("Note details don't correspond to the attestation hash, base64 note might have been modified")
+      console.log("Note statement doesn't correspond to the attestation hash, beware of scam")
       return false;
     }
 
@@ -143,6 +126,7 @@ export default function Home(): JSX.Element {
         return true;
       }
     }
+    setError("Attestation not found. Be sure that your transaction has been validated and that the event is indexed in the archives")
     console.log("Attestation not found. Be sure that your transaction has been validated")
     return false;
   };
@@ -266,7 +250,7 @@ export default function Home(): JSX.Element {
                         {
                           resultVerification === false && (
                             <div className="text-center text-red-500">  {/* TODO: need also to say that even ater validation, need to wait event indexed in archives */}
-                              Not Verified. Be sure that your transaction has been validated
+                              {error}
                             </div>
                           )
                         }
