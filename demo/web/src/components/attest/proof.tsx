@@ -93,13 +93,22 @@ const ProofStep = () => {
     ]).toString();
 
 
+    const argsForAttestationNoteEncoded = {
+      conditionType: attest.statement.condition.type,
+      targetValue: attest.statement.condition.targetValue,
+      value: attest.privateData.data.value,
+      request: attest.statement.request,
+      hashRoute: attest.privateData.data.hashRoute,
+      hashAttestation: hashAttestation
+    }
     const attestationHashBase64 = createAttestationNoteEncoded(
       attest.statement.condition.type,
       attest.statement.condition.targetValue,
       attest.privateData.data.value,
       attest.statement.request,
       attest.privateData.data.hashRoute,
-      hashAttestation
+      hashAttestation,
+      attest.minaWallet.address
     );
 
     attest.setDisplayText('Getting transaction JSON...');

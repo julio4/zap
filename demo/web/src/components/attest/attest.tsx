@@ -138,7 +138,7 @@ const Attest = () => {
             </button>
             <button
               onClick={() => {
-                window.location.href = `/verify?attestationNote=${attest.finalResult}`;
+                window.location.href = `/verify?note=${attest.finalResult}`;
               }}
               className="w-36 p-2 bg-indigo-500 text-white font-bold rounded hover:bg-indigo-700 transition duration-300"
             >
