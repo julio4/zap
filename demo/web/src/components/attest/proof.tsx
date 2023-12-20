@@ -1,9 +1,9 @@
 "use client";
 import { useContext, useState } from "react";
 import { AttestContext } from "../context/attestContext";
-import { Condition } from "../../types";
+import { ArgsHashAttestationCalculator, Condition } from "../../types";
 import { createAttestationNoteEncoded } from "../../utils/createBase64Attestation";
-import { Field, Poseidon, PublicKey } from "o1js";
+import { calculateAttestationHash } from "../../utils/calculateAttestationHash";
 
 let transactionFee = 0.1;
 
@@ -67,40 +67,15 @@ const ProofStep = () => {
     attest.setDisplayText('Requesting send transaction...');
     const transactionJSON = await attest.zkappWorkerClient.getTransactionJSON();
 
-    let conditionTypeNumber: number;
-    switch (attest.statement.condition.type) {
-      case Condition.LESS_THAN:
-        conditionTypeNumber = 1;
-        break;
-      case Condition.GREATER_THAN:
-        conditionTypeNumber = 2;
-        break;
-      case Condition.EQUAL:
-        conditionTypeNumber = 3;
-        break;
-      case Condition.DIFFERENT:
-        conditionTypeNumber = 4;
-        break;
-      default:
-        throw new Error("conditionType not supported");
-    }
-
-    const hashAttestation = Poseidon.hash([
-      Field.from(attest.privateData.data.hashRoute),
-      Field.from(conditionTypeNumber),
-      Field.from(attest.statement.condition.targetValue),
-      PublicKey.fromBase58(attest.minaWallet.address).toFields()[0],
-    ]).toString();
-
-
-    const argsForAttestationNoteEncoded = {
+    const argsToCalculateHash: ArgsHashAttestationCalculator = {
       conditionType: attest.statement.condition.type,
-      targetValue: attest.statement.condition.targetValue,
-      value: attest.privateData.data.value,
-      request: attest.statement.request,
       hashRoute: attest.privateData.data.hashRoute,
-      hashAttestation: hashAttestation
-    }
+      targetValue: attest.statement.condition.targetValue,
+      sender: attest.minaWallet.address,
+
+    };
+    const hashAttestation = calculateAttestationHash(argsToCalculateHash);
+
     const attestationHashBase64 = createAttestationNoteEncoded(
       attest.statement.condition.type,
       attest.statement.condition.targetValue,

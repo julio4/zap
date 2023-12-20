@@ -11,21 +11,15 @@ import {
   BlockchainName,
 } from './types';
 import Mock from './mocked.js';
-import { config } from "dotenv";
-
-config();
-const AIRSTACK_API_KEY = process.env.AIRSTACK_API_KEY;
 import { AIRSTACK_ENDPOINT, defaultBlockchain } from './config.js';
+import { config } from "dotenv";
+config();
+
+const AIRSTACK_API_KEY = process.env["AIRSTACK_API_KEY"];
 
 if (!AIRSTACK_API_KEY) {
   throw new Error('Missing AIRSTACK_API_KEY');
 }
-
-const graphQLClient = new GraphQLClient(AIRSTACK_ENDPOINT, {
-  headers: {
-    Authorization: AIRSTACK_API_KEY,
-  },
-});
 
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -73,6 +67,14 @@ export async function getBalance(
   `;
 
   try {
+    if (!AIRSTACK_API_KEY) {
+      throw new Error('Missing AIRSTACK_API_KEY');
+    }
+    const graphQLClient = new GraphQLClient(AIRSTACK_ENDPOINT, {
+      headers: {
+        Authorization: AIRSTACK_API_KEY,
+      },
+    });
     const res = await graphQLClient.request<AirstackTokenBalance>(balanceQuery);
     return res.TokenBalances.TokenBalance[0].formattedAmount || 0;
   } catch (e) {
