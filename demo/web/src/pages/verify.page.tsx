@@ -8,7 +8,9 @@ import { Search } from "../components/Search";
 import { decodeAttestationNote } from "../utils/createBase64Attestation";
 import { AttestationNote } from "../types";
 import { Zap } from "../../../../zap/build/Zap.js";
-import { Mina, Provable, ProvablePure, PublicKey, UInt32 } from "o1js";
+import { Mina, Provable, ProvablePure, PublicKey, UInt32, Poseidon, Field } from "o1js";
+import { Condition } from "../types";
+
 
 type MinaEvent = {
   type: string;
@@ -73,8 +75,8 @@ export default function Home(): JSX.Element {
     if (note) {
       try {
         // replace all spaces with + (url encoded)
-        const decoded_note = decodeAttestationNote(note.toString().replace(/ /g, "+"));
-        setAttestationNote(decoded_note);
+        const decodedNote = decodeAttestationNote(note.toString().replace(/ /g, "+"));
+        setAttestationNote(decodedNote);
       } catch (e) {
         // clear url parameter
         router.replace(router.pathname);
@@ -90,12 +92,53 @@ export default function Home(): JSX.Element {
   };
 
   const verifyAttestation = (events: MinaEvent[], hashAttestation: string) => {
+    // First we verify that the base64 displayed in the frontend corresponds to the event
+    console.log("attestation:", attestationNote)
+
+    const noteHashRoute = attestationNote?.hashRoute
+    const noteConditionType = attestationNote?.conditionType
+    const noteTargetValue = attestationNote?.targetValue
+    const noteSender = attestationNote?.sender
+
+    let conditionTypeNumber: number;
+    switch (attestationNote?.conditionType) {
+      case Condition.LESS_THAN:
+        conditionTypeNumber = 1;
+        break;
+      case Condition.GREATER_THAN:
+        conditionTypeNumber = 2;
+        break;
+      case Condition.EQUAL:
+        conditionTypeNumber = 3;
+        break;
+      case Condition.DIFFERENT:
+        conditionTypeNumber = 4;
+        break;
+      default:
+        throw new Error("conditionType not supported");
+    }
+
+    const recalculateHash = Poseidon.hash([
+      Field.from(attestationNote!.hashRoute),
+      Field.from(conditionTypeNumber),
+      Field.from(attestationNote!.targetValue),
+      PublicKey.fromBase58(attestationNote!.sender).toFields()[0],
+    ]).toString();
+
+    if (recalculateHash !== hashAttestation) {
+      console.log("Hashes don't match")
+      return false;
+    }
+
+    // Then we verify that the attestation hash is in the events
     for (let event of events) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let valueArray: Provable<any> = event.event.data;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const currentHash = (valueArray as any).value[1][1]
       if (BigInt(currentHash) === BigInt(hashAttestation)) {
+        // Then we verify that the base64 displayed in the frontend corresponds to the event
+
         console.log("AttestationHash Found!")
         return true;
       }
@@ -203,7 +246,7 @@ export default function Home(): JSX.Element {
                         <div className="flex justify-center mb-2 break-words">
                           <button
                             onClick={() => {
-                              if (!eventsFetched){
+                              if (!eventsFetched) {
                                 console.log("No events fetched")
                                 return
                               }
@@ -222,8 +265,8 @@ export default function Home(): JSX.Element {
                         }
                         {
                           resultVerification === false && (
-                            <div className="text-center text-red-500">
-                              Not Verified
+                            <div className="text-center text-red-500">  {/* TODO: need also to say that even ater validation, need to wait event indexed in archives */}
+                              Not Verified. Be sure that your transaction has been validated
                             </div>
                           )
                         }
