@@ -1,4 +1,5 @@
-import { request, gql } from 'graphql-request';
+import { request, gql, GraphQLClient } from 'graphql-request';
+import util from 'util';
 import {
   AirstackEnsHolder,
   AirstackNFTSaleTransactions,
@@ -11,10 +12,19 @@ import {
 } from './types';
 import Mock from './mocked.js';
 import { AIRSTACK_ENDPOINT, defaultBlockchain } from './config.js';
+import { config } from "dotenv";
+config();
+
+const AIRSTACK_API_KEY = process.env["AIRSTACK_API_KEY"];
+
+if (!AIRSTACK_API_KEY) {
+  throw new Error('Missing AIRSTACK_API_KEY');
+}
+
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockMiddleware = (args: any[], fn: (...args: any[]) => any) =>
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (Mock as any)[fn.name](...args);
 
 export async function getBalance(
@@ -36,25 +46,40 @@ export async function getBalance(
   }
 
   const balanceQuery = gql`
-    query Balance {
-      TokenBalance(
+    query MyQuery {
+      TokenBalances(
         input: {
           blockchain: ${blockchain}
-          tokenAddress: "${token}"
-          owner: "${owner}"
+          filter: {
+            tokenAddress: { _eq: "${token}" }
+            owner: { _eq: "${owner}" }
+          }
         }
       ) {
-        formattedAmount
+        TokenBalance {
+          token {
+            id
+          }
+          formattedAmount
+        }
       }
     }
   `;
 
-  const res = await request<AirstackTokenBalance>(
-    AIRSTACK_ENDPOINT,
-    balanceQuery
-  );
-
-  return res.TokenBalance?.formattedAmount || 0;
+  try {
+    if (!AIRSTACK_API_KEY) {
+      throw new Error('Missing AIRSTACK_API_KEY');
+    }
+    const graphQLClient = new GraphQLClient(AIRSTACK_ENDPOINT, {
+      headers: {
+        Authorization: AIRSTACK_API_KEY,
+      },
+    });
+    const res = await graphQLClient.request<AirstackTokenBalance>(balanceQuery);
+    return res.TokenBalances.TokenBalance[0].formattedAmount || 0;
+  } catch (e) {
+    throw new Error((e as Error)?.message)
+  }
 }
 
 export async function isPoapHolder(

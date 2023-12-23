@@ -208,4 +208,12 @@ export type AttestationNote = {
   targetValue: number,
   conditionType: string,
   hashRoute: string,
+  sender: string,
+}
+
+export type ArgsHashAttestationCalculator = {
+  conditionType: string | number;
+  hashRoute: string;
+  targetValue: number;
+  sender: string;
 }

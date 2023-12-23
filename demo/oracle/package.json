@@ -29,7 +29,8 @@
     "graphql-request": "^6.1.0",
     "koa": "^2.14.2",
     "koa-helmet": "^7.0.2",
-    "o1js": "^0.13.1"
+    "o1js": "^0.13.1",
+    "util": "^0.12.5"
   },
   "devDependencies": {
     "@packages/tsconfig": "workspace:*",

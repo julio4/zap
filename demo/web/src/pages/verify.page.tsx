@@ -6,9 +6,11 @@ import { Header } from "../components/Header";
 import { FoldingBg } from "../components/logo";
 import { Search } from "../components/Search";
 import { decodeAttestationNote } from "../utils/createBase64Attestation";
-import { AttestationNote } from "../types";
+import { ArgsHashAttestationCalculator, AttestationNote } from "../types";
 import { Zap } from "../../../../zap/build/Zap.js";
 import { Mina, Provable, ProvablePure, PublicKey, UInt32 } from "o1js";
+import { calculateAttestationHash } from "../utils/calculateAttestationHash";
+
 
 type MinaEvent = {
   type: string;
@@ -32,6 +34,7 @@ export default function Home(): JSX.Element {
   const router = useRouter();
   const [note, setNote] = useState<string | string[] | undefined>(undefined);
   const [resultVerification, setResultVerification] = useState<boolean | undefined>(undefined)
+  const [error, setError] = useState<string | undefined>(undefined);
 
   const [workerSet] = useState(false);  // todo: use this to show loading spinner
   const [eventsFetched, setEventsFetched] = useState<MinaEvent[] | undefined>(undefined);
@@ -73,8 +76,8 @@ export default function Home(): JSX.Element {
     if (note) {
       try {
         // replace all spaces with + (url encoded)
-        const decoded_note = decodeAttestationNote(note.toString().replace(/ /g, "+"));
-        setAttestationNote(decoded_note);
+        const decodedNote = decodeAttestationNote(note.toString().replace(/ /g, "+"));
+        setAttestationNote(decodedNote);
       } catch (e) {
         // clear url parameter
         router.replace(router.pathname);
@@ -90,16 +93,40 @@ export default function Home(): JSX.Element {
   };
 
   const verifyAttestation = (events: MinaEvent[], hashAttestation: string) => {
+    // First we verify that the base64 displayed in the frontend corresponds to the event
+    if (attestationNote == null) {
+      console.log("Attestation note is null")
+      return false;
+    }
+    const argsToCalculateHash: ArgsHashAttestationCalculator = {
+      conditionType: attestationNote.conditionType,
+      hashRoute: attestationNote.hashRoute,
+      targetValue: attestationNote.targetValue,
+      sender: attestationNote.sender,
+    };
+
+    const recalculateHash = calculateAttestationHash(argsToCalculateHash);
+    
+    if (recalculateHash !== hashAttestation) {
+      setError("Note details don't correspond to the attestation hash, base64 note might have been modified")
+      console.log("Note statement doesn't correspond to the attestation hash, beware of scam")
+      return false;
+    }
+
+    // Then we verify that the attestation hash is in the events
     for (let event of events) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let valueArray: Provable<any> = event.event.data;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const currentHash = (valueArray as any).value[1][1]
       if (BigInt(currentHash) === BigInt(hashAttestation)) {
+        // Then we verify that the base64 displayed in the frontend corresponds to the event
+
         console.log("AttestationHash Found!")
         return true;
       }
     }
+    setError("Attestation not found. Be sure that your transaction has been validated and that the event is indexed in the archives")
     console.log("Attestation not found. Be sure that your transaction has been validated")
     return false;
   };
@@ -203,7 +230,7 @@ export default function Home(): JSX.Element {
                         <div className="flex justify-center mb-2 break-words">
                           <button
                             onClick={() => {
-                              if (!eventsFetched){
+                              if (!eventsFetched) {
                                 console.log("No events fetched")
                                 return
                               }
@@ -222,8 +249,8 @@ export default function Home(): JSX.Element {
                         }
                         {
                           resultVerification === false && (
-                            <div className="text-center text-red-500">
-                              Not Verified
+                            <div className="text-center text-red-500">  {/* TODO: need also to say that even ater validation, need to wait event indexed in archives */}
+                              {error}
                             </div>
                           )
                         }
