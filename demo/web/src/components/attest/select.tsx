@@ -43,6 +43,30 @@ const SelectStep = () => {
     setCondition(Condition.GREATER_THAN);
   };
 
+  const getAllTokens = async () => {
+    const request_data = {
+      address: attest.ethereumWallet.address
+    };
+
+    try {
+      const response = await axios.post(
+        `${ORACLE_ENDPOINT}/listBalances`,
+        request_data,
+      );
+
+      const body = response.data as SignResponse;
+
+    } catch (err) {
+      if (err instanceof Error) {
+        console.error("oracle error", err);
+        setError(err.message);
+      } else {
+        console.log('An unexpected error occurred');
+        setError("An unknown error occurred.");
+      }
+    }
+  };
+
   const handleSelect = async () => {
     choice?.args.forEach((arg) => {
       const t_arg = args.find((a) => a.name === arg.name);
@@ -303,11 +327,20 @@ const SelectStep = () => {
               </button>
             </div>
 
+            <div className="flex flex-col gap-2">
+              <button
+                onClick={getAllTokens}
+                type="button"
+                className="transition-all hover:scale-[1.02] duration-200 ease-in-out text-white bg-gradient-to-r from-indigo-500 via-sky-400 to-indigo-300 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-sky-300 dark:focus:ring-sky-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 opacity-80">
+                getAllTokens
+              </button>
+
+            </div>
           </div>
         </div>
       )}
     </div>
   );
-};
+}
 
 export { SelectStep };
