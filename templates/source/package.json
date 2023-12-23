@@ -3,12 +3,13 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "start": "node dist/src/index.js",
+    "start": "node dist/index.js",
     "build": "tsc -p .",
-    "dev": "ts-node src/index.ts",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
-    "generate_keys": "ts-node generate_keys.ts"
+    "dev": "ts-node --esm src/index.ts",
+    "test": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" npx jest",
+    "generate_keys": "node generate_keys.js"
   },
   "keywords": [],
   "author": "",
@@ -22,14 +23,15 @@
     "express-validator": "^7.0.1",
     "install": "^0.13.0",
     "o1js": "^0.13.1",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "@packages/zap-utils": "workspace:*"
   },
   "devDependencies": {
     "@types/jest": "^27.0.3",
     "@types/supertest": "^2.0.16",
     "jest": "^27.3.1",
     "supertest": "^6.3.3",
-    "ts-jest": "^27.0.7",
+    "ts-jest": "^29.1.1",
     "ts-node": "^10.9.2"
   }
 }

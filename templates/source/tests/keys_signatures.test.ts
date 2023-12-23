@@ -1,8 +1,13 @@
 import request from "supertest";
-import app from "../src/app";
-import { Route, ZapRequestParams, ZapSignedResponse } from "../src/types";
+import app from "../src/app.js";
 import { PrivateKey } from "o1js";
-import { hashRoute, verifyResponseSignature } from "../src/helpers";
+import { hashRoute, verifyResponseSignature } from "@packages/zap-utils";
+
+import {
+  Route,
+  ZapRequestParams,
+  ZapSignedResponse,
+} from "@packages/zap-utils/types";
 
 describe("Key signature (With test endpoint /example/nb)", () => {
   let privateKey: PrivateKey;
@@ -81,7 +86,7 @@ describe("Key signature (With test endpoint /example/nb)", () => {
       path: "/api/example/nb",
       args: {
         id: req.args?.id + 1,
-      }
+      },
     };
     body.data.hashRoute = hashRoute(route).toString();
 
