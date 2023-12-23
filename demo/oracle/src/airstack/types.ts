@@ -1,3 +1,24 @@
+export type TokenBalancesResponse = {
+  TokenBalances: {
+    TokenBalance: TokenBalance[];
+  };
+};
+
+export type TokenBalance = {
+  tokenAddress: string;
+  formattedAmount: number;
+  token: {
+    id: string;
+    isSpam: boolean;
+    logo: Logo | null;
+    name: string;
+  };
+};
+
+export type Logo = {
+  small: string | null;
+};
+
 export type AirstackTokenBalance = {
   TokenBalances: {
     TokenBalance: Array<{
@@ -46,7 +67,7 @@ export type AirstackXmtpEnabled = {
 export type AirstackEnsHolder = {
   Wallet: {
     domains:
-      {
+      | {
           name: string;
         }[]
       | null;

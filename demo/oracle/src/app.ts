@@ -6,10 +6,12 @@ import helmet from 'koa-helmet';
 import {
   errorHandler,
   logger,
+  normalizeAddress,
   signResponse,
   verifyEthereumSignature,
 } from './middlewares/index.js';
 import {
+  getListBalances,
   getUserBalance,
   getUserNftVolumeSales,
   verifyEnsHolder,
@@ -24,6 +26,20 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
+const skipCertainMiddlewaresForListBalances = async (ctx: Koa.ParameterizedContext, next: () => any) => {
+  if (ctx.path === '/api/listBalances') {
+    const { address } = ctx.request.body;
+    const normalizedAddress = normalizeAddress(address);
+    ctx.state.address = normalizedAddress;
+
+    await next();
+  } else {
+    await verifyEthereumSignature(ctx, async () => {
+      await signResponse(ctx, next);
+    });
+  }
+};
+
 /**
  * Returns a Koa application instance with middleware and routes configured.
  * @returns {Promise<Koa>} A Promise that resolves to a Koa application instance.
@@ -33,6 +49,7 @@ export const getApp = async (): Promise<Koa> => {
   const router = new Router();
 
   router.prefix('/api');
+  router.post('/listBalances', getListBalances);
   router.post('/balance', getUserBalance);
   router.post('/poap', verifyPoapHolder);
   router.post('/nft', verifyNftHolder);
@@ -49,8 +66,7 @@ export const getApp = async (): Promise<Koa> => {
     .use(koaBody())
     .use(logger)
     .use(errorHandler)
-    .use(verifyEthereumSignature) // also set ctx.state TODO maybe move in a separate middleware?
-    .use(signResponse)
+    .use(skipCertainMiddlewaresForListBalances)
     .use(router.routes())
     .use(router.allowedMethods());
 
