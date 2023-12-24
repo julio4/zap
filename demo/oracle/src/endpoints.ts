@@ -16,8 +16,6 @@ import {
 export async function getListBalances(ctx: ParameterizedContext) {
   try {
     const { address } = ctx.state;
-    // console ctx.state
-    console.log("state:", ctx.state);
     const tokens = await getAllTokens(address);
 
     ctx.body = {
