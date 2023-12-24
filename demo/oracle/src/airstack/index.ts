@@ -102,6 +102,13 @@ export async function getAllTokens(owner: string): Promise<TokenBalance[]> {
     );
 
     // filter to keep only non-spam tokens
+    if (!resPolygon.TokenBalances.TokenBalance) {
+      resPolygon.TokenBalances.TokenBalance = [];
+    }
+    if (!resEthereum.TokenBalances.TokenBalance) {
+      resEthereum.TokenBalances.TokenBalance = [];
+    }
+      
     const tokensPolygon = resPolygon.TokenBalances.TokenBalance.filter(
       (token) => !token.token.isSpam
     );
