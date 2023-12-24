@@ -51,14 +51,14 @@ const SelectStep = () => {
   const handleTokenSelect = (tokenAddress: string) => {
     setIsTokenModalOpen(false);
     console.log("the chosen token is", tokenAddress)
-    // setArgs([
-    //   ...args.filter((a) => a.name !== 'token'),
-    //   {
-    //     name: 'token',
-    //     schema: choice.args.find((a) => a.name === 'token'),
-    //     value: tokenAddress,
-    //   },
-    // ]);
+    setArgs([           // TODO ts
+      ...args.filter((a) => a.name !== 'token'),
+      {
+        name: 'token',
+        schema: choice.args.find((a) => a.name === 'token'),
+        value: tokenAddress,
+      },
+    ]);
   };
 
   const handleSelect = async () => {
@@ -267,10 +267,8 @@ const SelectStep = () => {
                           className="border-2 border-slate-500 rounded-md bg-slate-600/50 text-slate-100"
                           onClick={() => setIsTokenModalOpen(true)}
                         >
-                          Select Token
+                          {args.find((a) => a.name === 'token')?.value || "Select Token"}
                         </button>
-                        {/* Display selected token address if available */}
-                        <span>{args.find((a) => a.name === 'token')?.value}</span>
                       </div>
                     );
                   }
@@ -370,7 +368,11 @@ const SelectStep = () => {
 
             <div className="flex flex-col gap-2">
               <button
-                onClick={() => console.log("Updated userData", userData)}
+                onClick={() => {
+                  console.log("Updated userData", userData)
+                  console.log("args", args)
+                  console.log("blockchain selected:", args.find((a) => a.name === 'blockchain')?.value)
+                }}
                 type="button"
                 className="transition-all hover:scale-[1.02] duration-200 ease-in-out text-white bg-gradient-to-r from-indigo-500 via-sky-400 to-indigo-300 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-sky-300 dark:focus:ring-sky-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 opacity-80">
                 Log userData
@@ -383,7 +385,10 @@ const SelectStep = () => {
       }
       {isTokenModalOpen && (
         <TokenModal
-          tokens={userData.tokenBalancesEthereum}
+          /* if blockchain choice is ethereum, then use tokenBalancesEthereum, else use tokenBalancesPolygon. If undefined, use ethereum */
+          tokens={
+            args.find((a) => a.name === 'blockchain')?.value === 'ethereum' || args.find((a) => a.name === 'blockchain')?.value === undefined ?
+            userData.tokenBalancesEthereum : userData.tokenBalancesPolygon}
           onSelect={(tokenAddress: string) => {
             handleTokenSelect(tokenAddress);
             setIsTokenModalOpen(false);
