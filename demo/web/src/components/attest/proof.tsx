@@ -8,7 +8,10 @@ import { calculateAttestationHash } from "../../utils/calculateAttestationHash";
 let transactionFee = 0.1;
 
 const ProofStep = () => {
+  const [isCreatingTransaction, setIsCreatingTransaction] = useState(false);
   const [isSendingTransaction, setIsSendingTransaction] = useState(false);
+  const [attestationHashBase64, setAttestationHashBase64] = useState<string | null>(null);
+  const [transactionJSON, setTransactionJSON] = useState<string | null>(null);
   const attest = useContext(AttestContext);
 
   let ArgsToGenerateAttestation: {
@@ -19,24 +22,23 @@ const ProofStep = () => {
     hashRoute: string;
     signature: string;
   }
-
-  const onSendTransaction = async () => {
-    if (isSendingTransaction) {
-      return;
+  
+  const onCreateTransaction = async () => {
+    if (isCreatingTransaction) {
+      return
     }
-    setIsSendingTransaction(true);
-
+    setIsCreatingTransaction(true);
     const { zkappWorkerClient } = attest;
     if (!zkappWorkerClient) {
       throw new Error("zkappWorkerClient is not defined");
     }
-
+    
     const { minaWallet } = attest;
     if (!minaWallet) {
       throw new Error("minaWallet is not defined");
     }
 
-    attest.setDisplayText('Creating a transaction...');
+    attest.setDisplayText('Creating the proof...');
     attest.set({ ...attest, creatingTransaction: true });
 
     if (attest.privateData === null) {
@@ -61,11 +63,10 @@ const ProofStep = () => {
 
     await attest.zkappWorkerClient.createGenerateAttestationTransaction(ArgsToGenerateAttestation);
 
-    attest.setDisplayText('Creating the proof...');
     await attest.zkappWorkerClient.proveGenerateAttestationTransaction();
 
-    attest.setDisplayText('Requesting send transaction...');
-    const transactionJSON = await attest.zkappWorkerClient.getTransactionJSON();
+    const txJSON = await attest.zkappWorkerClient.getTransactionJSON();
+    setTransactionJSON((txJSON as string));
 
     const argsToCalculateHash: ArgsHashAttestationCalculator = {
       conditionType: attest.statement.condition.type,
@@ -76,7 +77,7 @@ const ProofStep = () => {
     };
     const hashAttestation = calculateAttestationHash(argsToCalculateHash);
 
-    const attestationHashBase64 = createAttestationNoteEncoded(
+    setAttestationHashBase64(createAttestationNoteEncoded(
       attest.statement.condition.type,
       attest.statement.condition.targetValue,
       attest.privateData.data.value,
@@ -84,34 +85,56 @@ const ProofStep = () => {
       attest.privateData.data.hashRoute,
       hashAttestation,
       attest.minaWallet.address
-    );
+    ));
 
+    attest.setDisplayText('Click to send the transaction');
+    setIsCreatingTransaction(false);
+  }
+
+  const onSendTransaction = async () => {
+    if (isSendingTransaction) {
+      return;
+    }
+    if (transactionJSON === null || attestationHashBase64 === null) {
+      console.log("transactionJSON or attestationHashBase64 is null, creating transaction...");
+      return;
+    }
+    setIsSendingTransaction(true);
     attest.setDisplayText('Getting transaction JSON...');
-    const { hash } = await window.mina.sendTransaction({
-      transaction: transactionJSON,
-      feePayer: {
-        fee: transactionFee,
-        memo: '',
-      },
-    });
+    try {
 
-    attest.setDisplayText('Transaction sent with hash: ' + hash);
-    attest.setFinalResult(attestationHashBase64);
+      const { hash } = await window.mina.sendTransaction({
+        transaction: transactionJSON,
+        feePayer: {
+          fee: transactionFee,
+          memo: '',
+        },
+      });
 
-    setIsSendingTransaction(false);
+      attest.setDisplayText('Transaction sent with hash: ' + hash);
+      attest.setFinalResult(attestationHashBase64);
+      setIsSendingTransaction(false);
+    }
+
+    catch (error) {
+      console.log(error)
+      attest.setDisplayText('Error sending transaction: ' + (error as Error).message + '\n Please try again.');
+      setIsSendingTransaction(false);
+      return;
+    }
   };
 
   return (
     <div className="flex flex-col pt-4 z-50">
-      {attest.zkappHasBeenSetup && (
+      {!attest.zkappHasBeenSetup && (
         <p className="animate-pulse text-red-500 text-center">
           The contract is currently compiling, please wait...
         </p>
       )}
       {attest.zkappHasBeenSetup && (
         <button
-          disabled={isSendingTransaction}
-          onClick={onSendTransaction}
+          disabled={isCreatingTransaction || isSendingTransaction}
+          onClick={transactionJSON === null ? onCreateTransaction : onSendTransaction}
           className="transition-all ease-in-out bg-green-500 hover:bg-green-700 disabled:bg-green-900 text-white font-bold py-2 px-4 rounded"
         >
           {attest.displayText || "Generate proof"}

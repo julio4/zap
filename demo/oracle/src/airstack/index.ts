@@ -1,5 +1,4 @@
 import { request, gql, GraphQLClient } from 'graphql-request';
-import util from 'util';
 import {
   AirstackEnsHolder,
   AirstackNFTSaleTransactions,
@@ -15,6 +14,7 @@ import {
 import Mock from './mocked.js';
 import { AIRSTACK_ENDPOINT, defaultBlockchain } from './config.js';
 import { config } from 'dotenv';
+import { deduplicateTokens } from '../utils.js';
 config();
 
 const AIRSTACK_API_KEY = process.env['AIRSTACK_API_KEY'];
@@ -102,6 +102,13 @@ export async function getAllTokens(
       balanceQueryPolygon
     );
 
+    let tokensEthereum = resEthereum.TokenBalances.TokenBalance || [];
+    let tokensPolygon = resPolygon.TokenBalances.TokenBalance || [];
+
+    // deduplicate tokens
+    tokensEthereum = deduplicateTokens(tokensEthereum);
+    tokensPolygon = deduplicateTokens(tokensPolygon);
+
     // filter to keep only non-spam tokens
     if (!resEthereum.TokenBalances.TokenBalance) {
       resEthereum.TokenBalances.TokenBalance = [];
@@ -110,15 +117,12 @@ export async function getAllTokens(
       resPolygon.TokenBalances.TokenBalance = [];
     }
 
-    const tokensEthereum = resEthereum.TokenBalances.TokenBalance.filter(
+    tokensEthereum = resEthereum.TokenBalances.TokenBalance.filter(
       (token) => !token.token.isSpam
     );
-    const tokensPolygon = resPolygon.TokenBalances.TokenBalance.filter(
+    tokensPolygon = resPolygon.TokenBalances.TokenBalance.filter(
       (token) => !token.token.isSpam
     );
-
-    console.log('tokensPolygon: ', tokensPolygon);
-    console.log('tokensEthereum: ', tokensEthereum);
 
     // sort by balance
     tokensEthereum.sort((a, b) => b.formattedAmount - a.formattedAmount);
