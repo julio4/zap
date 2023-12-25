@@ -32,7 +32,6 @@ export const createAttestationNoteEncoded = (
     statement: `I, ${sender}, attest that my value is ${operation} ${targetValue} for ${
       request.route
     } with ${JSON.stringify(request.args)}.`,
-    value: value,
     targetValue: targetValue,
     conditionType: conditionType,
     hashRoute: hashRoute,

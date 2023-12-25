@@ -207,7 +207,6 @@ export type PrivateData = {
 export type AttestationNote = {
   attestationHash: string;
   statement: string;
-  value: number;
   targetValue: number;
   conditionType: string;
   hashRoute: string;
