@@ -3,7 +3,7 @@ import { TokenBalance } from "../../types";
 
 interface TokenModalProps {
     tokens: TokenBalance[];
-    onSelect: (tokenAddress: string) => void;
+    onSelect: (tokenAddress: string, tokenName: string) => void;
     onClose: () => void;
 }
 
@@ -30,7 +30,7 @@ const TokenModal: React.FC<TokenModalProps> = ({ tokens, onSelect, onClose }) =>
                     {tokens.map((token, index) => (
                         <li
                             key={token.tokenAddress}
-                            onClick={() => onSelect(token.tokenAddress)}
+                            onClick={() => onSelect(token.tokenAddress, token.token.name)}
                             className="cursor-pointer hover:bg-slate-700 p-4 border-b border-slate-600 text-white"
                         >
                             <div className="flex justify-between items-center">

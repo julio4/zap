@@ -27,8 +27,9 @@ const SelectStep = () => {
   const [args, setArgs] = useState<
     {
       name: string;
-      schema: HTMLInputSchema;
+      schema: HTMLInputSchema | undefined;  // todo: should not be undefined
       value: string;
+      valueDisplayed?: string;
     }[]
   >([]);
   const [isTokenModalOpen, setIsTokenModalOpen] = useState(false);
@@ -48,15 +49,20 @@ const SelectStep = () => {
     setCondition(Condition.GREATER_THAN);
   };
 
-  const handleTokenSelect = (tokenAddress: string) => {
+  const handleTokenSelect = (tokenAddress: string, tokenName: string) => {
     setIsTokenModalOpen(false);
     console.log("the chosen token is", tokenAddress)
-    setArgs([           // TODO ts
+    if (!choice) {
+      console.log("choice is undefined")
+      return;
+    }
+    setArgs([           // TODO better ts
       ...args.filter((a) => a.name !== 'token'),
       {
         name: 'token',
         schema: choice.args.find((a) => a.name === 'token'),
         value: tokenAddress,
+        valueDisplayed: tokenName
       },
     ]);
   };
@@ -264,10 +270,10 @@ const SelectStep = () => {
                       <div key={arg.name} className="flex flex-row gap-2 justify-between">
                         <label className="text-slate-400">{arg.label}</label>
                         <button
-                          className="border-2 border-slate-500 rounded-md bg-slate-600/50 text-slate-100"
+                          className="border-2 border-slate-500 rounded-md bg-slate-600/50 text-slate-100" // todo: add x padding
                           onClick={() => setIsTokenModalOpen(true)}
                         >
-                          {args.find((a) => a.name === 'token')?.value || "Select Token"}
+                          {args.find((a) => a.name === 'token')?.valueDisplayed || "Select Token"}
                         </button>
                       </div>
                     );
@@ -389,8 +395,8 @@ const SelectStep = () => {
           tokens={
             args.find((a) => a.name === 'blockchain')?.value === 'ethereum' || args.find((a) => a.name === 'blockchain')?.value === undefined ?
             userData.tokenBalancesEthereum : userData.tokenBalancesPolygon}
-          onSelect={(tokenAddress: string) => {
-            handleTokenSelect(tokenAddress);
+          onSelect={(tokenAddress: string, tokenName: string) => {
+            handleTokenSelect(tokenAddress, tokenName);
             setIsTokenModalOpen(false);
           }}
           onClose={() => setIsTokenModalOpen(false)}
