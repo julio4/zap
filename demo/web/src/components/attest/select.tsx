@@ -36,6 +36,7 @@ const SelectStep = () => {
   const [condition, setCondition] = useState<Condition>(Condition.GREATER_THAN);
   const [targetValue, setTargetValue] = useState<number>(0);
   const [error, setError] = useState<string | null>(null);
+  const [tokenFetchLoading, setTokenFetchLoading] = useState<boolean>(true);
   const [waiting, setWaiting] = useState<{
     status: boolean;
     message: string;
@@ -181,10 +182,12 @@ const SelectStep = () => {
   };
 
   const getAllTokens = async () => {
+    setTokenFetchLoading(true);
     const request_data = {
       address: attest.ethereumWallet.address,
       signature: attest.ethereumWallet.signature,
     };
+
     try {
       const response = await axios.post(
         `${ORACLE_ENDPOINT}/listBalances`,
@@ -204,6 +207,7 @@ const SelectStep = () => {
         setError("An unknown error occurred.");
       }
     }
+    setTokenFetchLoading(false);
   };
 
 
@@ -267,10 +271,10 @@ const SelectStep = () => {
                 choice.args.map((arg) => {
                   if (arg.type === 'text' && arg.name === 'token') {
                     return (
-                      <div key={arg.name} className="flex flex-row gap-2 justify-between">
+                      <div key={arg.name} className="flex flex-row gap-2 justify-between px-2 py-1">
                         <label className="text-slate-400">{arg.label}</label>
                         <button
-                          className="border-2 border-slate-500 rounded-md bg-slate-600/50 text-slate-100" // todo: add x padding
+                          className="border-2 border-slate-500 rounded-lg bg-slate-600/50 text-slate-100 px-4 py-1"
                           onClick={() => setIsTokenModalOpen(true)}
                         >
                           {args.find((a) => a.name === 'token')?.valueDisplayed || "Select Token"}
@@ -301,7 +305,7 @@ const SelectStep = () => {
                     );
                   } else if (arg.type === 'select') {
                     return (
-                      <div key={arg.name} className="flex flex-row gap-2 justify-between">
+                      <div key={arg.name} className="flex flex-row gap-2 justify-between px-2 py-1">
                         <label className="text-slate-400">{arg.label}</label>
                         <select
                           value={args.find((a) => a.name === arg.name)?.value || ''}
@@ -355,7 +359,7 @@ const SelectStep = () => {
               <label className="text-slate-400">Target Value</label>
               <input
                 type="number"
-                className="border-2 border-slate-500 rounded-md bg-slate-600/50 text-slate-100"
+                className="border-2 border-slate-500 rounded-md bg-slate-600/50 text-slate-100 px-2 py-1"
                 value={targetValue}
                 onChange={(e) => setTargetValue(Number(e.target.value))}
               />
@@ -373,35 +377,25 @@ const SelectStep = () => {
             </div>
 
             <div className="flex flex-col gap-2">
-              <button
-                onClick={() => {
-                  console.log("Updated userData", userData)
-                  console.log("args", args)
-                  console.log("blockchain selected:", args.find((a) => a.name === 'blockchain')?.value)
-                }}
-                type="button"
-                className="transition-all hover:scale-[1.02] duration-200 ease-in-out text-white bg-gradient-to-r from-indigo-500 via-sky-400 to-indigo-300 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-sky-300 dark:focus:ring-sky-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 opacity-80">
-                Log userData
-              </button>
-
             </div>
           </div>
         </div>
       )
       }
-      {isTokenModalOpen && (
-        <TokenModal
-          /* if blockchain choice is ethereum, then use tokenBalancesEthereum, else use tokenBalancesPolygon. If undefined, use ethereum */
-          tokens={
-            args.find((a) => a.name === 'blockchain')?.value === 'ethereum' || args.find((a) => a.name === 'blockchain')?.value === undefined ?
-            userData.tokenBalancesEthereum : userData.tokenBalancesPolygon}
-          onSelect={(tokenAddress: string, tokenName: string) => {
-            handleTokenSelect(tokenAddress, tokenName);
-            setIsTokenModalOpen(false);
-          }}
-          onClose={() => setIsTokenModalOpen(false)}
-        />
-      )}
+        {isTokenModalOpen && (
+          <TokenModal
+            /* if blockchain choice is ethereum, then use tokenBalancesEthereum, else use tokenBalancesPolygon. If undefined, use ethereum */
+            tokens={
+              args.find((a) => a.name === 'blockchain')?.value === 'ethereum' || args.find((a) => a.name === 'blockchain')?.value === undefined ?
+              userData.tokenBalancesEthereum : userData.tokenBalancesPolygon}
+            onSelect={(tokenAddress: string, tokenName: string) => {
+              handleTokenSelect(tokenAddress, tokenName);
+              setIsTokenModalOpen(false);
+            }}
+            onClose={() => setIsTokenModalOpen(false)}
+            isLoading={tokenFetchLoading}
+          />
+        )}
 
     </div >
   );

@@ -5,6 +5,7 @@ interface TokenModalProps {
     tokens: TokenBalance[];
     onSelect: (tokenAddress: string, tokenName: string) => void;
     onClose: () => void;
+    isLoading: boolean;
 }
 
 const fetchLogo = (token: TokenBalance) => {
@@ -19,7 +20,7 @@ const fetchLogo = (token: TokenBalance) => {
     }
 }
 
-const TokenModal: React.FC<TokenModalProps> = ({ tokens, onSelect, onClose }) => {
+const TokenModal: React.FC<TokenModalProps> = ({ tokens, onSelect, onClose, isLoading }) => {
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
             <div className="bg-slate-800 rounded-lg overflow-hidden w-1/2">
@@ -27,23 +28,34 @@ const TokenModal: React.FC<TokenModalProps> = ({ tokens, onSelect, onClose }) =>
                     <h3 className="text-lg font-semibold text-white">Select a Token</h3>
                 </div>
                 <ul className="max-h-64 overflow-y-auto">
-                    {tokens.map((token, index) => (
-                        <li
-                            key={token.tokenAddress}
-                            onClick={() => onSelect(token.tokenAddress, token.token.name)}
-                            className="cursor-pointer hover:bg-slate-700 p-4 border-b border-slate-600 text-white"
-                        >
-                            <div className="flex justify-between items-center">
+                    {isLoading ? (
+                        <div className="flex justify-center items-center py-4">
+                            <div className="spinner"></div>
+                            <span className="text-white ml-3">Loading tokens...</span>
+                        </div>
+                    ) : tokens.length > 0 ? (
+                        <ul className="max-h-64 overflow-y-auto">
+                            {tokens.map((token, index) => (
+                                <li
+                                    key={token.tokenAddress}
+                                    onClick={() => onSelect(token.tokenAddress, token.token.name)}
+                                    className="cursor-pointer hover:bg-slate-700 p-4 border-b border-slate-600 text-white"
+                                >
+                                    <div className="flex justify-between items-center">
 
-                                <div className="flex items-center">
-                                    {<img src={(fetchLogo(token as any))} alt="" className="w-6 h-6 mr-2" />}
+                                        <div className="flex items-center">
+                                            {<img src={(fetchLogo(token as any))} alt="" className="w-6 h-6 mr-2" />}
 
-                                    <h4 className="text-sm font-semibold">{token.token.name}</h4>
-                                </div>
-                                <div className="text-sm font-semibold">{token.formattedAmount}</div>
-                            </div>
-                        </li>
-                    ))}
+                                            <h4 className="text-sm font-semibold">{token.token.name}</h4>
+                                        </div>
+                                        <div className="text-sm font-semibold">{token.formattedAmount}</div>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <li className="text-center text-white py-4">No tokens found.</li>
+                    )}
                 </ul>
                 <div className="flex justify-end p-4">
                     <button
