@@ -10,7 +10,7 @@
   "license": "MIT",
   "homepage": "https://github.com/julio4/zap",
   "dependencies": {
-    "next": "^13.0.6",
+    "next": "^13.5.1",
     "nextra": "latest",
     "nextra-theme-docs": "latest",
     "react": "^18.2.0",
