@@ -1,6 +1,6 @@
 import { PrivateKey } from 'o1js';
 
-const generate = (): PrivateKey => PrivateKey.random();
+const generate = () => PrivateKey.random();
 
 const key = generate();
 console.log('PRIVATE KEY: ', key.toBase58());

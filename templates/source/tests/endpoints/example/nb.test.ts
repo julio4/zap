@@ -1,9 +1,13 @@
 import "dotenv/config";
 import request from "supertest";
-import app from "../../../src/app";
-import { Route, ZapRequestParams, ZapSignedResponse } from "../../../src/types";
+import app from "../../../src/app.js";
 import { PrivateKey } from "o1js";
-import { verifyResponseSignature } from "../../../src/helpers";
+import {
+  Route,
+  ZapRequestParams,
+  ZapSignedResponse,
+} from "@packages/zap-utils/types";
+import { verifyResponseSignature } from "@packages/zap-utils";
 
 // Example of tests for the /example/nb endpoint
 describe("Endpoint /example/nb", () => {
