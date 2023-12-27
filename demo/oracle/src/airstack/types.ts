@@ -1,3 +1,31 @@
+/* General Airstack types */
+
+interface QueryResponse {
+  data: Data;
+}
+
+interface Data {
+  ethereum: BlockchainTokenBalances;
+  polygon: BlockchainTokenBalances;
+  base: BlockchainTokenBalances;
+}
+
+interface BlockchainTokenBalances {
+  TokenBalance: TokenBalance[];
+  pageInfo: PageInfo;
+}
+
+interface PageInfo {
+  nextCursor: string;
+  prevCursor: string;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+}
+
+type TokenType = "ERC721" | "ERC1155";
+type Blockchain = "ethereum" | "polygon" | "base";
+
+/* Types used for fetching all ERC20 */
 export type TokenBalancesResponse = {
   TokenBalances: {
     TokenBalance: TokenBalance[];
@@ -18,6 +46,24 @@ export type TokenBalance = {
 export type Logo = {
   small: string | null;
 };
+
+/* Types used for fetching all NFTs */
+interface TokenNft {
+  address: string;
+  tokenId: string;
+  blockchain: Blockchain;
+  contentValue: ContentValue;
+}
+
+interface ContentValue {
+  image?: Image;
+}
+
+interface Image {
+  original: string;
+}
+
+/*  Miscelaneous types */
 
 export type AirstackTokenBalance = {
   TokenBalances: {

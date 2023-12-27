@@ -1,4 +1,5 @@
 import { request, gql, GraphQLClient } from 'graphql-request';
+import util from 'util';
 import {
   AirstackEnsHolder,
   AirstackNFTSaleTransactions,
@@ -29,6 +30,114 @@ const mockMiddleware = (args: any[], fn: (...args: any[]) => any) =>
   (Mock as any)[fn.name](...args);
 
 export async function getAllTokens(
+  owner: string
+): Promise<[TokenBalance[], TokenBalance[]]> {
+  const balanceQueryEthereum = gql`
+  query TokenBalancesEthereum {
+    TokenBalances(
+      input: {
+        filter: {
+          owner: { _eq: "${owner}" }
+          formattedAmount: { _gt: 0 }
+        }
+        blockchain: ethereum
+      }
+    ) {
+      TokenBalance {
+        tokenAddress
+        formattedAmount
+        token {
+          id
+          isSpam
+          logo {
+            small
+          }
+          name
+        }
+      }
+    }
+  }
+`;
+
+  const balanceQueryPolygon = gql`
+      query TokenBalancesPolygon {
+        TokenBalances(
+          input: {
+            filter: {
+              owner: { _eq: "${owner}" }
+              formattedAmount: { _gt: 0 }
+            }
+            blockchain: polygon
+          }
+        ) {
+          TokenBalance {
+            tokenAddress
+            formattedAmount
+            token {
+              id
+              isSpam
+              logo {
+                small
+              }
+              name
+            }
+          }
+        }
+      }
+    `;
+
+  try {
+    if (!AIRSTACK_API_KEY) {
+      throw new Error('Missing AIRSTACK_API_KEY');
+    }
+    const graphQLClient = new GraphQLClient(AIRSTACK_ENDPOINT, {
+      headers: {
+        Authorization: AIRSTACK_API_KEY,
+      },
+    });
+
+    const resEthereum = await graphQLClient.request<TokenBalancesResponse>(
+      balanceQueryEthereum
+    );
+    const resPolygon = await graphQLClient.request<TokenBalancesResponse>(
+      balanceQueryPolygon
+    );
+
+    let tokensEthereum = resEthereum.TokenBalances.TokenBalance || [];
+    let tokensPolygon = resPolygon.TokenBalances.TokenBalance || [];
+
+    // deduplicate tokens
+    tokensEthereum = deduplicateTokens(tokensEthereum);
+    tokensPolygon = deduplicateTokens(tokensPolygon);
+
+    // filter to keep only non-spam tokens
+    if (!resEthereum.TokenBalances.TokenBalance) {
+      resEthereum.TokenBalances.TokenBalance = [];
+    }
+    if (!resPolygon.TokenBalances.TokenBalance) {
+      resPolygon.TokenBalances.TokenBalance = [];
+    }
+
+    tokensEthereum = resEthereum.TokenBalances.TokenBalance.filter(
+      (token) => !token.token.isSpam
+    );
+    tokensPolygon = resPolygon.TokenBalances.TokenBalance.filter(
+      (token) => !token.token.isSpam
+    );
+
+    // sort by balance
+    tokensEthereum.sort((a, b) => b.formattedAmount - a.formattedAmount);
+    tokensPolygon.sort((a, b) => b.formattedAmount - a.formattedAmount);
+
+    return [tokensEthereum, tokensPolygon];
+  } catch (e) {
+    console.log('Error in getBalances: ', e);
+    throw new Error((e as Error)?.message);
+  }
+}
+
+
+export async function getAllNFTs(
   owner: string
 ): Promise<[TokenBalance[], TokenBalance[]]> {
   const balanceQueryEthereum = gql`
@@ -273,6 +382,8 @@ export async function isNftHolder(
     AIRSTACK_ENDPOINT,
     nftQuery
   );
+
+  console.log(util.inspect(response, false, null, true /* enable colors */));
 
   const nftCount = response.TokenBalances.TokenBalance
     ? response.TokenBalances.TokenBalance.length

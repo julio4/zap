@@ -119,9 +119,9 @@ export const StatementChoices: StatementChoice[] = [
       },
       {
         name: "blockchain",
-        type: "text",
+        type: "select",
         label: "Target Blockchain",
-        placeholder: "ethereum | polygon",
+        options: ["ethereum", "polygon"],
       },
     ],
     possibleConditions: [
