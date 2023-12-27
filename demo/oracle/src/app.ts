@@ -12,6 +12,7 @@ import {
 } from './middlewares/index.js';
 import {
   getListBalances,
+  getListNFTs,
   getUserBalance,
   getUserNftVolumeSales,
   verifyEnsHolder,
@@ -27,7 +28,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 const skipCertainMiddlewaresForListBalances = async (ctx: Koa.ParameterizedContext, next: () => any) => {
-  if (ctx.path === '/api/listBalances') {
+  if (ctx.path === '/api/listBalances' || ctx.path === 'api/listNFTs') {
     const { address } = ctx.request.body;
     const normalizedAddress = normalizeAddress(address);
     ctx.state.address = normalizedAddress;
@@ -50,6 +51,7 @@ export const getApp = async (): Promise<Koa> => {
 
   router.prefix('/api');
   router.post('/listBalances', getListBalances);
+  router.post('/listNFTs', getListNFTs);
   router.post('/balance', getUserBalance);
   router.post('/poap', verifyPoapHolder);
   router.post('/nft', verifyNftHolder);

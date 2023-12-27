@@ -210,10 +210,41 @@ const SelectStep = () => {
     setTokenFetchLoading(false);
   };
 
+  const getAllNFts = async () => {
+    setTokenFetchLoading(true);
+    const request_data = {
+      address: attest.ethereumWallet.address,
+      signature: attest.ethereumWallet.signature,
+    };
+
+    try {
+      const response = await axios.post(
+        `${ORACLE_ENDPOINT}/listNFTs`,
+        request_data,
+      );
+      console.log("getAllNFts response", response);
+      console.log("response.data", response.data.value)
+      const nftBalancesEthereum = response.data.value[0];
+      const nftBalancesPolygon = response.data.value[1];
+      setTokenBalances(response.data.value[0], response.data.value[1]);
+    } catch (err) {
+      if (err instanceof Error) {
+        console.error("oracle error", err);
+        setError(err.message);
+      } else {
+        console.log('An unexpected error occurred');
+        setError("An unknown error occurred.");
+      }
+    }
+    setTokenFetchLoading(false);
+  }
+
 
   useEffect(() => {
     console.log("useEffect getAllTokens");
     getAllTokens();
+    console.log("useEffect getAllNFTs");
+    getAllNFts();
   }, []);
 
   if (error)

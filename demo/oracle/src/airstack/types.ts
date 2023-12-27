@@ -48,6 +48,29 @@ export type Logo = {
 };
 
 /* Types used for fetching all NFTs */
+
+export interface ERC20TokenBalance {
+  tokenAddress: string;
+  formattedAmount: number;
+  token: ERC20Token;
+}
+
+interface ERC20Token {
+  id: string;
+  isSpam: boolean;
+  logo: TokenLogo;
+  name: string;
+}
+
+interface TokenLogo {
+  small: string;
+}
+
+export interface ERC20TokenBalancesResponse {
+  TokenBalances: {
+    TokenBalance: ERC20TokenBalance[];
+  };
+}
 interface TokenNft {
   address: string;
   tokenId: string;

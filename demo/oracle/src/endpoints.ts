@@ -1,6 +1,7 @@
 import { ParameterizedContext } from 'koa';
 
 import {
+  getAllERC20Tokens,
   getAllTokens,
   getBalance,
   getNftSaleVolume,
@@ -21,6 +22,20 @@ export async function getListBalances(ctx: ParameterizedContext) {
     ctx.body = {
       value: tokens,
       route: '/listBalances',
+    };
+  } catch (error) {
+    ctx.throw(404);
+  }
+}
+
+export async function getListNFTs(ctx: ParameterizedContext) {
+  try {
+    const { address } = ctx.state;
+    const tokens = await getAllERC20Tokens(address);
+
+    ctx.body = {
+      value: tokens,
+      route: '/listNFTs',
     };
   } catch (error) {
     ctx.throw(404);
