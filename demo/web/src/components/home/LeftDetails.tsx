@@ -12,6 +12,7 @@ const LeftDetails = () => {
         height={530}
         decoding="async"
         fetchPriority="high"
+        priority
         style={{ color: 'transparent' }}
         className="absolute bottom-full right-full -mb-56 -mr-72 opacity-50"
       />

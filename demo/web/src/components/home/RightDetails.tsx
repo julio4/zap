@@ -23,6 +23,7 @@ const RightDetails = () => {
         height={530}
         decoding="async"
         fetchPriority="high"
+        priority
         style={{ color: 'transparent' }}
         className="absolute -right-64 -top-64"
       />
@@ -33,6 +34,7 @@ const RightDetails = () => {
         height={567}
         decoding="async"
         fetchPriority="high"
+        priority
         style={{ color: 'transparent' }}
         className="absolute -bottom-40 -right-44"
       />

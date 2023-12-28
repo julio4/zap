@@ -10,7 +10,7 @@ const EthereumWallet = () => {
 
   const handleConnect = async () => {
     try {
-      await window.ethereum.send("eth_requestAccounts");
+      await window.ethereum.request({ method: 'eth_requestAccounts' });
       const provider = new ethers.BrowserProvider(
         window.ethereum,
         "any"
