@@ -6,7 +6,7 @@ const LeftDetails = () => {
   return (
     <div className="relative z-10 md:text-center lg:text-left">
       <Image
-        src="/blur-cyan.png"
+        src="/assets/blur-cyan.png"
         alt="Blur Cyan"
         width={530}
         height={530}

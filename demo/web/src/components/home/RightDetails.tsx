@@ -17,7 +17,7 @@ const RightDetails = () => {
     <div className="relative lg:static xl:pl-10">
     <div className="relative">
       <Image
-        src="/blur-cyan.png"
+        src="/assets/blur-cyan.png"
         alt="Blur Cyan"
         width={530}
         height={530}
@@ -27,7 +27,7 @@ const RightDetails = () => {
         className="absolute -right-64 -top-64"
       />
       <Image
-        src="/blur-indigo.png"
+        src="/assets/blur-indigo.png"
         alt="Blur Indigo"
         width={567}
         height={567}

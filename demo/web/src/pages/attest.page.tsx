@@ -21,7 +21,7 @@ export default function AttestRoot() {
 
         <div className="fixed z-10 top-14 left-4">
           <Image
-            src="/blur-cyan.png"
+            src="/assets/blur-cyan.png"
             alt="Blur Cyan"
             width={530}
             height={530}
@@ -38,7 +38,7 @@ export default function AttestRoot() {
 
         <div className="fixed inset-x-[-50vw] -bottom-48 -top-32 [mask-image:linear-gradient(transparent,white,white)] dark:[mask-image:linear-gradient(transparent,white,transparent)] lg:-bottom-32 lg:-top-32 lg:left-[calc(50%+14rem)] lg:right-0 lg:[mask-image:none] lg:dark:[mask-image:linear-gradient(white,white,transparent)]">
           <Image
-            src="/blur-cyan.png"
+            src="/assets/blur-cyan.png"
             alt="Blur Cyan"
             width={530}
             height={530}
@@ -48,7 +48,7 @@ export default function AttestRoot() {
             className="absolute -right-20 -top-11"
           />
           <Image
-            src="/blur-indigo.png"
+            src="/assets/blur-indigo.png"
             alt="Blur Indigo"
             width={567}
             height={567}

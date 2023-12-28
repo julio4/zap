@@ -9,7 +9,7 @@ interface TokenModalProps {
 
 const fetchLogo = (token: TokenBalance) => {
     if (token.token.logo.small == null) {
-        return "/placeholder-question-mark.png"
+        return "/assets/placeholder-question-mark.png"
     }
     else {
         const externalImageUrl = token.token.logo.small;

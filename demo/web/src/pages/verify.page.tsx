@@ -140,7 +140,7 @@ export default function Home(): JSX.Element {
           <div className="mx-auto grid max-w-2xl grid-cols-1 items-center gap-x-8 gap-y-16 px-4 lg:max-w-7xl lg:grid-cols-2 lg:px-8 xl:gap-x-16 xl:px-12">
             <div className="relative z-10 md:text-center lg:text-left">
               <Image
-                src="/blur-cyan.png"
+                src="/assets/blur-cyan.png"
                 alt="Blur Cyan"
                 width={530}
                 height={530}
@@ -165,7 +165,7 @@ export default function Home(): JSX.Element {
             <div className="relative lg:static xl:pl-10">
               <div className="relative">
                 <Image
-                  src="/blur-cyan.png"
+                  src="/assets/blur-cyan.png"
                   alt="Blur Cyan"
                   width={530}
                   height={530}
@@ -175,7 +175,7 @@ export default function Home(): JSX.Element {
                   className="absolute -right-64 -top-64"
                 />
                 <Image
-                  src="/blur-indigo.png"
+                  src="/assets/blur-indigo.png"
                   alt="Blur Indigo"
                   width={567}
                   height={567}
