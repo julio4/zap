@@ -53,7 +53,6 @@ export const decodeAttestationNote = (
   if (
     !Object.hasOwn(attestation, "attestationHash") ||
     !Object.hasOwn(attestation, "statement") ||
-    !Object.hasOwn(attestation, "value") ||
     !Object.hasOwn(attestation, "targetValue") ||
     !Object.hasOwn(attestation, "conditionType") ||
     !Object.hasOwn(attestation, "hashRoute") ||
