@@ -27,8 +27,11 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-const skipCertainMiddlewaresForListBalances = async (ctx: Koa.ParameterizedContext, next: () => any) => {
-  if (ctx.path === '/api/listBalances' || ctx.path === 'api/listNFTs') {
+const skipCertainMiddlewaresForListBalances = async (
+  ctx: Koa.ParameterizedContext,
+  next: () => any
+) => {
+  if (ctx.path === '/api/listBalances' || ctx.path === '/api/listNFTs') {
     const { address } = ctx.request.body;
     const normalizedAddress = normalizeAddress(address);
     ctx.state.address = normalizedAddress;

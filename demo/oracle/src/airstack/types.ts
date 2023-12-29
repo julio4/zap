@@ -1,3 +1,9 @@
+export enum BlockchainType {
+  Ethereum = 'ethereum',
+  Polygon = 'polygon',
+  Base = 'base',
+}
+
 /* General Airstack types */
 
 interface QueryResponse {
@@ -22,8 +28,8 @@ interface PageInfo {
   hasPrevPage: boolean;
 }
 
-type TokenType = "ERC721" | "ERC1155";
-type Blockchain = "ethereum" | "polygon" | "base";
+type TokenType = 'ERC721' | 'ERC1155';
+type Blockchain = 'ethereum' | 'polygon' | 'base';
 
 /* Types used for fetching all ERC20 */
 export type TokenBalancesResponse = {
@@ -66,11 +72,30 @@ interface TokenLogo {
   small: string;
 }
 
-export interface ERC20TokenBalancesResponse {
-  TokenBalances: {
+export interface EthereumTokenBalancesResponse {
+  ethereum: {
     TokenBalance: ERC20TokenBalance[];
   };
 }
+
+export interface PolygonTokenBalancesResponse {
+  polygon: {
+    TokenBalance: ERC20TokenBalance[];
+  };
+}
+
+export interface BaseTokenBalancesResponse {
+  base: {
+    TokenBalance: ERC20TokenBalance[];
+  };
+}
+
+// Union type for the overall response
+export type ERC20TokenBalancesResponse =
+  | EthereumTokenBalancesResponse
+  | PolygonTokenBalancesResponse
+  | BaseTokenBalancesResponse;
+
 interface TokenNft {
   address: string;
   tokenId: string;

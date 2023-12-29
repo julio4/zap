@@ -1,5 +1,4 @@
 import { ParameterizedContext } from 'koa';
-
 import {
   getAllERC20Tokens,
   getAllTokens,
@@ -12,7 +11,6 @@ import {
   isPoapHolder,
   isXMTPenabled,
 } from './airstack/index.js';
-
 
 export async function getListBalances(ctx: ParameterizedContext) {
   try {

@@ -11,6 +11,8 @@ import {
   BlockchainName,
   ERC20TokenBalance,
   ERC20TokenBalancesResponse,
+  EthereumTokenBalancesResponse,
+  PolygonTokenBalancesResponse,
   TokenBalance,
   TokenBalancesResponse,
 } from './types';
@@ -35,58 +37,58 @@ export async function getAllTokens(
   owner: string
 ): Promise<[TokenBalance[], TokenBalance[]]> {
   const balanceQueryEthereum = gql`
-  query TokenBalancesEthereum {
-    TokenBalances(
-      input: {
-        filter: {
-          owner: { _eq: "${owner}" }
-          formattedAmount: { _gt: 0 }
-        }
-        blockchain: ethereum
-      }
-    ) {
-      TokenBalance {
-        tokenAddress
-        formattedAmount
-        token {
-          id
-          isSpam
-          logo {
-            small
+    query TokenBalancesEthereum {
+      TokenBalances(
+        input: {
+          filter: {
+            owner: { _eq: "${owner}" }
+            formattedAmount: { _gt: 0 }
           }
-          name
+          blockchain: ethereum
+        }
+      ) {
+        TokenBalance {
+          tokenAddress
+          formattedAmount
+          token {
+            id
+            isSpam
+            logo {
+              small
+            }
+            name
+          }
         }
       }
     }
-  }
-`;
+  `;
 
   const balanceQueryPolygon = gql`
-      query TokenBalancesPolygon {
-        TokenBalances(
-          input: {
-            filter: {
-              owner: { _eq: "${owner}" }
-              formattedAmount: { _gt: 0 }
-            }
-            blockchain: polygon
-          }
-        ) {
-          TokenBalance {
-            tokenAddress
-            formattedAmount
-            token {
-              id
-              isSpam
-              logo {
-                small
+        query TokenBalancesPolygon {
+          TokenBalances(
+            input: {
+              filter: {
+                owner: { _eq: "${owner}" }
+                formattedAmount: { _gt: 0 }
               }
-              name
+              blockchain: polygon
+            }
+          ) {
+            TokenBalance {
+              tokenAddress
+              formattedAmount
+              token {
+                id
+                isSpam
+                logo {
+                  small
+                }
+                name
+              }
             }
           }
         }
-      }
-    `;
+      `;
 
   try {
     if (!AIRSTACK_API_KEY) {
@@ -146,7 +148,7 @@ export async function getAllERC20Tokens(
       ethereum: TokenBalances(
         input: {
           filter: {
-            owner: { _eq: "0xbbbc1f6be7a36f9b49f807ae24ed7ebab34d82ce" }
+            owner: { _eq: "${owner}" }
             tokenType: { _in: [ERC1155, ERC721] }
           }
           blockchain: ethereum
@@ -180,42 +182,42 @@ export async function getAllERC20Tokens(
   `;
 
   const queryNFTsPolygon = gql`
-    query GetNFTs {
-      polygon: TokenBalances(
-        input: {
-          filter: {
-            owner: { _eq: "0xbbbc1f6be7a36f9b49f807ae24ed7ebab34d82ce" }
-            tokenType: { _in: [ERC1155, ERC721] }
+      query GetNFTs {
+        polygon: TokenBalances(
+          input: {
+            filter: {
+              owner: { _eq: "${owner}" }
+              tokenType: { _in: [ERC1155, ERC721] }
+            }
+            blockchain: polygon
+            limit: 50
           }
-          blockchain: polygon
-          limit: 50
-        }
-      ) {
-        TokenBalance {
-          tokenAddress
-          amount
-          formattedAmount
-          tokenType
-          tokenNfts {
-            address
-            tokenId
-            blockchain
-            contentValue {
-              image {
-                original
+        ) {
+          TokenBalance {
+            tokenAddress
+            amount
+            formattedAmount
+            tokenType
+            tokenNfts {
+              address
+              tokenId
+              blockchain
+              contentValue {
+                image {
+                  original
+                }
               }
             }
           }
-        }
-        pageInfo {
-          nextCursor
-          prevCursor
-          hasNextPage
-          hasPrevPage
+          pageInfo {
+            nextCursor
+            prevCursor
+            hasNextPage
+            hasPrevPage
+          }
         }
       }
-    }
-  `;
+    `;
 
   try {
     if (!AIRSTACK_API_KEY) {
@@ -227,19 +229,17 @@ export async function getAllERC20Tokens(
       },
     });
 
-    const resEthereum = await graphQLClient.request<ERC20TokenBalancesResponse>(
-      queryNFTsEth
-    );
-    const resPolygon = await graphQLClient.request<ERC20TokenBalancesResponse>(
-      queryNFTsPolygon
-    );
+    const resEthereum =
+      await graphQLClient.request<EthereumTokenBalancesResponse>(queryNFTsEth);
+    const resPolygon =
+      await graphQLClient.request<PolygonTokenBalancesResponse>(
+        queryNFTsPolygon
+      );
 
-    let tokensEthereum = resEthereum.TokenBalances.TokenBalance || [];
-    let tokensPolygon = resPolygon.TokenBalances.TokenBalance || [];
+    let NFTsEthereum = resEthereum.ethereum.TokenBalance || [];
+    let NFTsPolygon = resPolygon.polygon.TokenBalance || [];
 
-    console.log(util.inspect(tokensEthereum, false, null, true /* enable colors */));
-
-    return [tokensEthereum, tokensPolygon];
+    return [NFTsEthereum, NFTsPolygon];
   } catch (e) {
     console.error('Error in getAllERC20Tokens: ', e);
     throw new Error((e as Error)?.message);
