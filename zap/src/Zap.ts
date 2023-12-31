@@ -17,7 +17,7 @@ import {
  * ZAP: Zero-knowledge Attestation Protocol
  *
  * This contract attests the validity of statements.
- * The statement are validated with data signed by a trusted data provider.
+ * The statement are validated with data signed by a source.
  * The contract emits an event containing the verified statement id -> it's an attestation.
  */
 export class Zap extends SmartContract {
