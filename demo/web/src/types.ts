@@ -237,6 +237,17 @@ export type TokenBalance = {
   };
 };
 
+export type TokenNft = {
+  address: string;
+  tokenId: string;
+  blockchain: string;
+  contentValue: {
+    image?: {
+      original: string;
+    };
+  };
+};
+
 export type Logo = {
   small: string | null;
 };

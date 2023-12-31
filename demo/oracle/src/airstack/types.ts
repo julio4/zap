@@ -4,22 +4,9 @@ export enum BlockchainType {
   Base = 'base',
 }
 
-/* General Airstack types */
+type Blockchain = 'ethereum' | 'polygon' | 'base';
 
-interface QueryResponse {
-  data: Data;
-}
-
-interface Data {
-  ethereum: BlockchainTokenBalances;
-  polygon: BlockchainTokenBalances;
-  base: BlockchainTokenBalances;
-}
-
-interface BlockchainTokenBalances {
-  TokenBalance: TokenBalance[];
-  pageInfo: PageInfo;
-}
+/* General Query Response and PageInfo types */
 
 interface PageInfo {
   nextCursor: string;
@@ -28,17 +15,14 @@ interface PageInfo {
   hasPrevPage: boolean;
 }
 
-type TokenType = 'ERC721' | 'ERC1155';
-type Blockchain = 'ethereum' | 'polygon' | 'base';
 
 /* Types used for fetching all ERC20 */
 export type TokenBalancesResponse = {
   TokenBalances: {
-    TokenBalance: TokenBalance[];
+    TokenBalance: ERC20TokenBalance[];
   };
 };
-
-export type TokenBalance = {
+export type ERC20TokenBalance = {
   tokenAddress: string;
   formattedAmount: number;
   token: {
@@ -54,49 +38,9 @@ export type Logo = {
 };
 
 /* Types used for fetching all NFTs */
+type TokenType = 'ERC721' | 'ERC1155';
 
-export interface ERC20TokenBalance {
-  tokenAddress: string;
-  formattedAmount: number;
-  token: ERC20Token;
-}
-
-interface ERC20Token {
-  id: string;
-  isSpam: boolean;
-  logo: TokenLogo;
-  name: string;
-}
-
-interface TokenLogo {
-  small: string;
-}
-
-export interface EthereumTokenBalancesResponse {
-  ethereum: {
-    TokenBalance: ERC20TokenBalance[];
-  };
-}
-
-export interface PolygonTokenBalancesResponse {
-  polygon: {
-    TokenBalance: ERC20TokenBalance[];
-  };
-}
-
-export interface BaseTokenBalancesResponse {
-  base: {
-    TokenBalance: ERC20TokenBalance[];
-  };
-}
-
-// Union type for the overall response
-export type ERC20TokenBalancesResponse =
-  | EthereumTokenBalancesResponse
-  | PolygonTokenBalancesResponse
-  | BaseTokenBalancesResponse;
-
-interface TokenNft {
+export interface TokenNft {
   address: string;
   tokenId: string;
   blockchain: Blockchain;
@@ -111,6 +55,39 @@ interface Image {
   original: string;
 }
 
+// NFT TokenBalance Type
+export interface NFTTokenBalance {
+  tokenAddress: string;
+  amount: string;
+  formattedAmount: number;
+  tokenType: TokenType;
+  tokenNfts: TokenNft;
+}
+
+// BlockchainNFTTokenBalances Interface for NFTs
+export interface BlockchainNFTTokenBalances {
+  TokenBalance: NFTTokenBalance[];
+  pageInfo: PageInfo;
+}
+
+// Blockchain Specific TokenBalances Response for NFTs
+export interface EthereumNFTTokenBalancesResponse {
+  ethereum: BlockchainNFTTokenBalances;
+}
+
+export interface PolygonNFTTokenBalancesResponse {
+  polygon: BlockchainNFTTokenBalances;
+}
+
+export interface BaseNFTTokenBalancesResponse {
+  base: BlockchainNFTTokenBalances;
+}
+
+// Union type for NFT responses
+export type NFTTokenBalancesResponse =
+  | EthereumNFTTokenBalancesResponse
+  | PolygonNFTTokenBalancesResponse
+  | BaseNFTTokenBalancesResponse;
 /*  Miscelaneous types */
 
 export type AirstackTokenBalance = {

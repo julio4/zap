@@ -10,10 +10,9 @@ import {
   AirstackXmtpEnabled,
   BlockchainName,
   ERC20TokenBalance,
-  ERC20TokenBalancesResponse,
-  EthereumTokenBalancesResponse,
-  PolygonTokenBalancesResponse,
-  TokenBalance,
+  EthereumNFTTokenBalancesResponse,
+  NFTTokenBalance,
+  PolygonNFTTokenBalancesResponse,
   TokenBalancesResponse,
 } from './types';
 import Mock from './mocked.js';
@@ -35,7 +34,7 @@ const mockMiddleware = (args: any[], fn: (...args: any[]) => any) =>
 
 export async function getAllTokens(
   owner: string
-): Promise<[TokenBalance[], TokenBalance[]]> {
+): Promise<[ERC20TokenBalance[], ERC20TokenBalance[]]> {
   const balanceQueryEthereum = gql`
     query TokenBalancesEthereum {
       TokenBalances(
@@ -142,13 +141,13 @@ export async function getAllTokens(
 
 export async function getAllERC20Tokens(
   owner: string
-): Promise<[ERC20TokenBalance[], ERC20TokenBalance[]]> {
+): Promise<[NFTTokenBalance[], NFTTokenBalance[]]> {
   const queryNFTsEth = gql`
-    query GetNFTs {
+    query GetNFTsETH {
       ethereum: TokenBalances(
         input: {
           filter: {
-            owner: { _eq: "${owner}" }
+            owner: { _eq: "0xbbbC1f6BE7a36F9B49F807AE24ed7EbAB34D82ce" }
             tokenType: { _in: [ERC1155, ERC721] }
           }
           blockchain: ethereum
@@ -164,10 +163,11 @@ export async function getAllERC20Tokens(
             address
             tokenId
             blockchain
-            contentValue {
-              image {
-                original
-              }
+            metaData {
+              image
+            }
+            token {
+              name
             }
           }
         }
@@ -182,42 +182,43 @@ export async function getAllERC20Tokens(
   `;
 
   const queryNFTsPolygon = gql`
-      query GetNFTs {
-        polygon: TokenBalances(
-          input: {
-            filter: {
-              owner: { _eq: "${owner}" }
-              tokenType: { _in: [ERC1155, ERC721] }
-            }
-            blockchain: polygon
-            limit: 50
+    query GetNFTsETH {
+      polygon: TokenBalances(
+        input: {
+          filter: {
+            owner: { _eq: "0xbbbC1f6BE7a36F9B49F807AE24ed7EbAB34D82ce" }
+            tokenType: { _in: [ERC1155, ERC721] }
           }
-        ) {
-          TokenBalance {
-            tokenAddress
-            amount
-            formattedAmount
-            tokenType
-            tokenNfts {
-              address
-              tokenId
-              blockchain
-              contentValue {
-                image {
-                  original
-                }
-              }
+          blockchain: polygon
+          limit: 50
+        }
+      ) {
+        TokenBalance {
+          tokenAddress
+          amount
+          formattedAmount
+          tokenType
+          tokenNfts {
+            address
+            tokenId
+            blockchain
+            metaData {
+              image
             }
-          }
-          pageInfo {
-            nextCursor
-            prevCursor
-            hasNextPage
-            hasPrevPage
+            token {
+              name
+            }
           }
         }
+        pageInfo {
+          nextCursor
+          prevCursor
+          hasNextPage
+          hasPrevPage
+        }
       }
-    `;
+    }
+  `;
 
   try {
     if (!AIRSTACK_API_KEY) {
@@ -230,9 +231,11 @@ export async function getAllERC20Tokens(
     });
 
     const resEthereum =
-      await graphQLClient.request<EthereumTokenBalancesResponse>(queryNFTsEth);
+      await graphQLClient.request<EthereumNFTTokenBalancesResponse>(
+        queryNFTsEth
+      );
     const resPolygon =
-      await graphQLClient.request<PolygonTokenBalancesResponse>(
+      await graphQLClient.request<PolygonNFTTokenBalancesResponse>(
         queryNFTsPolygon
       );
 

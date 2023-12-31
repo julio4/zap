@@ -1,7 +1,7 @@
-import { TokenBalance } from "./airstack/types";
+import { ERC20TokenBalance } from "./airstack/types";
 
-export function deduplicateTokens(tokens: TokenBalance[]) {
-    const uniqueTokens: TokenBalance[] = [];
+export function deduplicateTokens(tokens: ERC20TokenBalance[]) {
+    const uniqueTokens: ERC20TokenBalance[] = [];
     const uniqueTokenAddresses: string[] = [];
 
     tokens.forEach((token) => {
