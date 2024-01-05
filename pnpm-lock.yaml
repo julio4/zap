@@ -39,6 +39,67 @@ importers:
         specifier: ^4.9.4
         version: 4.9.4
 
+  demo/airstack_source:
+    dependencies:
+      '@packages/zap-utils':
+        specifier: workspace:*
+        version: link:../../packages/zap-utils
+      '@types/express':
+        specifier: ^4.17.21
+        version: 4.17.21
+      '@types/node':
+        specifier: ^20.10.5
+        version: 20.10.5
+      axios:
+        specifier: ^1.4.0
+        version: 1.4.0
+      dotenv:
+        specifier: ^16.3.1
+        version: 16.3.1
+      ethers:
+        specifier: ^6.6.3
+        version: 6.6.3
+      express:
+        specifier: ^4.18.2
+        version: 4.18.2
+      express-validator:
+        specifier: ^7.0.1
+        version: 7.0.1
+      graphql:
+        specifier: ^16.7.1
+        version: 16.7.1
+      graphql-request:
+        specifier: ^6.1.0
+        version: 6.1.0(graphql@16.7.1)
+      install:
+        specifier: ^0.13.0
+        version: 0.13.0
+      o1js:
+        specifier: ^0.13.1
+        version: 0.13.1
+      typescript:
+        specifier: ^5.3.3
+        version: 5.3.3
+    devDependencies:
+      '@types/jest':
+        specifier: ^27.0.3
+        version: 27.0.3
+      '@types/supertest':
+        specifier: ^2.0.16
+        version: 2.0.16
+      jest:
+        specifier: ^27.3.1
+        version: 27.3.1(ts-node@10.9.2)
+      supertest:
+        specifier: ^6.3.3
+        version: 6.3.3
+      ts-jest:
+        specifier: ^29.1.1
+        version: 29.1.1(@babel/core@7.23.6)(jest@27.3.1)(typescript@5.3.3)
+      ts-node:
+        specifier: ^10.9.2
+        version: 10.9.2(@types/node@20.10.5)(typescript@5.3.3)
+
   demo/oracle:
     dependencies:
       '@koa/cors':
@@ -2813,7 +2874,7 @@ packages:
       '@types/http-errors': 2.0.4
       '@types/keygrip': 1.0.5
       '@types/koa-compose': 3.2.8
-      '@types/node': 18.15.13
+      '@types/node': 20.10.5
     dev: true
 
   /@types/koa__cors@4.0.0:
@@ -2864,6 +2925,7 @@ packages:
 
   /@types/node@18.15.13:
     resolution: {integrity: sha512-N+0kuo9KgrUQ1Sn/ifDXsvg0TTleP7rIy4zOBGECxAljqvqfqpTfzx0Q1NUedOixRMBfe2Whhb056a42cWs26Q==}
+    dev: false
 
   /@types/node@20.10.5:
     resolution: {integrity: sha512-nNPsNE65wjMxEKI93yOP+NPGGBJz/PoN3kZsVLee0XMiJolxSekEVD8wRwBUBqkwc7UWop0edW50yrCQW4CyRw==}
