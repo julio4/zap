@@ -1,5 +1,5 @@
 import app from "./app.js";
-import 'dotenv/config'
+import "dotenv/config";
 
 if (!process.env.PRIVATE_KEY) {
   throw new Error("Missing PRIVATE_KEY env variable (see .env.example)");

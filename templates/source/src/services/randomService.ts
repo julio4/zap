@@ -1,5 +1,5 @@
 import axios from "axios";
-const API = "https://fakerapi.it/api/v1/"
+const API = "https://fakerapi.it/api/v1/";
 
 // This is an example service that returns random data
 class RandomService {
@@ -14,7 +14,7 @@ class RandomService {
       throw new Error("NaN returned");
     }
 
-    return number
+    return number;
   }
 }
 

@@ -2,9 +2,7 @@ import { Response, NextFunction } from "express";
 
 import { PrivateKey } from "o1js";
 
-import {
-  signResponse
-} from "@packages/zap-utils";
+import { signResponse } from "@packages/zap-utils";
 import {
   SupportedValue,
   ZapResponse,
