@@ -4,6 +4,6 @@ import { idArg, validateParams } from '../middlewares/paramsValidations.js';
 
 const router: Router = express.Router();
 
-router.get('/nb', idArg, validateParams, getNumber);
+router.post('/nb', idArg, validateParams, getNumber);
 
 export default router;

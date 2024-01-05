@@ -24,7 +24,7 @@ describe("Key signature (With test endpoint /example/nb)", () => {
   } as ZapRequestParams;
 
   it("Response with associated public key", async () => {
-    const res = await request(app).get("/api/example/nb").send(req);
+    const res = await request(app).post("/api/example/nb").send(req);
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty("publicKey");
     expect(res.body.publicKey).toBe(privateKey.toPublicKey().toBase58());
@@ -36,7 +36,7 @@ describe("Key signature (With test endpoint /example/nb)", () => {
       args: req.args,
     };
 
-    const res = await request(app).get("/api/example/nb").send(req);
+    const res = await request(app).post("/api/example/nb").send(req);
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty("data");
     expect(res.body.data).toHaveProperty("hashRoute");
@@ -44,7 +44,7 @@ describe("Key signature (With test endpoint /example/nb)", () => {
   });
 
   it("Verify response signature", async () => {
-    const res = await request(app).get("/api/example/nb").send(req);
+    const res = await request(app).post("/api/example/nb").send(req);
     const body = res.body as ZapSignedResponse;
 
     let result = verifyResponseSignature(body, privateKey.toPublicKey());
@@ -52,7 +52,7 @@ describe("Key signature (With test endpoint /example/nb)", () => {
   });
 
   it("Verify response signature fail with modified value", async () => {
-    const res = await request(app).get("/api/example/nb").send(req);
+    const res = await request(app).post("/api/example/nb").send(req);
     let body = res.body as ZapSignedResponse;
 
     // Modify the returned value
@@ -63,7 +63,7 @@ describe("Key signature (With test endpoint /example/nb)", () => {
   });
 
   it("Verify response signature fail with modified route path", async () => {
-    const res = await request(app).get("/api/example/nb").send(req);
+    const res = await request(app).post("/api/example/nb").send(req);
     let body = res.body as ZapSignedResponse;
 
     // Modify the returned route args
@@ -78,7 +78,7 @@ describe("Key signature (With test endpoint /example/nb)", () => {
   });
 
   it("Verify response signature fail with modified route args", async () => {
-    const res = await request(app).get("/api/example/nb").send(req);
+    const res = await request(app).post("/api/example/nb").send(req);
     let body = res.body as ZapSignedResponse;
 
     // Modify the returned route

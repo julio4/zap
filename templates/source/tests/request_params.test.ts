@@ -12,19 +12,19 @@ describe("ZapRequest Parameters validation", () => {
   } as ZapRequestParams;
 
   it("mina_address missing", async () => {
-    const res = await request(app).get("/api/hello").send(empty);
+    const res = await request(app).post("/api/hello").send(empty);
     expect(res.status).toBe(400);
     expect(res.text).toContain("mina_address is required");
   });
 
   it("mina_address wrong address", async () => {
-    const res = await request(app).get("/api/hello").send(wrong);
+    const res = await request(app).post("/api/hello").send(wrong);
     expect(res.status).toBe(400);
     expect(res.text).toContain("mina_address must be a valid mina address");
   });
 
   it("mina_address good", async () => {
-    const res = await request(app).get("/api/hello").send(good);
+    const res = await request(app).post("/api/hello").send(good);
     expect(res.status).toBe(200);
   });
 });

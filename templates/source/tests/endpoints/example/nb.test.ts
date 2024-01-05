@@ -32,27 +32,27 @@ describe("Endpoint /example/nb", () => {
   describe("Parameters validations", () => {
     it("missing arg.id", async () => {
       const missing = { ...reqBody, args: {} };
-      const res = await request(app).get(route.path).send(missing);
+      const res = await request(app).post(route.path).send(missing);
       expect(res.status).toBe(400);
       expect(res.text).toContain("arg.id is required");
     });
 
     it("wrong arg.id", async () => {
       const wrong = { ...reqBody, args: { id: "wrong" } };
-      const res = await request(app).get(route.path).send(wrong);
+      const res = await request(app).post(route.path).send(wrong);
       expect(res.status).toBe(400);
       expect(res.text).toContain("arg.id must be an integer");
     });
 
     it("good", async () => {
       const good = { ...reqBody, args: { id: 1 } };
-      const res = await request(app).get(route.path).send(good);
+      const res = await request(app).post(route.path).send(good);
       expect(res.status).toBe(200);
     });
   });
 
   it("Return signed number", async () => {
-    const res = await request(app).get(route.path).send(reqBody);
+    const res = await request(app).post(route.path).send(reqBody);
     const body: ZapSignedResponse = res.body;
 
     expect(verifyResponseSignature(body, privateKey.toPublicKey())).toBe(true);
