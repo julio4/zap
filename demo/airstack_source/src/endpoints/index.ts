@@ -16,7 +16,7 @@ router.use("/hello", validateParams, (req, res) => {
   res.send("Hello World!");
 });
 
-router.use("/list", /* ethereumAddressArg, */ listEndpoints);
+router.use("/list", ethereumAddressArg, listEndpoints);
 
 // Notice: Only /evm endpoints use ZapMiddleware
 router.use(

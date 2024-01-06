@@ -63,8 +63,8 @@ export const idArg = body("args.id")
   .isInt()
   .withMessage("arg.id must be an integer");
 
-export const ethereumAddressArg = body("args.ethereum_address")
+export const ethereumAddressArg = body("args.address")
   .notEmpty()
-  .withMessage("arg.ethereum_address is required")
+  .withMessage("arg.address is required")
   .isEthereumAddress()
-  .withMessage("arg.ethereum_address must be a valid ethereum address");
+  .withMessage("arg.address must be a valid ethereum address");
