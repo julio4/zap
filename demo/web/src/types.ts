@@ -88,16 +88,16 @@ export const StatementChoices: StatementChoice[] = [
     description: "Statement on a target ERC20 token balance",
     args: [
       {
-        name: "blockchain",
-        type: "select",
-        label: "Target Blockchain",
-        options: ["ethereum", "polygon"],
-      },
-      {
         name: "token",
         type: "text",
         label: "Target ERC20 Token Address",
         placeholder: "0x...",
+      },
+      {
+        name: "blockchain",
+        type: "select",
+        label: "Target Blockchain",
+        options: ["ethereum", "polygon"],
       },
     ],
     possibleConditions: [
@@ -237,16 +237,34 @@ export type TokenBalance = {
   };
 };
 
-export type TokenNft = {
+/* Types used for fetching all NFTs */
+type TokenType = "ERC721" | "ERC1155";
+type Blockchain = 'ethereum' | 'polygon' | 'base';
+
+export interface TokenNft {
   address: string;
+  blockchain: Blockchain;
+  metaData: {
+    image: string;
+  }
+  token: {
+    name: string;
+  }
   tokenId: string;
-  blockchain: string;
-  contentValue: {
-    image?: {
-      original: string;
-    };
-  };
-};
+}
+
+interface Image {
+  original: string;
+}
+
+// NFT TokenBalance Type
+export interface NFTTokenBalance {
+  amount: string;
+  formattedAmount: number;
+  tokenAddress: string;
+  tokenNfts: TokenNft;
+  tokenType: TokenType;
+}
 
 export type Logo = {
   small: string | null;

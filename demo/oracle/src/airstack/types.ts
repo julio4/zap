@@ -60,8 +60,8 @@ export interface NFTTokenBalance {
   tokenAddress: string;
   amount: string;
   formattedAmount: number;
-  tokenType: TokenType;
   tokenNfts: TokenNft;
+  tokenType: TokenType;
 }
 
 // BlockchainNFTTokenBalances Interface for NFTs
