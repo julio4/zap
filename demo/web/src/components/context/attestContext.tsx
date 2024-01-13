@@ -3,7 +3,7 @@ import { MinaWallet, EthereumWallet, Statement, PrivateData } from "../../types"
 import ZkappWorkerClient from "../../pages/zkappWorkerClient"
 import { Field } from "o1js";
 
-type AttestContextType = {
+export type AttestContextType = {
   zkappWorkerClient: ZkappWorkerClient | null;
   setZkappWorkerClient: (zkappWorkerClient: ZkappWorkerClient) => void;
   zkappHasBeenSetup: boolean;
