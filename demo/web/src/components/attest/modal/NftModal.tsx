@@ -14,6 +14,7 @@ const fetchNFTImage = (nft: NFTTokenBalance) => {
     }
     else {
         const externalImageUrl = nft.tokenNfts.metaData.image;
+        return "/assets/placeholder-question-mark.png"
         return externalImageUrl;
     }
 }

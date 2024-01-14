@@ -34,8 +34,6 @@ const useTokenFetch = ({
       const tokenBalancesEthereum = response.data.value[0];
       const tokenBalancesPolygon = response.data.value[1];
       setTokenBalances(tokenBalancesEthereum, tokenBalancesPolygon);
-      console.log("Token balancesETH: ", tokenBalancesEthereum);
-      console.log("Token balancesPOLY: ", tokenBalancesPolygon);
     } catch (err: any) {
       if (err instanceof Error) {
         setError(err.message);
