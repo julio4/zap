@@ -253,9 +253,6 @@ export interface TokenNft {
   tokenId: string;
 }
 
-interface Image {
-  original: string;
-}
 
 // NFT TokenBalance Type
 export interface NFTTokenBalance {

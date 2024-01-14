@@ -33,8 +33,6 @@ const useNftFetch = ({
       const nftBalancesEthereum = response.data.value[0];
       const nftBalancesPolygon = response.data.value[1];
       setNftBalances(nftBalancesEthereum, nftBalancesPolygon);
-      console.log("Nft balancesETH: ", nftBalancesEthereum);
-      console.log("Nft balancesPOLY: ", nftBalancesPolygon);
     } catch (err: any) {
       if (err instanceof Error) {
         setError(err.message);

@@ -228,11 +228,6 @@ const SelectStep = () => {
                 setCondition(choice.possibleConditions[0]);
               }}
             >
-              <button onClick={() => {
-                console.log("nft balances eth", userData.NftBalancesEthereum)
-                console.log("nft balances poly", userData.NftBalancesPolygon)
-              }}
-              >CONSOLE BALANCE NFT</button>
               <h3 className="text-xl bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text font-display tracking-tight text-transparent">
                 {choice.name}</h3>
               <p className="text-slate-400 text-sm">{choice.description}</p>

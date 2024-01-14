@@ -9,14 +9,12 @@ interface NFTModalProps {
 }
 
 const fetchNFTImage = (nft: NFTTokenBalance) => {
-    console.log("nft", nft)
     if (nft.tokenNfts.metaData.image == null) {
         return "/assets/placeholder-question-mark.png"
     }
     else {
         const externalImageUrl = nft.tokenNfts.metaData.image;
-        console.log("externalImageUrl", externalImageUrl)
-        return "/assets/placeholder-question-mark.png"
+        return externalImageUrl;
     }
 }
 
@@ -37,7 +35,7 @@ const NFTModal: React.FC<NFTModalProps> = ({ nfts, onSelect, onClose, isLoading 
                         <ul className="max-h-64 overflow-y-auto">
                             {nfts.map((nft, index) => (
                                 <li
-                                    key={nft.tokenNfts.tokenId}
+                                    key={nft.tokenAddress + nft.tokenNfts.tokenId}
                                     onClick={() => onSelect(nft.tokenAddress, nft.tokenNfts.tokenId)}
                                     className="cursor-pointer hover:bg-slate-700 p-4 border-b border-slate-600 text-white"
                                 >
@@ -45,9 +43,9 @@ const NFTModal: React.FC<NFTModalProps> = ({ nfts, onSelect, onClose, isLoading 
                                         <div className="flex items-center">
                                             <img src={fetchNFTImage(nft)} alt="" className="w-12 h-12 mr-2 object-cover" />
 
-                                            <div>
-                                                {/* <h4 className="text-sm font-semibold">{nft.tokenName}</h4> */}
-                                                <p className="text-xs text-gray-400">Token ID: {nft.tokenNfts.tokenId}</p>
+                                            <div className="flex flex-col ml-2">
+                                                <h4 className="text-sm font-semibold">{nft.tokenNfts.token.name}</h4>
+                                                <p className="text-xs text-gray-400">ID: {nft.tokenNfts.tokenId}</p>
                                             </div>
                                         </div>
                                     </div>

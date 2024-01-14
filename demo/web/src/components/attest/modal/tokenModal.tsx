@@ -37,7 +37,7 @@ const TokenModal: React.FC<TokenModalProps> = ({ tokens, onSelect, onClose, isLo
                         <ul className="max-h-64 overflow-y-auto">
                             {tokens.map((token, index) => (
                                 <li
-                                    key={token.tokenAddress}
+                                    key={token.tokenAddress + token.token.name + index}
                                     onClick={() => onSelect(token.tokenAddress, token.token.name)}
                                     className="cursor-pointer hover:bg-slate-700 p-4 border-b border-slate-600 text-white"
                                 >
