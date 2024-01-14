@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Dispatch, SetStateAction } from "react";
 import { AttestContextType } from "../components/context/attestContext";
-import { TokenNft } from "../types";
+import { NFTTokenBalance } from "../types";
 
 const ORACLE_ENDPOINT = process.env["ORACLE_ENDPOINT"];
 
@@ -9,8 +9,8 @@ interface UseNftFetchParams {
   attest: AttestContextType;
   setTokenFetchLoading: Dispatch<SetStateAction<boolean>>;
   setNftBalances: (
-    NftBalancesEthereum: TokenNft[],
-    NftBalancesPolygon: TokenNft[]
+    NftBalancesEthereum: NFTTokenBalance[],
+    NftBalancesPolygon: NFTTokenBalance[]
   ) => void;
   setError: Dispatch<SetStateAction<string | null>>;
 }
@@ -33,6 +33,8 @@ const useNftFetch = ({
       const nftBalancesEthereum = response.data.value[0];
       const nftBalancesPolygon = response.data.value[1];
       setNftBalances(nftBalancesEthereum, nftBalancesPolygon);
+      console.log("Nft balancesETH: ", nftBalancesEthereum);
+      console.log("Nft balancesPOLY: ", nftBalancesPolygon);
     } catch (err: any) {
       if (err instanceof Error) {
         setError(err.message);

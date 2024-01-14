@@ -1,6 +1,8 @@
 "use client";
 import React, { useState, useContext, useEffect } from "react";
+import useTokenFetch from '../..//hooks/useTokenFetch';
 import axios from "axios";
+
 
 import {
   StatementChoices,
@@ -13,7 +15,9 @@ import {
 import { AttestContext } from "../context/attestContext";
 import { UserDataContext } from "../context/userDataContext";
 import { Encoding, Field, Poseidon, PublicKey, Signature } from "o1js";
-import TokenModal from "./tokenModal"
+import TokenModal from "./modal/tokenModal";
+import NFTModal from "./modal/NftModal";
+import useNftFetch from "../../hooks/useNftFetch";
 
 const ORACLE_ENDPOINT = process.env["ORACLE_ENDPOINT"];
 if (!ORACLE_ENDPOINT) throw new Error("ORACLE_ENDPOINT is not set");
@@ -23,6 +27,7 @@ const SelectStep = () => {
   const attest = useContext(AttestContext);
   const userData = useContext(UserDataContext);
   const { setTokenBalances } = useContext(UserDataContext);
+  const { setNftBalances } = useContext(UserDataContext);
   const [choice, setChoice] = useState<StatementChoice | null>(null);
   const [args, setArgs] = useState<
     {
@@ -33,6 +38,7 @@ const SelectStep = () => {
     }[]
   >([]);
   const [isTokenModalOpen, setIsTokenModalOpen] = useState(false);
+  const [isNftModalOpen, setIsNftModalOpen] = useState(false);
   const [condition, setCondition] = useState<Condition>(Condition.GREATER_THAN);
   const [targetValue, setTargetValue] = useState<number>(0);
   const [error, setError] = useState<string | null>(null);
@@ -181,69 +187,12 @@ const SelectStep = () => {
     });
   };
 
-  const getAllTokens = async () => {
-    setTokenFetchLoading(true);
-    const request_data = {
-      address: attest.ethereumWallet.address,
-      signature: attest.ethereumWallet.signature,
-    };
+  const { getAllTokens } = useTokenFetch({ attest, setTokenFetchLoading, setTokenBalances, setError });
 
-    try {
-      const response = await axios.post(
-        `${ORACLE_ENDPOINT}/listBalances`,
-        request_data,
-      );
-      console.log("getAllTokens response", response);
-      console.log("response.data", response.data.value)
-      const tokenBalancesEthereum = response.data.value[0];
-      const tokenBalancesPolygon = response.data.value[1];
-      setTokenBalances(response.data.value[0], response.data.value[1]);
-    } catch (err) {
-      if (err instanceof Error) {
-        console.error("oracle error", err);
-        setError(err.message);
-      } else {
-        console.log('An unexpected error occurred');
-        setError("An unknown error occurred.");
-      }
-    }
-    setTokenFetchLoading(false);
-  };
-
-  const getAllNFts = async () => {
-    setTokenFetchLoading(true);
-    const request_data = {
-      address: attest.ethereumWallet.address,
-      signature: attest.ethereumWallet.signature,
-    };
-
-    try {
-      const response = await axios.post(
-        `${ORACLE_ENDPOINT}/listNFTs`,
-        request_data,
-      );
-      console.log("getAllNFts response", response);
-      console.log("response.data", response.data.value)
-      const nftBalancesEthereum = response.data.value[0];
-      const nftBalancesPolygon = response.data.value[1];
-      setTokenBalances(response.data.value[0], response.data.value[1]);
-    } catch (err) {
-      if (err instanceof Error) {
-        console.error("oracle error", err);
-        setError(err.message);
-      } else {
-        console.log('An unexpected error occurred');
-        setError("An unknown error occurred.");
-      }
-    }
-    setTokenFetchLoading(false);
-  }
-
+  const { getAllNFts } = useNftFetch({ attest, setTokenFetchLoading, setNftBalances, setError });
 
   useEffect(() => {
-    console.log("useEffect getAllTokens");
     getAllTokens();
-    console.log("useEffect getAllNFTs");
     getAllNFts();
   }, []);
 
@@ -279,6 +228,11 @@ const SelectStep = () => {
                 setCondition(choice.possibleConditions[0]);
               }}
             >
+              <button onClick={() => {
+                console.log("nft balances eth", userData.NftBalancesEthereum)
+                console.log("nft balances poly", userData.NftBalancesPolygon)
+              }}
+              >CONSOLE BALANCE NFT</button>
               <h3 className="text-xl bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text font-display tracking-tight text-transparent">
                 {choice.name}</h3>
               <p className="text-slate-400 text-sm">{choice.description}</p>
@@ -309,6 +263,19 @@ const SelectStep = () => {
                           onClick={() => setIsTokenModalOpen(true)}
                         >
                           {args.find((a) => a.name === 'token')?.valueDisplayed || "Select Token"}
+                        </button>
+                      </div>
+                    );
+                  }
+                  else if (arg.type === 'text' && arg.name === 'nftAddress') {
+                    return (
+                      <div key={arg.name} className="flex flex-row gap-2 justify-between px-2 py-1">
+                        <label className="text-slate-400">{arg.label}</label>
+                        <button
+                          className="border-2 border-slate-500 rounded-lg bg-slate-600/50 text-slate-100 px-4 py-1"
+                          onClick={() => setIsNftModalOpen(true)}
+                        >
+                          {args.find((a) => a.name === 'nftAddress')?.valueDisplayed || "Select Token"}
                         </button>
                       </div>
                     );
@@ -413,20 +380,37 @@ const SelectStep = () => {
         </div>
       )
       }
-        {isTokenModalOpen && (
-          <TokenModal
-            /* if blockchain choice is ethereum, then use tokenBalancesEthereum, else use tokenBalancesPolygon. If undefined, use ethereum */
-            tokens={
-              args.find((a) => a.name === 'blockchain')?.value === 'ethereum' || args.find((a) => a.name === 'blockchain')?.value === undefined ?
+
+      {isTokenModalOpen && (
+        <TokenModal
+          /* if blockchain choice is ethereum, then use tokenBalancesEthereum, else use tokenBalancesPolygon. If undefined, use ethereum */
+          tokens={
+            args.find((a) => a.name === 'blockchain')?.value === 'ethereum' || args.find((a) => a.name === 'blockchain')?.value === undefined ?
               userData.tokenBalancesEthereum : userData.tokenBalancesPolygon}
-            onSelect={(tokenAddress: string, tokenName: string) => {
-              handleTokenSelect(tokenAddress, tokenName);
-              setIsTokenModalOpen(false);
+          onSelect={(tokenAddress: string, tokenName: string) => {
+            handleTokenSelect(tokenAddress, tokenName);
+            setIsTokenModalOpen(false);
+          }}
+          onClose={() => setIsTokenModalOpen(false)}
+          isLoading={tokenFetchLoading}
+        />
+      )}
+
+      {
+        isNftModalOpen && (
+          <NFTModal
+            nfts={
+              args.find((a) => a.name === 'blockchain')?.value === 'ethereum' || args.find((a) => a.name === 'blockchain')?.value === undefined ?
+                userData.NftBalancesEthereum : userData.NftBalancesPolygon}
+            onSelect={(nftAddress: string, tokenId: string) => {
+              handleTokenSelect(nftAddress, tokenId);
+              setIsNftModalOpen(false);
             }}
-            onClose={() => setIsTokenModalOpen(false)}
+            onClose={() => setIsNftModalOpen(false)}
             isLoading={tokenFetchLoading}
           />
-        )}
+        )
+      }
 
     </div >
   );
