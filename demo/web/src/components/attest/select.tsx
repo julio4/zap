@@ -74,6 +74,24 @@ const SelectStep = () => {
     ]);
   };
 
+  const handleNftSelect = (nftAddress: string, tokenId: string, nftName: string) => {
+    setIsNftModalOpen(false);
+    console.log("the chosen nft is", nftAddress)
+    if (!choice) {
+      console.log("choice is undefined")
+      return;
+    }
+    setArgs([           // TODO better ts
+      ...args.filter((a) => a.name !== 'nftAddress'),
+      {
+        name: 'nftAddress',
+        schema: choice.args.find((a) => a.name === 'nftAddress'),
+        value: nftAddress,
+        valueDisplayed: `${nftName},${tokenId}`
+      },
+    ]);
+  }
+
   const handleSelect = async () => {
     choice?.args.forEach((arg) => {
       const t_arg = args.find((a) => a.name === arg.name);
@@ -188,7 +206,6 @@ const SelectStep = () => {
   };
 
   const { getAllTokens } = useTokenFetch({ attest, setTokenFetchLoading, setTokenBalances, setError });
-
   const { getAllNFts } = useNftFetch({ attest, setTokenFetchLoading, setNftBalances, setError });
 
   useEffect(() => {
@@ -397,8 +414,8 @@ const SelectStep = () => {
             nfts={
               args.find((a) => a.name === 'blockchain')?.value === 'ethereum' || args.find((a) => a.name === 'blockchain')?.value === undefined ?
                 userData.NftBalancesEthereum : userData.NftBalancesPolygon}
-            onSelect={(nftAddress: string, tokenId: string) => {
-              handleTokenSelect(nftAddress, tokenId);
+            onSelect={(nftAddress: string, tokenId: string, nftName: string) => {
+              handleNftSelect(nftAddress, tokenId, nftName);
               setIsNftModalOpen(false);
             }}
             onClose={() => setIsNftModalOpen(false)}

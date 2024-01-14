@@ -3,7 +3,7 @@ import { NFTTokenBalance } from "../../../types";
 
 interface NFTModalProps {
     nfts: NFTTokenBalance[];
-    onSelect: (nftAddress: string, tokenId: string) => void;
+    onSelect: (nftAddress: string, tokenId: string, nftName: string) => void;
     onClose: () => void;
     isLoading: boolean;
 }
@@ -37,7 +37,7 @@ const NFTModal: React.FC<NFTModalProps> = ({ nfts, onSelect, onClose, isLoading 
                             {nfts.map((nft, index) => (
                                 <li
                                     key={nft.tokenAddress + nft.tokenNfts.tokenId}
-                                    onClick={() => onSelect(nft.tokenAddress, nft.tokenNfts.tokenId)}
+                                    onClick={() => onSelect(nft.tokenAddress, nft.tokenNfts.tokenId, nft.tokenNfts.token.name)}
                                     className="cursor-pointer hover:bg-slate-700 p-4 border-b border-slate-600 text-white"
                                 >
                                     <div className="flex justify-between items-center">
