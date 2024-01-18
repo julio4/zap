@@ -11,6 +11,7 @@ import {
   Provable,
   Bool,
   Poseidon,
+  UInt64,
 } from 'o1js';
 
 /**
@@ -25,7 +26,7 @@ export class Zap extends SmartContract {
 
   // contract events
   events = {
-    verified: Field,
+    verified: Provable.Array(Field, 2),
   };
 
   deploy(args: DeployArgs) {
@@ -53,7 +54,9 @@ export class Zap extends SmartContract {
     hashRoute: Field,
     privateData: Field,
     // The signature that allows us to be sure that the private data are coming from our trusted oracle
-    signature: Signature
+    signature: Signature,
+    // How long the attestation is valid for, in seconds
+    validFor: Field
   ) {
 
     /* VERIFICATION OF ORACLE SIGNATURE AND ROUTE: START */
@@ -95,9 +98,13 @@ export class Zap extends SmartContract {
     // STATEMENT VERIFICATION: END
 
     /* Generate the attestation and emit an event*/
-    // todo add timestamp later
+
     // Attestation hash should contain information about the statement, so we can verify that this attestation corresponds to the right
     // statement
+
+    let now = this.network.timestamp.get();
+    this.network.globalSlotSinceGenesis.assertEquals(this.network.globalSlotSinceGenesis.get());
+    let validTill = new UInt64(validFor).add(now);
 
     // TODO maybe we should hash and then sign, more secure (Birthday problem)
     const attestationHash = Poseidon.hash([
@@ -105,7 +112,7 @@ export class Zap extends SmartContract {
       conditionType,
       targetValue,
       this.sender.toFields()[0],
-      //timestamp
+      validFor.toFields()[0],
     ]);
 
     // Emit an event only if everything is valid, containing the attestation hash and also the timestamp
@@ -113,7 +120,7 @@ export class Zap extends SmartContract {
     // at a certain time
     this.emitEvent(
       'verified',
-      attestationHash // todo add timestamp later
+      [attestationHash, validTill.toFields()[0]],
     );
   }
 }
