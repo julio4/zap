@@ -16,6 +16,7 @@ import {
 } from "./airstack/types.js";
 import { deduplicateTokens } from "./airstack/utils.js";
 import util from "util";
+import "dotenv/config";
 
 const defaultBlockchain = "ethereum";
 const API = process.env.AIRSTACK_ENDPOINT || "https://api.airstack.xyz/gql/";
