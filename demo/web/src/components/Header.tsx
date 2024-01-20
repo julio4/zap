@@ -2,6 +2,9 @@ import Link from "next/link";
 import { Search } from "./Search";
 import { Github } from "./logo";
 
+import { FaRegUserCircle } from "react-icons/fa";
+
+
 const Header = ({
   MinaWalletComponent,
   EthereumWalletComponent,
@@ -35,6 +38,14 @@ const Header = ({
         {/* WALLET */}
         {MinaWalletComponent}
         {EthereumWalletComponent}
+
+        <Link href="/attestationHistory">
+          <div className="group">
+            <FaRegUserCircle className="h-7 w-7 fill-slate-400 group-hover:fill-slate-500 dark:group-hover:fill-slate-300" />
+          </div>
+
+        </Link>
+
         <Link href="https://github.com/julio4/zap" className="group" target="_blank" rel="noreferrer">
           <Github />
         </Link>
