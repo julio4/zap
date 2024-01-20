@@ -12,7 +12,7 @@ const app: Express = express();
 app.use(express.json());
 
 app.use("/api", minaAddress, endpoints);
-app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile))
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerFile))
 
 app.use(validationErrorHandler);
 
