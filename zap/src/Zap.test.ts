@@ -8,7 +8,7 @@ import {
 } from 'o1js';
 import { KeyPair, OracleResult, Statement } from './types';
 import { MockedOracle } from './utils/mockOracle';
-import { Zap } from './Zap_Test';
+import { Zap } from './Zap';
 import { stringToFields } from 'o1js/dist/node/bindings/lib/encoding';
 
 // Speed up testing by disabling proofs for unit tests

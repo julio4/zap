@@ -1,7 +1,7 @@
 import {
   Field,
   SmartContract,
-  state,  // eslint-disable-line
+  state, // eslint-disable-line
   State,
   method, // eslint-disable-line
   DeployArgs,
@@ -11,7 +11,6 @@ import {
   Provable,
   Bool,
   Poseidon,
-  UInt64,
 } from 'o1js';
 
 /**
@@ -26,7 +25,7 @@ export class Zap extends SmartContract {
 
   // contract events
   events = {
-    verified: Provable.Array(Field, 2),
+    verified: Field,
   };
 
   deploy(args: DeployArgs) {
@@ -54,11 +53,8 @@ export class Zap extends SmartContract {
     hashRoute: Field,
     privateData: Field,
     // The signature that allows us to be sure that the private data are coming from our trusted oracle
-    signature: Signature,
-    // How long the attestation is valid for, in seconds
-    validFor: Field
+    signature: Signature
   ) {
-
     /* VERIFICATION OF ORACLE SIGNATURE AND ROUTE: START */
     // Get the oracle public key from the contract state
     const oraclePublicKey = this.oraclePublicKey.getAndAssertEquals();
@@ -98,13 +94,9 @@ export class Zap extends SmartContract {
     // STATEMENT VERIFICATION: END
 
     /* Generate the attestation and emit an event*/
-
+    // todo add timestamp later
     // Attestation hash should contain information about the statement, so we can verify that this attestation corresponds to the right
     // statement
-
-    let now = this.network.timestamp.get();
-    this.network.globalSlotSinceGenesis.assertEquals(this.network.globalSlotSinceGenesis.get());
-    let validTill = new UInt64(validFor).add(now);
 
     // TODO maybe we should hash and then sign, more secure (Birthday problem)
     const attestationHash = Poseidon.hash([
@@ -112,7 +104,7 @@ export class Zap extends SmartContract {
       conditionType,
       targetValue,
       this.sender.toFields()[0],
-      validFor.toFields()[0],
+      //timestamp
     ]);
 
     // Emit an event only if everything is valid, containing the attestation hash and also the timestamp
@@ -120,7 +112,7 @@ export class Zap extends SmartContract {
     // at a certain time
     this.emitEvent(
       'verified',
-      [attestationHash, validTill.toFields()[0]],
+      attestationHash // todo add timestamp later
     );
   }
 }
