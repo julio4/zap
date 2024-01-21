@@ -16,7 +16,9 @@ body {
 }
 
 @keyframes spinner {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .spinner {
@@ -26,4 +28,13 @@ body {
   width: 24px;
   height: 24px;
   animation: spinner 1s linear infinite;
+}
+
+.custom-scrollbar {
+  scrollbar-width: none; /* For Firefox */
+  -ms-overflow-style: none; /* For Internet Explorer and Edge */
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  display: none; /* For WebKit Browsers */
 }
