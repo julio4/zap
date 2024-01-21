@@ -4,6 +4,7 @@ import { AttestContext } from "../context/attestContext";
 import { ArgsHashAttestationCalculator, Condition } from "../../types";
 import { createAttestationNoteEncoded } from "../../utils/createBase64Attestation";
 import { calculateAttestationHash } from "../../utils/calculateAttestationHash";
+import { addAttestationNoteToLocalStorage } from "../../utils/saveAttestation";
 
 let transactionFee = 0.1;
 
@@ -116,6 +117,7 @@ const ProofStep = () => {
       setHashTX(hash);
       setMessageType('normal');
       attest.setFinalResult(attestationHashBase64);
+      addAttestationNoteToLocalStorage(attestationHashBase64);
       setIsSendingTransaction(false);
     }
 
