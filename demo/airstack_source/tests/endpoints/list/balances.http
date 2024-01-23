@@ -1,0 +1,9 @@
+POST http://localhost:3030/api/list/balances
+content-type: application/json
+
+{
+    "mina_address": "B62qxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "args": {
+      "address": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+    }
+}
