@@ -4,7 +4,7 @@ import { validateParams } from "../middlewares/paramsValidations.js";
 
 const router: Router = express.Router();
 
-router.post("/listBalances", validateParams, getListBalances);
-router.post("/listNFTs", validateParams, getListNFTs);
+router.post("/balances", validateParams, getListBalances);
+router.post("/nfts", validateParams, getListNFTs);
 
 export default router;

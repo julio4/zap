@@ -1,4 +1,4 @@
-import request, { GraphQLClient, gql } from "graphql-request";
+import { GraphQLClient, gql, request } from "graphql-request";
 import {
   AirstackEnsHolder,
   AirstackNFTSaleTransactions,

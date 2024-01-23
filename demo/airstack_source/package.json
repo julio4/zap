@@ -1,5 +1,5 @@
 {
-  "name": "@demo/oracle",
+  "name": "@demo/source",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -10,7 +10,8 @@
     "dev": "NODE_NO_WARNINGS=1 ts-node --esm src/index.ts",
     "test": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" npx jest",
     "generate_keys": "node generate_keys.js",
-    "gendoc": "node ./swagger.js"
+    "gendoc": "node ./swagger.js",
+    "lint": "eslint --fix --ext .ts src"
   },
   "keywords": [],
   "author": "",
