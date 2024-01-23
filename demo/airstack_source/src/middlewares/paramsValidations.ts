@@ -68,3 +68,9 @@ export const ethereumAddressArg = body("args.address")
   .withMessage("arg.address is required")
   .isEthereumAddress()
   .withMessage("arg.address must be a valid ethereum address");
+
+export const ethereumSignatureArg = body("args.signature")
+  .notEmpty()
+  .withMessage("arg.signature is required")
+  // TODO: Implement a better signature validation
+  .withMessage("arg.signature must be a valid ethereum message signature");
