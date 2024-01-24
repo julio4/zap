@@ -22,7 +22,7 @@ export const zapMiddleware = (
   res.json = (body: SupportedValue): Response<ZapSignedResponse> => {
     const requestPath = req.baseUrl + req.path;
 
-    if (!body) {
+    if (!body && body !== 0) {
       throw new Error("Invalid response body for path: " + requestPath);
     }
 

@@ -9,11 +9,11 @@ import {
   verifyPoapHolder,
   verifyXMTPenabled,
 } from "../controllers/evmController.js";
-import { validateParams } from "../middlewares/paramsValidations.js";
+import { validateParams, erc20AddressArg, blockchainArg } from "../middlewares/paramsValidations.js";
 
 const router: Router = express.Router();
 
-router.post("/balance", validateParams, getUserBalance);
+router.post("/balance", erc20AddressArg, blockchainArg, validateParams, getUserBalance);
 router.post("/poap", validateParams, verifyPoapHolder);
 router.post("/nft", validateParams, verifyNftHolder);
 router.post("/xmtpEnabled", validateParams, verifyXMTPenabled);

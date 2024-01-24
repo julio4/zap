@@ -1,10 +1,8 @@
-export enum BlockchainType {
+export enum Blockchain {
   Ethereum = "ethereum",
   Polygon = "polygon",
-  Base = "base",
-}
-
-type Blockchain = "ethereum" | "polygon" | "base";
+  Base = "base"
+};
 
 /* General Query Response and PageInfo types */
 
@@ -21,6 +19,7 @@ export type TokenBalancesResponse = {
     TokenBalance: ERC20TokenBalance[];
   };
 };
+
 export type ERC20TokenBalance = {
   tokenAddress: string;
   formattedAmount: number;

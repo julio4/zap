@@ -72,5 +72,17 @@ export const ethereumAddressArg = body("args.address")
 export const ethereumSignatureArg = body("args.signature")
   .notEmpty()
   .withMessage("arg.signature is required")
-  // TODO: Implement a better signature validation
+  .isLength({ min: 132, max: 132 })
   .withMessage("arg.signature must be a valid ethereum message signature");
+
+export const erc20AddressArg = body("args.token")
+  .notEmpty()
+  .withMessage("arg.token is required")
+  .isEthereumAddress()
+  .withMessage("arg.token must be a valid ethereum address");
+
+export const blockchainArg = body("args.blockchain")
+  .notEmpty()
+  .withMessage("arg.blockchain is required")
+  .isIn(["ethereum", "polygon", "base"])
+  .withMessage("arg.blockchain must be a supported blockchain");

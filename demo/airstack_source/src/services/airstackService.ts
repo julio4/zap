@@ -31,58 +31,58 @@ class AirstackService {
     owner: string
   ): Promise<[ERC20TokenBalance[], ERC20TokenBalance[]]> {
     const balanceQueryEthereum = gql`
-    query TokenBalancesEthereum {
-      TokenBalances(
-        input: {
-          filter: {
-            owner: { _eq: "${owner}" }
-            formattedAmount: { _gt: 0 }
-          }
-          blockchain: ethereum
-        }
-      ) {
-        TokenBalance {
-          tokenAddress
-          formattedAmount
-          token {
-            id
-            isSpam
-            logo {
-              small
+      query TokenBalancesEthereum {
+        TokenBalances(
+          input: {
+            filter: {
+              owner: { _eq: "${owner}" }
+              formattedAmount: { _gt: 0 }
             }
-            name
+            blockchain: ethereum
+          }
+        ) {
+          TokenBalance {
+            tokenAddress
+            formattedAmount
+            token {
+              id
+              isSpam
+              logo {
+                small
+              }
+              name
+            }
           }
         }
       }
-    }
-  `;
+    `;
 
     const balanceQueryPolygon = gql`
-        query TokenBalancesPolygon {
-          TokenBalances(
-            input: {
-              filter: {
-                owner: { _eq: "${owner}" }
-                formattedAmount: { _gt: 0 }
-              }
-              blockchain: polygon
+      query TokenBalancesPolygon {
+        TokenBalances(
+          input: {
+            filter: {
+              owner: { _eq: "${owner}" }
+              formattedAmount: { _gt: 0 }
             }
-          ) {
-            TokenBalance {
-              tokenAddress
-              formattedAmount
-              token {
-                id
-                isSpam
-                logo {
-                  small
-                }
-                name
+            blockchain: polygon
+          }
+        ) {
+          TokenBalance {
+            tokenAddress
+            formattedAmount
+            token {
+              id
+              isSpam
+              logo {
+                small
               }
+              name
             }
           }
         }
-      `;
+      }
+    `;
 
     try {
       const graphQLClient = new GraphQLClient(API, {
@@ -255,25 +255,25 @@ class AirstackService {
     }
 
     const balanceQuery = gql`
-    query MyQuery {
-      TokenBalances(
-        input: {
-          blockchain: ${blockchain}
-          filter: {
-            tokenAddress: { _eq: "${token}" }
-            owner: { _eq: "${owner}" }
+      query MyQuery {
+        TokenBalances(
+          input: {
+            blockchain: ${blockchain}
+            filter: {
+              tokenAddress: { _eq: "${token}" }
+              owner: { _eq: "${owner}" }
+            }
           }
-        }
-      ) {
-        TokenBalance {
-          token {
-            id
+        ) {
+          TokenBalance {
+            token {
+              id
+            }
+            formattedAmount
           }
-          formattedAmount
         }
       }
-    }
-  `;
+    `;
 
     try {
       const graphQLClient = new GraphQLClient(API, {
@@ -305,22 +305,22 @@ class AirstackService {
     }
 
     const poapQuery = gql`
-    query GetPoapHolders {
-      Poaps(
-        input: {
-          filter: { eventId: { _in: "${poapId}" }, owner: { _eq: "${owner}" } }
-          blockchain: ALL
-          limit: 200
-        }
-      ) {
-        Poap {
-          owner {
-            identity
+      query GetPoapHolders {
+        Poaps(
+          input: {
+            filter: { eventId: { _in: "${poapId}" }, owner: { _eq: "${owner}" } }
+            blockchain: ALL
+            limit: 200
+          }
+        ) {
+          Poap {
+            owner {
+              identity
+            }
           }
         }
       }
-    }
-  `;
+    `;
 
     const res = await request<AirstackPoapHolder>(API, poapQuery);
 
@@ -344,25 +344,25 @@ class AirstackService {
     }
 
     const nftQuery = gql`
-    query MyQuery {
-      TokenBalances(
-        input: {
-          filter: {
-            owner: { _eq: "${owner}" }
-            tokenAddress: { _eq: "${nftAddress}" }
+      query MyQuery {
+        TokenBalances(
+          input: {
+            filter: {
+              owner: { _eq: "${owner}" }
+              tokenAddress: { _eq: "${nftAddress}" }
+            }
+            blockchain: ${blockchain}
+            limit: 150
           }
-          blockchain: ${blockchain}
-          limit: 150
-        }
-      ) {
-        TokenBalance {
-          owner {
-            addresses
+        ) {
+          TokenBalance {
+            owner {
+              addresses
+            }
           }
         }
       }
-    }
-  `;
+    `;
 
     const response = await request<AirstackNftHolder>(API, nftQuery);
 
@@ -377,19 +377,19 @@ class AirstackService {
 
   static async isXMTPenabled(owner: string): Promise<number> {
     const XMTPquery = gql`
-    query GetSocial {
-      Wallet(
-        input: {
-          identity: "${owner}"
-          blockchain: ethereum
-        }
-      ) {
-        xmtp {
-          isXMTPEnabled
+      query GetSocial {
+        Wallet(
+          input: {
+            identity: "${owner}"
+            blockchain: ethereum
+          }
+        ) {
+          xmtp {
+            isXMTPEnabled
+          }
         }
       }
-    }
-  `;
+    `;
 
     const response = await request<AirstackXmtpEnabled>(API, XMTPquery);
 
@@ -398,19 +398,19 @@ class AirstackService {
 
   static async isEnsHolder(owner: string): Promise<number> {
     const EnsQuery = gql`
-    query GetSocial {
-      Wallet(
-        input: {
-          identity: "${owner}"
-          blockchain: ethereum
-        }
-      ) {
-        domains {
-          name
+      query GetSocial {
+        Wallet(
+          input: {
+            identity: "${owner}"
+            blockchain: ethereum
+          }
+        ) {
+          domains {
+            name
+          }
         }
       }
-    }
-  `;
+    `;
 
     const response = await request<AirstackEnsHolder>(API, EnsQuery);
 
@@ -425,20 +425,20 @@ class AirstackService {
 
   static async isLensHolder(owner: string): Promise<number> {
     const LensQuery = gql`
-    query GetSocial {
-      Wallet(
-        input: {
-          identity: "${owner}"
-          blockchain: ethereum
-        }
-      ) {
-        socials {
-          dappName
-          profileName
+      query GetSocial {
+        Wallet(
+          input: {
+            identity: "${owner}"
+            blockchain: ethereum
+          }
+        ) {
+          socials {
+            dappName
+            profileName
+          }
         }
       }
-    }
-  `;
+    `;
 
     const response = await request<AirstackSocialsHolder>(API, LensQuery);
     let lensHeld = 0;
@@ -454,20 +454,20 @@ class AirstackService {
 
   static async isFarcasterHolder(owner: string): Promise<number> {
     const FarcasterQuery = gql`
-    query GetSocial {
-      Wallet(
-        input: {
-          identity: "${owner}"
-          blockchain: ethereum
-        }
-      ) {
-        socials {
-          dappName
-          profileName
+      query GetSocial {
+        Wallet(
+          input: {
+            identity: "${owner}"
+            blockchain: ethereum
+          }
+        ) {
+          socials {
+            dappName
+            profileName
+          }
         }
       }
-    }
-  `;
+    `;
 
     const response = await request<AirstackSocialsHolder>(API, FarcasterQuery);
     let farcasterHeld = 0;
@@ -488,24 +488,24 @@ class AirstackService {
 
     while (true) {
       const totalNftVolumeQuery = gql`
-    query MyQuery {
-      NFTSaleTransactions(
-        input: {
-          filter: { from: { _eq: "${owner}" } }
-          blockchain: ethereum
-          limit: 200
-          cursor: "${cursor}"
-        }
-      ) {
-        NFTSaleTransaction {
-          paymentAmount
-        }
-        pageInfo {
-          prevCursor
-          nextCursor
-        }
-      }
-    }`;
+        query MyQuery {
+          NFTSaleTransactions(
+            input: {
+              filter: { from: { _eq: "${owner}" } }
+              blockchain: ethereum
+              limit: 200
+              cursor: "${cursor}"
+            }
+          ) {
+            NFTSaleTransaction {
+              paymentAmount
+            }
+            pageInfo {
+              prevCursor
+              nextCursor
+            }
+          }
+        }`;
 
       const response = await request<AirstackNFTSaleTransactions>(
         API,

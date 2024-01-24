@@ -3,8 +3,7 @@ import {
   ethereumAddressArg,
   validateParams,
 } from "../middlewares/paramsValidations.js";
-import { zapMiddleware } from "../middlewares/zapMiddleware.js";
-import { evmMiddleware } from "middlewares/evmMiddleware.js";
+import { zapMiddleware, evmMiddleware } from "../middlewares/index.js";
 
 import evmEndpoints from "./evmEndpoints.js";
 import listEndpoints from "./listEndpoints.js";
