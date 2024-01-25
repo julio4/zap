@@ -8,9 +8,38 @@ import {
   ZapRequestParams,
   ZapSignedResponse,
 } from "@packages/zap-utils/types";
+import { ethers } from "ethers";
 
-describe("Key signature (With test endpoint /example/nb)", () => {
+// We will use basic endpoint /evm/ens to test the middleware
+// Refers to ./endpoints/evm/ens.test.ts for further details
+
+describe("ZapMiddleware (With test endpoint /evm/ens)", () => {
+  let reqBody: ZapRequestParams;
+  let route: Route;
+  let wallet: ethers.HDNodeWallet;
   let privateKey: PrivateKey;
+
+  beforeAll(async () => {
+    if (!process.env.PRIVATE_KEY)
+      throw new Error("Missing PRIVATE_KEY env variable");
+    privateKey = PrivateKey.fromBase58(process.env.PRIVATE_KEY);
+
+    wallet = ethers.Wallet.createRandom();
+    // Generate a signed message of `I am ${wallet.address}`
+    const signedMessage = await wallet.signMessage(`I am ${wallet.address}`);
+
+    reqBody = {
+      mina_address: "B62qxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      args: {
+        address: wallet.address,
+        signature: signedMessage,
+      },
+    };
+    route = {
+      path: "/api/evm/ens",
+      args: reqBody.args,
+    };
+  });
 
   beforeAll(async () => {
     // Generate a random private key and set it as the environment variable
@@ -18,25 +47,15 @@ describe("Key signature (With test endpoint /example/nb)", () => {
     process.env.PRIVATE_KEY = privateKey.toBase58();
   });
 
-  const req = {
-    mina_address: "B62qxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-    args: { id: 1 },
-  } as ZapRequestParams;
-
   it("Response with associated public key", async () => {
-    const res = await request(app).post("/api/example/nb").send(req);
+    const res = await request(app).post(route.path).send(reqBody);
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty("publicKey");
     expect(res.body.publicKey).toBe(privateKey.toPublicKey().toBase58());
   });
 
   it("Response with hashed route", async () => {
-    const route: Route = {
-      path: "/api/example/nb",
-      args: req.args,
-    };
-
-    const res = await request(app).post("/api/example/nb").send(req);
+    const res = await request(app).post(route.path).send(reqBody);
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty("data");
     expect(res.body.data).toHaveProperty("hashRoute");
@@ -44,7 +63,7 @@ describe("Key signature (With test endpoint /example/nb)", () => {
   });
 
   it("Verify response signature", async () => {
-    const res = await request(app).post("/api/example/nb").send(req);
+    const res = await request(app).post(route.path).send(reqBody);
     const body = res.body as ZapSignedResponse;
 
     let result = verifyResponseSignature(body, privateKey.toPublicKey());
@@ -52,7 +71,7 @@ describe("Key signature (With test endpoint /example/nb)", () => {
   });
 
   it("Verify response signature fail with modified value", async () => {
-    const res = await request(app).post("/api/example/nb").send(req);
+    const res = await request(app).post(route.path).send(reqBody);
     let body = res.body as ZapSignedResponse;
 
     // Modify the returned value
@@ -63,32 +82,32 @@ describe("Key signature (With test endpoint /example/nb)", () => {
   });
 
   it("Verify response signature fail with modified route path", async () => {
-    const res = await request(app).post("/api/example/nb").send(req);
+    const res = await request(app).post(route.path).send(reqBody);
     let body = res.body as ZapSignedResponse;
 
-    // Modify the returned route args
-    const route: Route = {
-      path: "/api/example/fake",
-      args: req.args,
+    // Modify the returned route path
+    const fakeRoute: Route = {
+      path: "/api/some/fake",
+      args: reqBody.args,
     };
-    body.data.hashRoute = hashRoute(route).toString();
+    body.data.hashRoute = hashRoute(fakeRoute).toString();
 
     let result = verifyResponseSignature(body, privateKey.toPublicKey());
     expect(result).toBe(false);
   });
 
   it("Verify response signature fail with modified route args", async () => {
-    const res = await request(app).post("/api/example/nb").send(req);
+    const res = await request(app).post(route.path).send(reqBody);
     let body = res.body as ZapSignedResponse;
 
-    // Modify the returned route
-    const route: Route = {
-      path: "/api/example/nb",
+    // Modify the returned route args
+    const fakeRoute: Route = {
+      path: route.path,
       args: {
-        id: req.args?.id + 1,
+        id: 2,
       },
     };
-    body.data.hashRoute = hashRoute(route).toString();
+    body.data.hashRoute = hashRoute(fakeRoute).toString();
 
     let result = verifyResponseSignature(body, privateKey.toPublicKey());
     expect(result).toBe(false);
