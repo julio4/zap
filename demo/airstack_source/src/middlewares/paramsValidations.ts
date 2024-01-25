@@ -81,8 +81,20 @@ export const erc20AddressArg = body("args.token")
   .isEthereumAddress()
   .withMessage("arg.token must be a valid ethereum address");
 
+export const nftAddressArg = body("args.nftAddress")
+  .notEmpty()
+  .withMessage("arg.nftAddress is required")
+  .isEthereumAddress()
+  .withMessage("arg.nftAddress must be a valid ethereum address");
+
 export const blockchainArg = body("args.blockchain")
   .notEmpty()
   .withMessage("arg.blockchain is required")
   .isIn(["ethereum", "polygon", "base"])
   .withMessage("arg.blockchain must be a supported blockchain");
+
+export const poapIdArg = body("args.poapId")
+  .notEmpty()
+  .withMessage("arg.poapId is required")
+  .isNumeric()
+  .withMessage("arg.poapId must be a valid poap id");

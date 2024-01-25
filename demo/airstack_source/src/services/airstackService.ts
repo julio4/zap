@@ -366,8 +366,6 @@ class AirstackService {
 
     const response = await request<AirstackNftHolder>(API, nftQuery);
 
-    console.log(util.inspect(response, false, null, true /* enable colors */));
-
     const nftCount = response.TokenBalances.TokenBalance
       ? response.TokenBalances.TokenBalance.length
       : 0;
@@ -486,44 +484,47 @@ class AirstackService {
 
     let totalVolume = 0; // initialize total amount
 
-    while (true) {
-      const totalNftVolumeQuery = gql`
-        query MyQuery {
-          NFTSaleTransactions(
-            input: {
-              filter: { from: { _eq: "${owner}" } }
-              blockchain: ethereum
-              limit: 200
-              cursor: "${cursor}"
-            }
-          ) {
-            NFTSaleTransaction {
-              paymentAmount
-            }
-            pageInfo {
-              prevCursor
-              nextCursor
-            }
-          }
-        }`;
+    // TODO Fix this query
+    // Seems like Airstack deprecated `NFTSaleTransactions`
+    // while (true) {
+    //   const totalNftVolumeQuery = gql`
+    //     query MyQuery {
+    //       NFTSaleTransactions(
+    //         input: {
+    //           filter: { from: { _eq: "${owner}" } }
+    //           blockchain: ethereum
+    //           limit: 200
+    //           cursor: "${cursor}"
+    //         }
+    //       ) {
+    //         NFTSaleTransaction {
+    //           paymentAmount
+    //         }
+    //         pageInfo {
+    //           prevCursor
+    //           nextCursor
+    //         }
+    //       }
+    //     }`;
 
-      const response = await request<AirstackNFTSaleTransactions>(
-        API,
-        totalNftVolumeQuery
-      );
+    //   const response = await request<AirstackNFTSaleTransactions>(
+    //     API,
+    //     totalNftVolumeQuery
+    //   );
+    //   console.log(response)
 
-      if (response.NFTSaleTransactions.NFTSaleTransaction) {
-        for (let transaction of response.NFTSaleTransactions
-          .NFTSaleTransaction) {
-          const transactionInEth = parseInt(transaction.paymentAmount) / 1e18;
-          totalVolume += transactionInEth;
-        }
-      }
+    //   if (response.NFTSaleTransactions.NFTSaleTransaction) {
+    //     for (let transaction of response.NFTSaleTransactions
+    //       .NFTSaleTransaction) {
+    //       const transactionInEth = parseInt(transaction.paymentAmount) / 1e18;
+    //       totalVolume += transactionInEth;
+    //     }
+    //   }
 
-      cursor = response.NFTSaleTransactions.pageInfo.nextCursor;
+    //   cursor = response.NFTSaleTransactions.pageInfo.nextCursor;
 
-      if (!cursor) break; // stop if there's no next cursor
-    }
+    //   if (!cursor) break; // stop if there's no next cursor
+    // }
 
     return totalVolume;
   }
