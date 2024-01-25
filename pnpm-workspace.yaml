@@ -4,3 +4,4 @@ packages:
   - "packages/*"
   - "demo/*"
   - "templates/*"
+  - "new_docs/*"
