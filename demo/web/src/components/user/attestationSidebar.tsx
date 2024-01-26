@@ -1,8 +1,14 @@
 import React from "react";
 
-import { AttestationNote } from "../../types";
+import { AttestationNote, Condition } from "../../types";
+import { noteToBase64 } from "../../utils/base64Attestation";
 
 const AttestationSidebar = ({ attestation }: { attestation: AttestationNote }) => {
+
+    const handleCopyClick = () => {
+        navigator.clipboard.writeText(window.location.origin + `/verify?note=${noteToBase64(attestation)}`);
+    }
+
     return (
         <div className="fixed right-0 h-3/4 w-1/2 bg-slate-700/40 shadow-lg z-99 mr-4 rounded-xl overflow-y-auto custom-scrollbar">
             <div className="flex flex-col py-12 px-8">
@@ -10,7 +16,7 @@ const AttestationSidebar = ({ attestation }: { attestation: AttestationNote }) =
                     <h3 className="inline bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text font-display text-5xl tracking-tight text-transparent">
                         Attestation Details
                     </h3>
-                    <button className="mt-6 mb-6 px-6 py-2 rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white font-bold shadow-lg hover:bg-gradient-to-br focus:outline-none focus:ring">
+                    <button onClick={handleCopyClick} className="mt-6 mb-6 px-6 py-2 rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white font-bold shadow-lg hover:bg-gradient-to-br focus:outline-none focus:ring">
                         Copy link of attestation
                     </button>
                 </div>

@@ -38,8 +38,7 @@ export const createAttestationNoteEncoded = (
     sender: sender,
   };
 
-  const jsonString = JSON.stringify(attestation);
-  return Buffer.from(jsonString).toString("base64");
+  return noteToBase64(attestation);
 };
 
 
@@ -63,3 +62,8 @@ export const decodeAttestationNote = (
 
   return attestation as AttestationNote;
 };
+
+export const noteToBase64 = (note: AttestationNote): string => {
+  const jsonString = JSON.stringify(note);
+  return Buffer.from(jsonString).toString("base64");
+}
