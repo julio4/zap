@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import { Header } from "../components/Header";
 import { FoldingBg } from "../components/logo";
 import { Search } from "../components/Search";
-import { decodeAttestationNote } from "../utils/createBase64Attestation";
+import { decodeAttestationNote } from "../utils/base64Attestation";
 import { ArgsHashAttestationCalculator, AttestationNote } from "../types";
 import { Zap } from "../../../../zap/build/Zap.js";
 import { Mina, Provable, ProvablePure, PublicKey, UInt32 } from "o1js";

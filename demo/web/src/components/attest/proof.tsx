@@ -2,9 +2,9 @@
 import { useContext, useEffect, useState } from "react";
 import { AttestContext } from "../context/attestContext";
 import { ArgsHashAttestationCalculator, Condition } from "../../types";
-import { createAttestationNoteEncoded } from "../../utils/createBase64Attestation";
+import { createAttestationNoteEncoded } from "../../utils/base64Attestation";
 import { calculateAttestationHash } from "../../utils/calculateAttestationHash";
-import { addAttestationNoteToLocalStorage } from "../../utils/saveAttestation";
+import { addAttestationNoteToLocalStorage } from "../../utils/localStorageAttestation";
 
 let transactionFee = 0.1;
 

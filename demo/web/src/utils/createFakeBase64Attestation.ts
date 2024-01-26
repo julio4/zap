@@ -1,5 +1,5 @@
 import { Condition, OracleRoute } from "../types"
-import { createAttestationNoteEncoded } from "./createBase64Attestation"
+import { createAttestationNoteEncoded } from "./base64Attestation"
 
 const fakeNote=createAttestationNoteEncoded(
     Condition.GREATER_THAN,
