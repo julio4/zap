@@ -22,6 +22,16 @@ const AttestationHistory: React.FC<AttestationHistoryProps> = ({ attestations, i
         setSelectedAttestation(attestation);
     }
 
+    const truncate = (str: string, n: number) => {
+        return (str.length > n) ? str.substr(0, n - 1) + '...' : str;
+    }
+
+    const extractRouteFromString = (str: string) => {
+        const regex = /for ([^ ]+) with/;
+        const match = str.match(regex);
+        return match ? match[1] : null;
+    }
+
     useEffect(() => {
         const attestations = getAttestationNotesFromLocalStorage();
         if (attestations) {
@@ -49,9 +59,9 @@ const AttestationHistory: React.FC<AttestationHistoryProps> = ({ attestations, i
                     >
                         <div className="flex justify-between items-center">
                             <div className="flex items-center">
-                                <h4 className="text-sm font-semibold text-slate-100">{attestation.statement[0]}</h4>
+                                <h4 className="text-sm font-semibold text-slate-100">{extractRouteFromString(attestation.statement)}</h4>
                             </div>
-                            <div className="flex items-center"> <h4 className="text-sm font-semibold text-slate-100">{attestation.attestationHash}</h4></div>
+                            <div className="flex items-center"> <h4 className="text-sm font-semibold text-slate-100">{truncate(attestation.attestationHash, 10)}</h4></div>
                             <div className="text-sm font-semibold text-slate-100">17/06/2023</div>
 
                         </div>
