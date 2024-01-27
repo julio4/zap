@@ -1,8 +1,10 @@
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { Search } from "./Search";
 import { Github } from "./logo";
 
 import { FaRegUserCircle } from "react-icons/fa";
+import { getAttestationNotesFromLocalStorage } from "../utils/localStorageAttestation";
 
 const Header = ({
   MinaWalletComponent,
@@ -13,6 +15,24 @@ const Header = ({
   EthereumWalletComponent?: JSX.Element;
   showSearch?: boolean;
 }) => {
+
+  const [numberOfAttestations, setNumberOfAttestations] = useState<string>("");
+
+  useEffect(() => {
+
+    const attestations = getAttestationNotesFromLocalStorage();
+    const numberOfAttestations = attestations ? attestations.length : 0;
+    if (numberOfAttestations > 99) {
+      setNumberOfAttestations("99+");
+      return;
+    }
+    if (numberOfAttestations === 0) {
+      setNumberOfAttestations("");
+      return;
+    }
+    setNumberOfAttestations(numberOfAttestations.toString());
+  }, []);
+
   return (
     <header className="sticky top-0 z-50 flex flex-wrap items-center justify-between px-4 py-5 transition duration-500 sm:px-6 lg:px-8 bg-transparent">
       {/* LOGO */}
@@ -36,8 +56,15 @@ const Header = ({
         {EthereumWalletComponent}
 
         <Link href="/attestationHistory">
-          <div className="group">
-            <FaRegUserCircle className="h-7 w-7 fill-slate-400 group-hover:fill-slate-500 dark:group-hover:fill-slate-300" />
+          <div className="relative group mr-6">
+            <FaRegUserCircle className="h-9 w-9 fill-slate-400 group-hover:fill-slate-500 dark:group-hover:fill-slate-300" />
+            {
+              numberOfAttestations && (
+                <span className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-700 text-xs font-bold text-white group-hover:bg-red-500">
+                  {numberOfAttestations}
+                </span>
+              )
+            }
           </div>
         </Link>
 

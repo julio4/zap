@@ -6,7 +6,7 @@ export default function AttestationHistoryPage(): JSX.Element {
   return (
     <>
       <Header />
-      <AttestationHistory attestations={[]} isLoading={false} />
+      <AttestationHistory />
     </>
   );
 }

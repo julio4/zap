@@ -4,15 +4,9 @@ import { AttestationNote, AttestationNoteDated } from "../../types";
 import { decodeAttestationNote } from "../../utils/base64Attestation";
 import { getAttestationNotesFromLocalStorage } from "../../utils/localStorageAttestation";
 
-interface AttestationHistoryProps {
-  attestations: AttestationNote[];
-  isLoading: boolean;
-}
+interface AttestationHistoryProps { }
 
-const AttestationHistory: React.FC<AttestationHistoryProps> = ({
-  attestations,
-  isLoading,
-}) => {
+const AttestationHistory: React.FC<AttestationHistoryProps> = () => {
   const [attestationsNotesDated, setAttestationsNotesDated] = useState<AttestationNoteDated[]>(
     []
   );
