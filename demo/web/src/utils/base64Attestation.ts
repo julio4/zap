@@ -41,7 +41,6 @@ export const createAttestationNoteEncoded = (
   return noteToBase64(attestation);
 };
 
-
 export const decodeAttestationNote = (
   base64Attestation: string
 ): AttestationNote => {
@@ -66,4 +65,4 @@ export const decodeAttestationNote = (
 export const noteToBase64 = (note: AttestationNote): string => {
   const jsonString = JSON.stringify(note);
   return Buffer.from(jsonString).toString("base64");
-}
+};

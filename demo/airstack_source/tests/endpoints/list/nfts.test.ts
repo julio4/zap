@@ -6,7 +6,7 @@ describe("Endpoint /list/nfts", () => {
   const reqBody = {
     mina_address: "B62qxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
     args: {
-      address: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+      address: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
     },
   };
   const routePath = "/api/list/nfts";
@@ -23,7 +23,9 @@ describe("Endpoint /list/nfts", () => {
       const wrong = { ...reqBody, args: { address: "wrong" } };
       const res = await request(app).post(routePath).send(wrong);
       expect(res.status).toBe(400);
-      expect(res.text).toContain("arg.address must be a valid ethereum address");
+      expect(res.text).toContain(
+        "arg.address must be a valid ethereum address"
+      );
     });
   });
 

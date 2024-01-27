@@ -6,7 +6,7 @@ import {
   Route,
   ZapRequestParams,
   ZapSignedResponse,
-} from "@packages/zap-utils/types";
+} from "@packages/zap-utils";
 import { verifyResponseSignature } from "@packages/zap-utils";
 import { ethers } from "ethers";
 
@@ -128,7 +128,9 @@ describe("EvmMiddleware", () => {
     it("Call success with correct signature", async () => {
       const res = await request(app).post(route.path).send(reqBody);
       const body: ZapSignedResponse = res.body;
-      expect(verifyResponseSignature(body, privateKey.toPublicKey())).toBe(true);
+      expect(verifyResponseSignature(body, privateKey.toPublicKey())).toBe(
+        true
+      );
       expect(body.data.value).toEqual(expect.any(Number));
     });
   });

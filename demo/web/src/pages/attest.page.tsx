@@ -27,7 +27,7 @@ export default function AttestRoot() {
             height={530}
             decoding="async"
             fetchPriority="high"
-            style={{ color: 'transparent' }}
+            style={{ color: "transparent" }}
             className="scale-[2.2] bottom-full right-full -mb-56 -mr-72 opacity-50"
           />
         </div>
@@ -44,7 +44,7 @@ export default function AttestRoot() {
             height={530}
             decoding="async"
             fetchPriority="high"
-            style={{ color: 'transparent' }}
+            style={{ color: "transparent" }}
             className="absolute -right-20 -top-11"
           />
           <Image
@@ -54,7 +54,7 @@ export default function AttestRoot() {
             height={567}
             decoding="async"
             fetchPriority="high"
-            style={{ color: 'transparent' }}
+            style={{ color: "transparent" }}
             className="absolute -bottom-7 -right-56"
           />
         </div>

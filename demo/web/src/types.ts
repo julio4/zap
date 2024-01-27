@@ -239,20 +239,19 @@ export type TokenBalance = {
 
 /* Types used for fetching all NFTs */
 type TokenType = "ERC721" | "ERC1155";
-type Blockchain = 'ethereum' | 'polygon' | 'base';
+type Blockchain = "ethereum" | "polygon" | "base";
 
 export interface TokenNft {
   address: string;
   blockchain: Blockchain;
   metaData: {
     image: string;
-  }
+  };
   token: {
     name: string;
-  }
+  };
   tokenId: string;
 }
-
 
 // NFT TokenBalance Type
 export interface NFTTokenBalance {

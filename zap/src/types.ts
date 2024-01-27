@@ -8,7 +8,7 @@ type KeyPair = {
 
 type DataOracleObject = {
   privateData: Field; // The private data attesting the statement, it is coming from the trusted oracle
-  hashRoute: Field;   // The hash of the route corresponding to the statement
+  hashRoute: Field; // The hash of the route corresponding to the statement
 };
 
 type OracleResult = {

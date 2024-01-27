@@ -1,8 +1,5 @@
 import { Poseidon, Field, PublicKey } from "o1js";
-import {
-  ArgsHashAttestationCalculator,
-  Condition,
-} from "../types";
+import { ArgsHashAttestationCalculator, Condition } from "../types";
 
 export const calculateAttestationHash = (
   argsAttestation: ArgsHashAttestationCalculator

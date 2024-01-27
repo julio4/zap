@@ -87,9 +87,9 @@ describe('Zap', () => {
           ethereumAddress
         );
 
-        console.log("targetValue: ", statementBalanceSup.condition.targetValue)
-        console.log("privateData: ", oracleResult.data.privateData)
-        console.log("conditionType: ", statementBalanceSup.condition.type)
+        console.log('targetValue: ', statementBalanceSup.condition.targetValue);
+        console.log('privateData: ', oracleResult.data.privateData);
+        console.log('conditionType: ', statementBalanceSup.condition.type);
         const txn = await Mina.transaction(user.publicKey, () => {
           zap.verify(
             Field(statementBalanceSup.condition.type),
@@ -102,7 +102,6 @@ describe('Zap', () => {
         });
         await txn.prove();
         await txn.sign([user.privateKey]).send();
-
 
         const expectedDataInEvent = Poseidon.hash([
           oracleResult.data.hashRoute,

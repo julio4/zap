@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import AirstackService from "../services/airstackService.js";
-import { SupportedValue, ZapRequestParams } from "@packages/zap-utils/types";
+import { SupportedValue, ZapRequestParams } from "@packages/zap-utils";
 
 export const getUserBalance = async (
   req: Request<ZapRequestParams>,

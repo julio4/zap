@@ -12,7 +12,7 @@ export async function errorHandler(
     await next();
   } catch (error) {
     const typedError = error as ErrorHandlerError;
-    ctx.status = typedError.status || 500;  // TODO: are we sure we want to return 500 for all errors?
+    ctx.status = typedError.status || 500; // TODO: are we sure we want to return 500 for all errors?
     ctx.body = {
       error: {
         message: typedError.message || 'Internal Server Error',

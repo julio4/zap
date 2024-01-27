@@ -9,7 +9,7 @@ If you are not familiar with ZkOracles please read the [What are (Zk)Oracles?](/
 ### What is ZAP?
 
 Mina unlocks a variety of new applications thanks to the use of zero knowledge.
-Specifically, there's a lot of new potential [zkApp's use cases](./#use-cases) by being able to verify some kind of attestation based on private datas from *outside of Mina*.
+Specifically, there's a lot of new potential [zkApp's use cases](./#use-cases) by being able to verify some kind of attestation based on private datas from _outside of Mina_.
 
 ZkOracles solves most of the current problems faced by Oracles while providing a trustless and privacy-preserving way to interact with the real world.
 But each zkApp has to implement its own ZkOracles verification system which is a complex and time-consuming task.
@@ -17,6 +17,7 @@ But each zkApp has to implement its own ZkOracles verification system which is a
 There's less separation of concerns that adds unnecessary complexity: this often leads to less secure and less reliable protocols because of the lack of standardization.
 
 We want to separate the complexity of using ZkOracles so that:
+
 - zkApps developers can focus on building their application without having to worry about the Oracle part.
 - Oracle developers can focus on building ZAP sources without having to worry about the Zk part.
 - Users can use zkApps while having a standard, transparent and comprehensible format of the process.
@@ -37,6 +38,7 @@ ZAP is a non-profit solution and operates as a public good for the Mina ecosyste
 
 ZAP aims to be integrated in many different projects in the Mina ecosystem.
 We specifically want to focus on the following points:
+
 1. **Streamlined Development:** ZAP simplifies the creation of zero-knowledge attestation about any kind of data on Mina, making development of complex zkApps more accessible for developers.
 2. **Improved User Experience and Safety:** ZAP has a strong focus on user experience. It aims to provide an open-source attestations explorer, allowing both users and developers to easily interact and verify attestation's informations without the need to build extra infrastructures.
 
@@ -60,6 +62,7 @@ This is a significant step in the direction of privacy-preserving applications, 
 Mina is a lightweight and efficient blockchain, with a focus on privacy with the ability to develop **zkApps**.
 
 Here's the key characteristics of Mina:
+
 1. **Lightweight Blockchain:** Mina's constant-sized blockchain ensures scalability.
 2. **Zero-knowledge primitives:** Mina possess all the needed cryptographic primitives in order to easily build zkApps.
 3. **Decentralized and Secure:** Mina's robust security and decentralization are critical for the reliability and trustless nature of any privacy preserving application.
@@ -96,6 +99,7 @@ Prove identity claims without revealing sensitive personal information, useful f
 #### Additional Ideas
 
 Some additional ideas that can use ZAP:
+
 - **Educational Credentials**: Verify academic achievements.
 - **Employment History**: Confirm past employment without detailing specific roles, locations, teams, ...
 - **Age Verification**: Attest legal age requirements are met.
@@ -116,7 +120,7 @@ We see that this process is quite complex and requires a lot of steps to be done
   - Generation and handling of the oracle keys
   - Development of the API endpoints with signed responses
   - Deployment and maintenance of the API (Point of failure if non-decentralized)
-- Development of a smart contract 
+- Development of a smart contract
   - Verification of the oracle signatures
   - Need to develop a new smart contract for each new statement to attest
   - Emit events (and handle them in frontend)
@@ -128,6 +132,7 @@ In the example, the condition is manually checked in the smart contract:
 // Check that the provided credit score is greater than 700
 creditScore.assertGreaterThanOrEqual(Field(700));
 ```
+
 There's no upgradability, and the developer needs to new logic in the smart contract and redeploy each time he wants to attest a new statement.
 
 With ZAP, the developer can focus on the logic of the statement and let ZAP handle the rest.
@@ -182,4 +187,5 @@ You can track the majors milestones of the project in the [Project Milestones](.
 You are free to contribute to the project, and we will be happy to review your pull requests.
 
 ## References
+
 - [Mina Documentation](https://docs.minaprotocol.com/)

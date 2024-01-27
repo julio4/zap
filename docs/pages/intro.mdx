@@ -10,7 +10,7 @@ The dApp needs to verify his bank account balance on-chain, but the bank only pr
 
 In the context of blockchains, an Oracle is a third-party service that brings external data to the blockchain.
 They acts as a bridge between the blockchain, that operates within a closed environment, and the outside world.
-Oracles are *interfaces* to the real world.
+Oracles are _interfaces_ to the real world.
 
 However, Oracles on traditional blockchain comes with a few problems.
 
@@ -46,6 +46,7 @@ A ZkOracle splits the Oracle in two parts:
 - On-chain verification: This verify the proof and the validity of the data. That data is never actually posted on-chain, but attest that "the external data used for this computation was fetched from this specific source".
 
 ZkOracles allows to solve the problems of traditional Oracles:
+
 - Availability: Instead of having a continous feed, users can fetch for free the data at any time during the proof generation (off-chain)
 - Cooperation: A new trustless intermediary is introduced between the user and the web2 data source that analyze and sign web requests.
 - Privacy: Everything is done off-chain, so the data is never posted on-chain.

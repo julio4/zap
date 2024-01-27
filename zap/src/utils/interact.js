@@ -40,7 +40,7 @@ let zkappKey = PrivateKey.fromBase58(
   'EKFazBMWzEKmzQYLN3gaDoLYDn4WL7auq61sYHXsEfb8grNrcHic'
 );
 let zkappAddress = zkappKey.toPublicKey();
-console.log("zkapp address: " , zkappAddress.toBase58());
+console.log('zkapp address: ', zkappAddress.toBase58());
 
 let transactionFee = 100_000_000;
 
@@ -76,14 +76,18 @@ if (!isDeployed) {
 
 // if the zkapp is not deployed yet, create an update transaction
 if (isDeployed) {
-  console.log("We are deployed")
+  console.log('We are deployed');
   let x = zkapp.getOraclePublicKey();
-  console.log("oracle public key: " , x.toBase58());
+  console.log('oracle public key: ', x.toBase58());
   console.log(`Found deployed zkapp, updating state: ${x.toBase58()}`);
   let transaction = await Mina.transaction(
     { sender: feePayerAddress, fee: transactionFee },
     () => {
-      zkapp.setOraclePublicKey(PublicKey.fromBase58("B62qmN3EthPdRmnit65JWNSbdYdXSt9vt766rt2em2eLoAewf8o72V2"));
+      zkapp.setOraclePublicKey(
+        PublicKey.fromBase58(
+          'B62qmN3EthPdRmnit65JWNSbdYdXSt9vt766rt2em2eLoAewf8o72V2'
+        )
+      );
     }
   );
   // fill in the proof - this can take a while...

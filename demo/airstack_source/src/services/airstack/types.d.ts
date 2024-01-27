@@ -1,8 +1,8 @@
 export enum Blockchain {
   Ethereum = "ethereum",
   Polygon = "polygon",
-  Base = "base"
-};
+  Base = "base",
+}
 
 /* General Query Response and PageInfo types */
 

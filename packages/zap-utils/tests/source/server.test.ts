@@ -1,6 +1,6 @@
 import { hashResponse, hashRoute, signResponse } from "../../src/index.js";
 import { Encoding, Field, Poseidon, PrivateKey, Signature } from "o1js";
-import { ZapResponse, Route } from "types.js";
+import { ZapResponse, Route } from "source/types.js";
 
 describe("Source server", () => {
   const route: Route = {

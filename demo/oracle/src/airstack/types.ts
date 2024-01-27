@@ -15,7 +15,6 @@ interface PageInfo {
   hasPrevPage: boolean;
 }
 
-
 /* Types used for fetching all ERC20 */
 export type TokenBalancesResponse = {
   TokenBalances: {

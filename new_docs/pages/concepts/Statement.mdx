@@ -21,15 +21,17 @@ The logic rules are represented as a set $\cal R$ of logical propositions.
 Each rule $r_i$ can involves any variables $v_i$ (atleast one), and can only be expressed using logical operators ($\land$, $\lor$, $\lnot$) and/or comparison operators ($=$, $>$, $<$, $\geq$, $\leq$).
 
 The function $s$ can be defined as the following:
+
 $$
 s(v) =
-\begin{cases} 
-\text{true}, & \text{if all rules in } \mathcal{R} \text{ are satisfied by } \mathbf{v} \\ 
-\text{false}, & \text{otherwise} 
+\begin{cases}
+\text{true}, & \text{if all rules in } \mathcal{R} \text{ are satisfied by } \mathbf{v} \\
+\text{false}, & \text{otherwise}
 \end{cases}
 $$
 
 Example:
+
 $$
 n = 1, V = \{\text{age}\}, \cal R = \{r_1\} \text{ with } r_1 = "\text{age} > 18"
 $$
@@ -37,6 +39,7 @@ $$
 A statement is analogous to a **predicate** in logic.
 
 Some observations:
+
 - If there is two rules that are mutually exclusive, then $s$ cannot be true for any $v$.
 - If there's a variable $v_i$ that is not used in any rule, then $s$ is equivalent to the statement that does not contain $v_i$ but has the same set of rules.
 

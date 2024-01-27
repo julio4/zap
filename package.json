@@ -1,10 +1,12 @@
 {
   "private": true,
   "scripts": {
-    "dev": "turbo dev --filter=!docs",
-    "build": "turbo build --filter=!docs",
-    "docs:dev": "turbo dev --filter=docs",
-    "docs:build": "turbo build --filter=docs",
+    "demo": "turbo dev --filter=@demo/source --filter=@demo/web",
+    "demo:source": "turbo dev --filter=@demo/source",
+    "demo:web": "turbo dev --filter=@demo/web",
+    "docs": "turbo dev --filter=docs",
+    "test": "turbo test",
+    "build": "turbo build",
     "lint": "turbo lint",
     "clean": "turbo clean",
     "format": "prettier --write --ignore-unknown **/*"

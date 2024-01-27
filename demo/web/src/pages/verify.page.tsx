@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 
 import { Header } from "../components/Header";
 import { FoldingBg } from "../components/logo";
@@ -10,7 +10,6 @@ import { ArgsHashAttestationCalculator, AttestationNote } from "../types";
 import { Zap } from "../../../../zap/build/Zap.js";
 import { Mina, Provable, ProvablePure, PublicKey, UInt32 } from "o1js";
 import { calculateAttestationHash } from "../utils/calculateAttestationHash";
-
 
 type MinaEvent = {
   type: string;
@@ -28,18 +27,23 @@ type MinaEvent = {
   parentBlockHash: string;
   globalSlot: UInt32;
   chainStatus: string;
-}
+};
 
 export default function Home(): JSX.Element {
   const router = useRouter();
   const [note, setNote] = useState<string | string[] | undefined>(undefined);
-  const [resultVerification, setResultVerification] = useState<boolean | undefined>(undefined)
+  const [resultVerification, setResultVerification] = useState<
+    boolean | undefined
+  >(undefined);
   const [error, setError] = useState<string | undefined>(undefined);
 
-  const [workerSet] = useState(false);  // todo: use this to show loading spinner
-  const [eventsFetched, setEventsFetched] = useState<MinaEvent[] | undefined>(undefined);
+  const [workerSet] = useState(false); // todo: use this to show loading spinner
+  const [eventsFetched, setEventsFetched] = useState<MinaEvent[] | undefined>(
+    undefined
+  );
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
-  const [attestationNote, setAttestationNote] = useState<AttestationNote | null>(null);
+  const [attestationNote, setAttestationNote] =
+    useState<AttestationNote | null>(null);
 
   let trigger = true;
   trigger = !trigger; // todo
@@ -55,9 +59,13 @@ export default function Home(): JSX.Element {
         });
         Mina.setActiveInstance(network);
 
-        const zkapp = new Zap(PublicKey.fromBase58("B62qnhBxxQr7h2AE9f912AyvzJwK1fhEJq7NMZXbzXbhoepUZ7z7237"))
-        const minaEvents: MinaEvent[] = await zkapp.fetchEvents(UInt32.from(0))
-        setEventsFetched(minaEvents)
+        const zkapp = new Zap(
+          PublicKey.fromBase58(
+            "B62qnhBxxQr7h2AE9f912AyvzJwK1fhEJq7NMZXbzXbhoepUZ7z7237"
+          )
+        );
+        const minaEvents: MinaEvent[] = await zkapp.fetchEvents(UInt32.from(0));
+        setEventsFetched(minaEvents);
       }
     })();
   }, [trigger]);
@@ -66,7 +74,7 @@ export default function Home(): JSX.Element {
     if (router.isReady) {
       const queryNote = router.query.note;
       if (queryNote) {
-        console.log("Note found:", queryNote)
+        console.log("Note found:", queryNote);
         setNote(queryNote);
       }
     }
@@ -76,7 +84,9 @@ export default function Home(): JSX.Element {
     if (note) {
       try {
         // replace all spaces with + (url encoded)
-        const decodedNote = decodeAttestationNote(note.toString().replace(/ /g, "+"));
+        const decodedNote = decodeAttestationNote(
+          note.toString().replace(/ /g, "+")
+        );
         setAttestationNote(decodedNote);
       } catch (e) {
         // clear url parameter
@@ -95,7 +105,7 @@ export default function Home(): JSX.Element {
   const verifyAttestation = (events: MinaEvent[], hashAttestation: string) => {
     // First we verify that the base64 displayed in the frontend corresponds to the event
     if (attestationNote == null) {
-      console.log("Attestation note is null")
+      console.log("Attestation note is null");
       return false;
     }
     const argsToCalculateHash: ArgsHashAttestationCalculator = {
@@ -106,10 +116,14 @@ export default function Home(): JSX.Element {
     };
 
     const recalculateHash = calculateAttestationHash(argsToCalculateHash);
-    
+
     if (recalculateHash !== hashAttestation) {
-      setError("Note details don't correspond to the attestation hash, base64 note might have been modified")
-      console.log("Note statement doesn't correspond to the attestation hash, beware of scam")
+      setError(
+        "Note details don't correspond to the attestation hash, base64 note might have been modified"
+      );
+      console.log(
+        "Note statement doesn't correspond to the attestation hash, beware of scam"
+      );
       return false;
     }
 
@@ -118,19 +132,22 @@ export default function Home(): JSX.Element {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let valueArray: Provable<any> = event.event.data;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const currentHash = (valueArray as any).value[1][1]
+      const currentHash = (valueArray as any).value[1][1];
       if (BigInt(currentHash) === BigInt(hashAttestation)) {
         // Then we verify that the base64 displayed in the frontend corresponds to the event
 
-        console.log("AttestationHash Found!")
+        console.log("AttestationHash Found!");
         return true;
       }
     }
-    setError("Attestation not found. Be sure that your transaction has been validated and that the event is indexed in the archives")
-    console.log("Attestation not found. Be sure that your transaction has been validated")
+    setError(
+      "Attestation not found. Be sure that your transaction has been validated and that the event is indexed in the archives"
+    );
+    console.log(
+      "Attestation not found. Be sure that your transaction has been validated"
+    );
     return false;
   };
-
 
   return (
     <>
@@ -231,41 +248,40 @@ export default function Home(): JSX.Element {
                           <button
                             onClick={() => {
                               if (!eventsFetched) {
-                                console.log("No events fetched")
-                                return
+                                console.log("No events fetched");
+                                return;
                               }
-                              setResultVerification(verifyAttestation(eventsFetched, attestationNote.attestationHash))
+                              setResultVerification(
+                                verifyAttestation(
+                                  eventsFetched,
+                                  attestationNote.attestationHash
+                                )
+                              );
                             }}
-                            className="w-36 p-2 bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text font-display tracking-tight text-transparent ring-1 rounded">
+                            className="w-36 p-2 bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text font-display tracking-tight text-transparent ring-1 rounded"
+                          >
                             Verify Attestation
                           </button>
                         </div>
-                        {
-                          resultVerification === true && (
-                            <div className="text-center text-green-500">
-                              Verified
-                            </div>
-                          )
-                        }
-                        {
-                          resultVerification === false && (
-                            <div className="text-center text-red-500">  {/* TODO: need also to say that even ater validation, need to wait event indexed in archives */}
-                              {error}
-                            </div>
-                          )
-                        }
-
+                        {resultVerification === true && (
+                          <div className="text-center text-green-500">
+                            Verified
+                          </div>
+                        )}
+                        {resultVerification === false && (
+                          <div className="text-center text-red-500">
+                            {" "}
+                            {/* TODO: need also to say that even ater validation, need to wait event indexed in archives */}
+                            {error}
+                          </div>
+                        )}
                       </div>
                     </div>
                   )}
 
                   {/* Search (move from Header) if no selected attestation */}
-                  {attestationNote == null && (
-                    <Search />
-                  )}
-
+                  {attestationNote == null && <Search />}
                 </div>
-
               </div>
             </div>
           </div>

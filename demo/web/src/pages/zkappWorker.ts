@@ -167,7 +167,7 @@ export type ZkappWorkerRequest = {
 
 export type ZkappWorkerReponse = {
   id: number;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any;
 };
 

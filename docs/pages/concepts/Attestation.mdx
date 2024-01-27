@@ -11,6 +11,7 @@ We note $a_{(s,v)}$ the attestation of a statement $s$ with the given values $v$
 $a_{(s,v)} \in s(V)$, with $V$ the set of all possible vectors of values of the variables of $s$.
 
 We say that an attestation $a_{(s,v)}$ is the **truth value** of $s$ for the values $v$, and $a$ is either:
+
 - **valid** if $s(v) = \text{true}$
 - **invalid** otherwise (if $s(v) = \text{false}$)
 
@@ -18,17 +19,20 @@ In logic, an attestation is the **realization/instantiation** of a predicate (a 
 
 Example: \
 Let consider the following statement again:
+
 $$
 n = 1, V = \{\text{age}\}, \cal R = \{ ~"\text{age} > 18"~ \}
 $$
 
 We have the following attestations:
+
 $$
 s(\{\text{age: } 22\}) = \text{true} \\
 s(\{\text{age: } 14\}) = \text{false}
 $$
 
 Some observations:
+
 - With no restriction on $V$, there's an infinite number of attestations for a statement.
 
 ### Zero-knowledge attestation
@@ -42,6 +46,7 @@ We can define a function that acts as the verifier: $(P, V_{public}) \rightarrow
 We can note that $P$ is nothing else than the set of all possible attestations $s(V_{private}, V_{public})$, so we can represent an attestation as a zero-knowledge proof.
 
 We then have:
+
 $$
 \large
 \text{verify}: (s(V_{public}, V_{private}), V_{public}) \rightarrow \{true, false\}
@@ -51,13 +56,14 @@ In other word, to verify the validity of an attestation, we just need to have th
 
 Example: \
 We redefine the previous statement as a zero-knowledge statement with the `age` variable as a private variable:
+
 $$
 n = 1, V_{private} = \{\text{age}\}, V_{public} = \emptyset, \cal R = \{ ~"\text{age} > 18"~\}
 $$
 
 We can generate one valid proof $p = s(\{ \text{age: } 22 \}, \emptyset )$. \
 Note that having $p$ don't reveal $$V_{private}$$. \
-A prover can verify the validity with $\text{verify}(p, \emptyset) = true$. 
+A prover can verify the validity with $\text{verify}(p, \emptyset) = true$.
 
 Similarly, $\text{verify}(s(\{ \text{age: } 14 \}, \emptyset ), \emptyset) = false$
 
@@ -67,6 +73,7 @@ We can combine multiple statements together to create more complex statements.
 For example, the statement "Over 18 years old and living in France" is the combination of the two statements "Over 18 years old" and "Living in France".
 
 With $s_1, s_2$ two statements, $V_{s1}, V_{s2}$ the set of possible vectors of values of the variables of $s_1, s_2$ respectively, and $v_{s1}, v_{s2}$ two vectors such that $v_{s1} \in V_{s1}$ and $v_{s2} \in V_{s2}$, we define the combination of $s_1$ and $s_2$ as the statement $s_3$ such that:
+
 $$
 s_3(v_{s1} \cup v_{s2}) = s_1(v_{s1}) \land s_2(v_{s2})
 $$

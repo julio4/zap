@@ -6,7 +6,7 @@ import {
   Route,
   ZapRequestParams,
   ZapSignedResponse,
-} from "@packages/zap-utils/types";
+} from "@packages/zap-utils";
 import { verifyResponseSignature } from "@packages/zap-utils";
 import { ethers } from "ethers";
 
@@ -52,7 +52,10 @@ describe("Endpoint /evm/nft", () => {
     });
 
     it("wrong arg.nftAddress", async () => {
-      const wrong = { ...reqBody, args: { ...reqBody.args, nftAddress: "wrong" } };
+      const wrong = {
+        ...reqBody,
+        args: { ...reqBody.args, nftAddress: "wrong" },
+      };
       const res = await request(app).post(route.path).send(wrong);
       expect(res.status).toBe(400);
       expect(res.text).toContain(

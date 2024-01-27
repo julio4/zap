@@ -4,7 +4,7 @@ import {
   verifyResponseSignature,
 } from "../../src/index.js";
 import { PrivateKey } from "o1js";
-import { ZapResponse } from "types.js";
+import { ZapResponse } from "source/types.js";
 
 describe("Source client", () => {
   const res: ZapResponse = {

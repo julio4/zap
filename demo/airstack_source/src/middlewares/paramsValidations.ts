@@ -4,7 +4,7 @@ import {
   validationResult,
   FieldValidationError,
 } from "express-validator";
-import { SupportedValue, ZapRequestParams } from "@packages/zap-utils/types";
+import { SupportedValue, ZapRequestParams } from "@packages/zap-utils";
 
 export const validateParams = (
   req: Request<ZapRequestParams>,

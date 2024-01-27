@@ -29,7 +29,7 @@ const nextConfig = {
           {
             key: "Cross-Origin-Resource-Policy",
             value: "cross-origin",
-          }
+          },
         ],
       },
     ];
@@ -38,7 +38,7 @@ const nextConfig = {
   env: {
     ORACLE_ENDPOINT: "https://zap-oracle.onrender.com/api",
     ZK_APP: "B62qnhBxxQr7h2AE9f912AyvzJwK1fhEJq7NMZXbzXbhoepUZ7z7237",
-  }
+  },
 };
 
 module.exports = nextConfig;

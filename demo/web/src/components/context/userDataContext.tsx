@@ -8,8 +8,14 @@ type UserDataContextType = {
   tokenBalancesPolygon: TokenBalance[];
   NftBalancesEthereum: NFTTokenBalance[];
   NftBalancesPolygon: NFTTokenBalance[];
-  setTokenBalances: (tokenBalancesEthereum: TokenBalance[], tokenBalancesPolygon: TokenBalance[]) => void;
-  setNftBalances: (NftBalancesEthereum: NFTTokenBalance[], NftBalancesPolygon: NFTTokenBalance[]) => void;
+  setTokenBalances: (
+    tokenBalancesEthereum: TokenBalance[],
+    tokenBalancesPolygon: TokenBalance[]
+  ) => void;
+  setNftBalances: (
+    NftBalancesEthereum: NFTTokenBalance[],
+    NftBalancesPolygon: NFTTokenBalance[]
+  ) => void;
 };
 
 const defaultUserDataContext: UserDataContextType = {
@@ -21,20 +27,36 @@ const defaultUserDataContext: UserDataContextType = {
   setNftBalances: () => {},
 };
 
-const UserDataContext = createContext<UserDataContextType>(defaultUserDataContext);
+const UserDataContext = createContext<UserDataContextType>(
+  defaultUserDataContext
+);
 
 const UserDataProvider = ({ children }: { children: React.ReactNode }) => {
-  const [tokenBalancesEthereum, setTokenBalancesEthereum] = useState<TokenBalance[]>([]);
-  const [tokenBalancesPolygon, setTokenBalancesPolygon] = useState<TokenBalance[]>([]);
-  const [NftBalancesEthereum, setNftBalancesEthereum] = useState<NFTTokenBalance[]>([]);
-  const [NftBalancesPolygon, setNftBalancesPolygon] = useState<NFTTokenBalance[]>([]);
+  const [tokenBalancesEthereum, setTokenBalancesEthereum] = useState<
+    TokenBalance[]
+  >([]);
+  const [tokenBalancesPolygon, setTokenBalancesPolygon] = useState<
+    TokenBalance[]
+  >([]);
+  const [NftBalancesEthereum, setNftBalancesEthereum] = useState<
+    NFTTokenBalance[]
+  >([]);
+  const [NftBalancesPolygon, setNftBalancesPolygon] = useState<
+    NFTTokenBalance[]
+  >([]);
 
-  const setTokenBalances = (newTokenBalancesEthereum: TokenBalance[], newTokenBalancesPolygon: TokenBalance[]) => {
+  const setTokenBalances = (
+    newTokenBalancesEthereum: TokenBalance[],
+    newTokenBalancesPolygon: TokenBalance[]
+  ) => {
     setTokenBalancesEthereum(newTokenBalancesEthereum);
     setTokenBalancesPolygon(newTokenBalancesPolygon);
   };
 
-  const setNftBalances = (newNftBalancesEthereum: NFTTokenBalance[], newNftBalancesPolygon: NFTTokenBalance[]) => {
+  const setNftBalances = (
+    newNftBalancesEthereum: NFTTokenBalance[],
+    newNftBalancesPolygon: NFTTokenBalance[]
+  ) => {
     setNftBalancesEthereum(newNftBalancesEthereum);
     setNftBalancesPolygon(newNftBalancesPolygon);
   };

@@ -5,7 +5,7 @@ import {
   ZapHashedResponse,
   ZapSignedResponse,
   Route,
-} from "../types.js";
+} from "./types.js";
 
 import { encodeResAsFields } from "./encoding.js";
 

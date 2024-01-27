@@ -11,10 +11,12 @@ let transactionFee = 0.1;
 const ProofStep = () => {
   const [isCreatingTransaction, setIsCreatingTransaction] = useState(false);
   const [isSendingTransaction, setIsSendingTransaction] = useState(false);
-  const [attestationHashBase64, setAttestationHashBase64] = useState<string | null>(null);
+  const [attestationHashBase64, setAttestationHashBase64] = useState<
+    string | null
+  >(null);
   const [transactionJSON, setTransactionJSON] = useState<string | null>(null);
   const [hashTX, setHashTX] = useState<string | null>(null);
-  const [messageType, setMessageType] = useState<'normal' | 'error'>('normal');
+  const [messageType, setMessageType] = useState<"normal" | "error">("normal");
   const [buttonLabel, setButtonLabel] = useState("Generate proof");
   const [errorText, setErrorText] = useState<string | null>(null);
   const attest = useContext(AttestContext);
@@ -26,11 +28,11 @@ const ProofStep = () => {
     value: number;
     hashRoute: string;
     signature: string;
-  }
+  };
 
   const onCreateTransaction = async () => {
     if (isCreatingTransaction) {
-      return
+      return;
     }
     setIsCreatingTransaction(true);
     const { zkappWorkerClient } = attest;
@@ -43,7 +45,7 @@ const ProofStep = () => {
       throw new Error("minaWallet is not defined");
     }
 
-    setMessageType('normal');
+    setMessageType("normal");
     attest.set({ ...attest, creatingTransaction: true });
 
     if (attest.privateData === null) {
@@ -66,35 +68,38 @@ const ProofStep = () => {
       throw new Error("zkappWorkerClient is not defined");
     }
 
-    await attest.zkappWorkerClient.createGenerateAttestationTransaction(ArgsToGenerateAttestation);
+    await attest.zkappWorkerClient.createGenerateAttestationTransaction(
+      ArgsToGenerateAttestation
+    );
 
     await attest.zkappWorkerClient.proveGenerateAttestationTransaction();
 
     const txJSON = await attest.zkappWorkerClient.getTransactionJSON();
-    setTransactionJSON((txJSON as string));
+    setTransactionJSON(txJSON as string);
 
     const argsToCalculateHash: ArgsHashAttestationCalculator = {
       conditionType: attest.statement.condition.type,
       hashRoute: attest.privateData.data.hashRoute,
       targetValue: attest.statement.condition.targetValue,
       sender: attest.minaWallet.address,
-
     };
     const hashAttestation = calculateAttestationHash(argsToCalculateHash);
 
-    setAttestationHashBase64(createAttestationNoteEncoded(
-      attest.statement.condition.type,
-      attest.statement.condition.targetValue,
-      attest.privateData.data.value,
-      attest.statement.request,
-      attest.privateData.data.hashRoute,
-      hashAttestation,
-      attest.minaWallet.address
-    ));
+    setAttestationHashBase64(
+      createAttestationNoteEncoded(
+        attest.statement.condition.type,
+        attest.statement.condition.targetValue,
+        attest.privateData.data.value,
+        attest.statement.request,
+        attest.privateData.data.hashRoute,
+        hashAttestation,
+        attest.minaWallet.address
+      )
+    );
 
-    setMessageType('normal');
+    setMessageType("normal");
     setIsCreatingTransaction(false);
-  }
+  };
 
   const onSendTransaction = async () => {
     if (isSendingTransaction) {
@@ -110,54 +115,53 @@ const ProofStep = () => {
         transaction: transactionJSON,
         feePayer: {
           fee: transactionFee,
-          memo: '',
+          memo: "",
         },
       });
 
       setHashTX(hash);
-      setMessageType('normal');
+      setMessageType("normal");
       attest.setFinalResult(attestationHashBase64);
       addAttestationNoteToLocalStorage(attestationHashBase64);
       setIsSendingTransaction(false);
-    }
-
-    catch (error) {
-      console.log(error)
-      setErrorText('Error sending transaction: ' + (error as Error).message + '\n Please try again.');
-      setMessageType('error');
+    } catch (error) {
+      console.log(error);
+      setErrorText(
+        "Error sending transaction: " +
+          (error as Error).message +
+          "\n Please try again."
+      );
+      setMessageType("error");
       setIsSendingTransaction(false);
       return;
     }
   };
 
   useEffect(() => {
-
     if (isCreatingTransaction) {
       setButtonLabel("Creating the proof...");
-    }
-    else if (isSendingTransaction) {
+    } else if (isSendingTransaction) {
       setButtonLabel("Sending the transaction...");
-    }
-    else if (hashTX !== null) {
+    } else if (hashTX !== null) {
       setButtonLabel("Transaction sent!");
-    }
-    else if (errorText !== null) {
+    } else if (errorText !== null) {
       setButtonLabel(errorText);
-    }
-    else if (transactionJSON !== null) {
+    } else if (transactionJSON !== null) {
       setButtonLabel("Send transaction");
-    }
-    else {
+    } else {
       setButtonLabel("Generate proof");
     }
   }, [isCreatingTransaction, isSendingTransaction, hashTX, errorText]);
 
   useEffect(() => {
-    if (!isCreatingTransaction && transactionJSON !== null && attestationHashBase64 !== null) {
+    if (
+      !isCreatingTransaction &&
+      transactionJSON !== null &&
+      attestationHashBase64 !== null
+    ) {
       onSendTransaction();
     }
   }, [isCreatingTransaction, transactionJSON, attestationHashBase64]);
-  
 
   return (
     <div className="flex flex-col pt-4 z-50">
@@ -169,10 +173,15 @@ const ProofStep = () => {
       {attest.zkappHasBeenSetup && (
         <button
           disabled={isCreatingTransaction || isSendingTransaction}
-          onClick={transactionJSON === null ? onCreateTransaction : onSendTransaction}
-          className={`transition-all ease-in-out font-bold py-2 px-4 rounded ${messageType === 'error' ? 'bg-red-500 hover:bg-red-700 disabled:bg-red-900' :
-              'bg-green-500 hover:bg-green-700 disabled:bg-green-900'
-            } text-white`}        >
+          onClick={
+            transactionJSON === null ? onCreateTransaction : onSendTransaction
+          }
+          className={`transition-all ease-in-out font-bold py-2 px-4 rounded ${
+            messageType === "error"
+              ? "bg-red-500 hover:bg-red-700 disabled:bg-red-900"
+              : "bg-green-500 hover:bg-green-700 disabled:bg-green-900"
+          } text-white`}
+        >
           {buttonLabel}
         </button>
       )}

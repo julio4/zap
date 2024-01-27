@@ -7,7 +7,7 @@ import {
   Route,
   ZapRequestParams,
   ZapSignedResponse,
-} from "@packages/zap-utils/types";
+} from "@packages/zap-utils";
 
 describe("Key signature (With test endpoint /example/nb)", () => {
   let privateKey: PrivateKey;

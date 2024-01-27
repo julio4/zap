@@ -6,7 +6,7 @@ import {
   Route,
   ZapRequestParams,
   ZapSignedResponse,
-} from "@packages/zap-utils/types";
+} from "@packages/zap-utils";
 import { verifyResponseSignature } from "@packages/zap-utils";
 import { ethers } from "ethers";
 

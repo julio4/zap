@@ -2,14 +2,14 @@ export type ZapRequestParams = {
   mina_address: string;
   args?: {
     [key: string]: any;
-  }
-}
+  };
+};
 
 export type Route = {
   path: string;
   args?: {
     [key: string]: any;
-  }
+  };
 };
 
 /*
@@ -30,7 +30,7 @@ export type ZapResponse = SourceResponseBody<SupportedValue>;
 type SourceHashedResponse<T> = {
   value: T;
   hashRoute: string; // Hash(Route)
-}
+};
 // Supported response types
 export type ZapHashedResponse = SourceHashedResponse<number>;
 
@@ -41,8 +41,8 @@ export type ZapHashedResponse = SourceHashedResponse<number>;
  */
 export type SignedResponse<T> = {
   data: T;
-  signature: string;  // Signature.toBase58()
-  publicKey: string;  // PublicKey.toBase58()
+  signature: string; // Signature.toBase58()
+  publicKey: string; // PublicKey.toBase58()
 };
 
 // This is the response that the client will receive

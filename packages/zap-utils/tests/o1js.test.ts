@@ -2,10 +2,10 @@
 // This is to ensure that testing o1js works
 // TODO remove later when testing is done
 
-import { Field, MerkleMap } from 'o1js';
+import { Field, MerkleMap } from "o1js";
 
-describe('Merkle Map', () => {
-  it('set and get a value from a key', () => {
+describe("Merkle Map", () => {
+  it("set and get a value from a key", () => {
     const map = new MerkleMap();
 
     const key = Field.random();
@@ -16,7 +16,7 @@ describe('Merkle Map', () => {
     expect(map.get(key).equals(value).toBoolean());
   });
 
-  it('check merkle map witness computes the correct root and key', () => {
+  it("check merkle map witness computes the correct root and key", () => {
     const map = new MerkleMap();
 
     const key = Field.random();

@@ -1,19 +1,19 @@
-import React from 'react'
-import { DocsThemeConfig } from 'nextra-theme-docs'
+import React from "react";
+import { DocsThemeConfig } from "nextra-theme-docs";
 
 const config: DocsThemeConfig = {
   logo: <span>⚡ ZAP</span>,
   project: {
-    link: 'https://github.com/julio4/zap',
+    link: "https://github.com/julio4/zap",
   },
-  docsRepositoryBase: 'https://github.com/julio4/zap',
+  docsRepositoryBase: "https://github.com/julio4/zap",
   footer: {
-    component: () => <></>
+    component: () => <></>,
   },
   useNextSeoProps() {
     return {
-      titleTemplate: '%s – ZAP'
-    }
+      titleTemplate: "%s – ZAP",
+    };
   },
   editLink: {
     component: ({ ...props }) => (
@@ -21,11 +21,11 @@ const config: DocsThemeConfig = {
         {...props}
         href={config.docsRepositoryBase + "/edit/main/docs/" + props.filePath}
       >
-        { props.children }
+        {props.children}
       </a>
-    )
+    ),
   },
-  faviconGlyph: '⚡'
-}
+  faviconGlyph: "⚡",
+};
 
-export default config
+export default config;

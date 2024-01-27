@@ -1,6 +1,6 @@
 import request from "supertest";
 import app from "../src/app.js";
-import { ZapRequestParams } from "@packages/zap-utils/types";
+import { ZapRequestParams } from "@packages/zap-utils";
 
 // Test that a valid mina address is required
 // Each request will be signed for a target address

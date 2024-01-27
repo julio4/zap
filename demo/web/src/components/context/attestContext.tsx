@@ -1,6 +1,11 @@
 import { createContext, useState } from "react";
-import { MinaWallet, EthereumWallet, Statement, PrivateData } from "../../types";
-import ZkappWorkerClient from "../../pages/zkappWorkerClient"
+import {
+  MinaWallet,
+  EthereumWallet,
+  Statement,
+  PrivateData,
+} from "../../types";
+import ZkappWorkerClient from "../../pages/zkappWorkerClient";
 import { Field } from "o1js";
 
 export type AttestContextType = {
@@ -27,31 +32,31 @@ export type AttestContextType = {
 
 const defaultAttestContext: AttestContextType = {
   zkappWorkerClient: null,
-  setZkappWorkerClient: () => { },
+  setZkappWorkerClient: () => {},
   zkappHasBeenSetup: false,
   minaWallet: {
     isConnected: false,
     address: "",
   },
-  setMinaWallet: () => { },
+  setMinaWallet: () => {},
   ethereumWallet: {
     isConnected: false,
     address: "",
     signature: "",
   },
-  setEthereumWallet: () => { },
+  setEthereumWallet: () => {},
   statement: null,
-  setStatement: () => { },
+  setStatement: () => {},
   privateData: null,
-  setPrivateData: () => { },
+  setPrivateData: () => {},
   privateDataInput: [],
-  setPrivateDataInput: () => { },
+  setPrivateDataInput: () => {},
   creatingTransaction: false,
   displayText: "",
-  setDisplayText: () => { },
-  set: () => { },
+  setDisplayText: () => {},
+  set: () => {},
   finalResult: "",
-  setFinalResult: () => { },
+  setFinalResult: () => {},
 };
 
 const AttestContext = createContext<AttestContextType>(defaultAttestContext);
@@ -110,7 +115,7 @@ const AttestProvider = ({ children }: { children: React.ReactNode }) => {
         ...prevAttest,
         displayText,
       }));
-    }
+    },
   });
 
   return (

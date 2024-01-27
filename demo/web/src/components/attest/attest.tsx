@@ -48,7 +48,7 @@ const Attest = () => {
         const zkappPublicKey = PublicKey.fromBase58(zkappAddress);
         await zkappWorkerClient.initZkappInstance(zkappPublicKey);
 
-        console.log('Getting zkApp state...');
+        console.log("Getting zkApp state...");
         await zkappWorkerClient.fetchAccount({ publicKey: zkappPublicKey });
 
         console.log("Setting up finished");
@@ -93,7 +93,8 @@ const Attest = () => {
             Choose your statement
           </h2>
           <p className="font-light mt-3 text-sm text-center tracking-tight text-slate-400 max-w-xl mx-auto">
-            The statement define the condition that will be attested on a specific data source.
+            The statement define the condition that will be attested on a
+            specific data source.
           </p>
           <SelectStep />
         </div>
@@ -104,7 +105,8 @@ const Attest = () => {
             Generate and submit proof
           </h2>
           <p className="font-light mt-3 text-sm text-center tracking-tight text-slate-400 max-w-xl mx-auto">
-            Generate a Zero-Knowledge proof of the statement and submit it to the ZAP protocol on Mina.
+            Generate a Zero-Knowledge proof of the statement and submit it to
+            the ZAP protocol on Mina.
           </p>
           <ProofStep />
         </div>
@@ -115,8 +117,9 @@ const Attest = () => {
             Attestation note!
           </h2>
           <p className="font-light mt-3 text-sm text-center tracking-tight text-slate-400 max-w-xl mx-auto">
-            Your attestation note is ready! You can now share it with your recipient.
-            Be aware that it is impossible to recover it if you lose it, so make sure to keep it safe. :D
+            Your attestation note is ready! You can now share it with your
+            recipient. Be aware that it is impossible to recover it if you lose
+            it, so make sure to keep it safe. :D
           </p>
           <textarea
             onClick={async (e) => {
@@ -149,8 +152,6 @@ const Attest = () => {
       )}
     </div>
   );
-}
+};
 
-export {
-  Attest
-}
+export { Attest };

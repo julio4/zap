@@ -10,11 +10,8 @@ const EthereumWallet = () => {
 
   const handleConnect = async () => {
     try {
-      await window.ethereum.request({ method: 'eth_requestAccounts' });
-      const provider = new ethers.BrowserProvider(
-        window.ethereum,
-        "any"
-      );
+      await window.ethereum.request({ method: "eth_requestAccounts" });
+      const provider = new ethers.BrowserProvider(window.ethereum, "any");
       const network = await provider.getNetwork();
 
       if (network.chainId !== 1n && network.chainId !== 137n) {
@@ -41,7 +38,7 @@ const EthereumWallet = () => {
         console.log(err.message);
         setError("Error connecting to Ethereum wallet. See logs for details.");
       } else {
-        console.log('An unexpected error occurred');
+        console.log("An unexpected error occurred");
         setError("An unknown error occurred.");
       }
     }
@@ -55,24 +52,24 @@ const EthereumWallet = () => {
       });
     }; */
 
-  if (error) return (
-    <span
-      className="h-5 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full bg-red-900 text-red-300">
-      {error}
-    </span>
-  )
+  if (error)
+    return (
+      <span className="h-5 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full bg-red-900 text-red-300">
+        {error}
+      </span>
+    );
 
   return (
     <>
       {isConnected ? (
-        <span
-          className="h-5 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full bg-green-900 text-green-300">
+        <span className="h-5 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full bg-green-900 text-green-300">
           Ethereum: {shortenAddress(address)}
         </span>
       ) : (
         <span
           onClick={handleConnect}
-          className="cursor-pointer h-5 hover:scale-[1.05] duration-100 ease-in transition-all text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full bg-red-900 text-red-300">
+          className="cursor-pointer h-5 hover:scale-[1.05] duration-100 ease-in transition-all text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full bg-red-900 text-red-300"
+        >
           Ethereum: Connect
         </span>
       )}

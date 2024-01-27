@@ -1,8 +1,7 @@
 "use client";
 import React, { useState, useContext, useEffect } from "react";
-import useTokenFetch from '../..//hooks/useTokenFetch';
+import useTokenFetch from "../..//hooks/useTokenFetch";
 import axios from "axios";
-
 
 import {
   StatementChoices,
@@ -32,7 +31,7 @@ const SelectStep = () => {
   const [args, setArgs] = useState<
     {
       name: string;
-      schema: HTMLInputSchema | undefined;  // todo: should not be undefined
+      schema: HTMLInputSchema | undefined; // todo: should not be undefined
       value: string;
       valueDisplayed?: string;
     }[]
@@ -58,58 +57,64 @@ const SelectStep = () => {
 
   const handleTokenSelect = (tokenAddress: string, tokenName: string) => {
     setIsTokenModalOpen(false);
-    console.log("the chosen token is", tokenAddress)
+    console.log("the chosen token is", tokenAddress);
     if (!choice) {
-      console.log("choice is undefined")
+      console.log("choice is undefined");
       return;
     }
-    setArgs([           // TODO better ts
-      ...args.filter((a) => a.name !== 'token'),
+    setArgs([
+      // TODO better ts
+      ...args.filter((a) => a.name !== "token"),
       {
-        name: 'token',
-        schema: choice.args.find((a) => a.name === 'token'),
+        name: "token",
+        schema: choice.args.find((a) => a.name === "token"),
         value: tokenAddress,
-        valueDisplayed: tokenName
+        valueDisplayed: tokenName,
       },
     ]);
   };
 
-  const handleNftSelect = (nftAddress: string, tokenId: string, nftName: string) => {
+  const handleNftSelect = (
+    nftAddress: string,
+    tokenId: string,
+    nftName: string
+  ) => {
     setIsNftModalOpen(false);
-    console.log("the chosen nft is", nftAddress)
+    console.log("the chosen nft is", nftAddress);
     if (!choice) {
-      console.log("choice is undefined")
+      console.log("choice is undefined");
       return;
     }
-    setArgs([           // TODO better ts
-      ...args.filter((a) => a.name !== 'nftAddress'),
+    setArgs([
+      // TODO better ts
+      ...args.filter((a) => a.name !== "nftAddress"),
       {
-        name: 'nftAddress',
-        schema: choice.args.find((a) => a.name === 'nftAddress'),
+        name: "nftAddress",
+        schema: choice.args.find((a) => a.name === "nftAddress"),
         value: nftAddress,
-        valueDisplayed: `${nftName},${tokenId}`
+        valueDisplayed: `${nftName},${tokenId}`,
       },
     ]);
-  }
+  };
 
   const handleSelect = async () => {
     choice?.args.forEach((arg) => {
       const t_arg = args.find((a) => a.name === arg.name);
       if (!t_arg) {
         setError(`Please fill in '${arg.label}'`);
-        console.log("Error: Please fill in", arg.label)
+        console.log("Error: Please fill in", arg.label);
         return;
       }
       const value = t_arg.value;
       if (!value || value === "") {
         setError(`Please fill in '${arg.label}'`);
-        console.log("Error: Please fill in", arg.label)
+        console.log("Error: Please fill in", arg.label);
         return;
       }
       if (arg.type === "number") {
         if (isNaN(Number(value))) {
           setError(`'${arg.label}' must be a number`);
-          console.log("Error: Must be a number", arg.label)
+          console.log("Error: Must be a number", arg.label);
           return;
         }
       }
@@ -151,12 +156,12 @@ const SelectStep = () => {
     try {
       const response = await axios.post(
         `${ORACLE_ENDPOINT}${statement.request.route}`,
-        request_data,
+        request_data
       );
 
       const body = response.data as SignResponse;
 
-      const data = body.data.map(f => Field.from(f));
+      const data = body.data.map((f) => Field.from(f));
       attest.setPrivateDataInput(data);
 
       // signature verification
@@ -171,13 +176,15 @@ const SelectStep = () => {
       // We can verify here but really the most important is to verify within the proof
       const verified = signature.verify(publicKey, data);
       if (!verified.toBoolean()) {
-        throw new Error('Signature verification failed');
+        throw new Error("Signature verification failed");
       }
 
-      const localRouteFields = Encoding.stringToFields(JSON.stringify(statement.request))
+      const localRouteFields = Encoding.stringToFields(
+        JSON.stringify(statement.request)
+      );
       const localHashRoute = Poseidon.hash(localRouteFields).toString();
       if (decoded_hashRoute !== localHashRoute) {
-        throw new Error('Hash route verification failed');
+        throw new Error("Hash route verification failed");
       }
 
       // States changes
@@ -186,15 +193,15 @@ const SelectStep = () => {
         ...body,
         data: {
           value: Number(decoded_value),
-          hashRoute: decoded_hashRoute
-        }
+          hashRoute: decoded_hashRoute,
+        },
       });
     } catch (err) {
       if (err instanceof Error) {
         console.error("oracle error", err);
         setError(err.message);
       } else {
-        console.log('An unexpected error occurred');
+        console.log("An unexpected error occurred");
         setError("An unknown error occurred.");
       }
     }
@@ -205,8 +212,18 @@ const SelectStep = () => {
     });
   };
 
-  const { getAllTokens } = useTokenFetch({ attest, setTokenFetchLoading, setTokenBalances, setError });
-  const { getAllNFts } = useNftFetch({ attest, setTokenFetchLoading, setNftBalances, setError });
+  const { getAllTokens } = useTokenFetch({
+    attest,
+    setTokenFetchLoading,
+    setTokenBalances,
+    setError,
+  });
+  const { getAllNFts } = useNftFetch({
+    attest,
+    setTokenFetchLoading,
+    setNftBalances,
+    setError,
+  });
 
   useEffect(() => {
     getAllTokens();
@@ -218,7 +235,10 @@ const SelectStep = () => {
       <div className="py-4 border-2 border-red-700/75 p-4 rounded-xl bg-red-600/50">
         <p className="text-slate-600">Error: {error}</p>
         {/* todo style of this button */}
-        <button onClick={reset} className="text-slate-600 underline mt-2 text-sm hover:text-slate-400 bg-transparent border-none">
+        <button
+          onClick={reset}
+          className="text-slate-600 underline mt-2 text-sm hover:text-slate-400 bg-transparent border-none"
+        >
           Close
         </button>
       </div>
@@ -246,7 +266,8 @@ const SelectStep = () => {
               }}
             >
               <h3 className="text-xl bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text font-display tracking-tight text-transparent">
-                {choice.name}</h3>
+                {choice.name}
+              </h3>
               <p className="text-slate-400 text-sm">{choice.description}</p>
             </div>
           ))}
@@ -255,7 +276,6 @@ const SelectStep = () => {
       {choice != null && (
         <div className="absolute w-full">
           <div className="cursor-pointer ring-slate-200 bg-slate-800/75 px-5 py-3 rounded-xl flex flex-col">
-
             <h3 className="text-xl bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text font-display tracking-tight text-transparent">
               {choice.name}
             </h3>
@@ -264,90 +284,106 @@ const SelectStep = () => {
             <hr className="w-48 h-1 mx-auto my-2 border-0 rounded md:my-4 dark:bg-slate-700" />
 
             <div className="flex flex-col gap-2">
-              {
-                choice.args.map((arg) => {
-                  if (arg.type === 'text' && arg.name === 'token') {
-                    return (
-                      <div key={arg.name} className="flex flex-row gap-2 justify-between px-2 py-1">
-                        <label className="text-slate-400">{arg.label}</label>
-                        <button
-                          className="border-2 border-slate-500 rounded-lg bg-slate-600/50 text-slate-100 px-4 py-1"
-                          onClick={() => setIsTokenModalOpen(true)}
-                        >
-                          {args.find((a) => a.name === 'token')?.valueDisplayed || "Select Token"}
-                        </button>
-                      </div>
-                    );
-                  }
-                  else if (arg.type === 'text' && arg.name === 'nftAddress') {
-                    return (
-                      <div key={arg.name} className="flex flex-row gap-2 justify-between px-2 py-1">
-                        <label className="text-slate-400">{arg.label}</label>
-                        <button
-                          className="border-2 border-slate-500 rounded-lg bg-slate-600/50 text-slate-100 px-4 py-1"
-                          onClick={() => setIsNftModalOpen(true)}
-                        >
-                          {args.find((a) => a.name === 'nftAddress')?.valueDisplayed || "Select Token"}
-                        </button>
-                      </div>
-                    );
-                  }
-                  else if (arg.type === 'text') {
-                    return (
-                      <div key={arg.name} className="flex flex-row gap-2 justify-between">
-                        <label className="text-slate-400">{arg.label}</label>
-                        <input
-                          type={arg.type}
-                          value={args.find((a) => a.name === arg.name)?.value || ""}
-                          className="border-2 border-slate-500 rounded-md bg-slate-600/50 text-slate-100"
-                          onChange={(e) => {
-                            setArgs([
-                              ...args.filter((a) => a.name !== arg.name),
-                              {
-                                name: arg.name,
-                                schema: arg,
-                                value: e.target.value,
-                              },
-                            ]);
-                          }}
-                        />
-                      </div>
-                    );
-                  } else if (arg.type === 'select') {
-                    return (
-                      <div key={arg.name} className="flex flex-row gap-2 justify-between px-2 py-1">
-                        <label className="text-slate-400">{arg.label}</label>
-                        <select
-                          value={args.find((a) => a.name === arg.name)?.value || ''}
-                          className="border-2 border-slate-500 rounded-md bg-slate-600/50 text-slate-100"
-                          onChange={(e) => {
-                            const selectedValue = e.target.value;
-                            const argSchema = choice.args.find((a) => a.name === arg.name);
-                            if (!argSchema) {
-                              console.error("Argument schema not found");
-                              return;
-                            }
-                            setArgs([
-                              ...args.filter((a) => a.name !== arg.name),
-                              {
-                                name: arg.name,
-                                schema: argSchema,
-                                value: selectedValue,
-                              },
-                            ]);
-                          }}
-                        >
-                          {arg.options.map((option) => (
-                            <option key={option} value={option}>
-                              {option}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    );
-                  }
-                })
-              }
+              {choice.args.map((arg) => {
+                if (arg.type === "text" && arg.name === "token") {
+                  return (
+                    <div
+                      key={arg.name}
+                      className="flex flex-row gap-2 justify-between px-2 py-1"
+                    >
+                      <label className="text-slate-400">{arg.label}</label>
+                      <button
+                        className="border-2 border-slate-500 rounded-lg bg-slate-600/50 text-slate-100 px-4 py-1"
+                        onClick={() => setIsTokenModalOpen(true)}
+                      >
+                        {args.find((a) => a.name === "token")?.valueDisplayed ||
+                          "Select Token"}
+                      </button>
+                    </div>
+                  );
+                } else if (arg.type === "text" && arg.name === "nftAddress") {
+                  return (
+                    <div
+                      key={arg.name}
+                      className="flex flex-row gap-2 justify-between px-2 py-1"
+                    >
+                      <label className="text-slate-400">{arg.label}</label>
+                      <button
+                        className="border-2 border-slate-500 rounded-lg bg-slate-600/50 text-slate-100 px-4 py-1"
+                        onClick={() => setIsNftModalOpen(true)}
+                      >
+                        {args.find((a) => a.name === "nftAddress")
+                          ?.valueDisplayed || "Select Token"}
+                      </button>
+                    </div>
+                  );
+                } else if (arg.type === "text") {
+                  return (
+                    <div
+                      key={arg.name}
+                      className="flex flex-row gap-2 justify-between"
+                    >
+                      <label className="text-slate-400">{arg.label}</label>
+                      <input
+                        type={arg.type}
+                        value={
+                          args.find((a) => a.name === arg.name)?.value || ""
+                        }
+                        className="border-2 border-slate-500 rounded-md bg-slate-600/50 text-slate-100"
+                        onChange={(e) => {
+                          setArgs([
+                            ...args.filter((a) => a.name !== arg.name),
+                            {
+                              name: arg.name,
+                              schema: arg,
+                              value: e.target.value,
+                            },
+                          ]);
+                        }}
+                      />
+                    </div>
+                  );
+                } else if (arg.type === "select") {
+                  return (
+                    <div
+                      key={arg.name}
+                      className="flex flex-row gap-2 justify-between px-2 py-1"
+                    >
+                      <label className="text-slate-400">{arg.label}</label>
+                      <select
+                        value={
+                          args.find((a) => a.name === arg.name)?.value || ""
+                        }
+                        className="border-2 border-slate-500 rounded-md bg-slate-600/50 text-slate-100"
+                        onChange={(e) => {
+                          const selectedValue = e.target.value;
+                          const argSchema = choice.args.find(
+                            (a) => a.name === arg.name
+                          );
+                          if (!argSchema) {
+                            console.error("Argument schema not found");
+                            return;
+                          }
+                          setArgs([
+                            ...args.filter((a) => a.name !== arg.name),
+                            {
+                              name: arg.name,
+                              schema: argSchema,
+                              value: selectedValue,
+                            },
+                          ]);
+                        }}
+                      >
+                        {arg.options.map((option) => (
+                          <option key={option} value={option}>
+                            {option}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  );
+                }
+              })}
             </div>
 
             <hr className="w-48 h-1 mx-auto my-2 border-0 rounded md:my-4 dark:bg-slate-700" />
@@ -381,24 +417,26 @@ const SelectStep = () => {
               <button
                 onClick={handleSelect}
                 type="button"
-                className="transition-all hover:scale-[1.02] duration-200 ease-in-out text-white bg-gradient-to-r from-indigo-500 via-sky-400 to-indigo-300 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-sky-300 dark:focus:ring-sky-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 opacity-80">
+                className="transition-all hover:scale-[1.02] duration-200 ease-in-out text-white bg-gradient-to-r from-indigo-500 via-sky-400 to-indigo-300 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-sky-300 dark:focus:ring-sky-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 opacity-80"
+              >
                 Select
               </button>
             </div>
 
-            <div className="flex flex-col gap-2">
-            </div>
+            <div className="flex flex-col gap-2"></div>
           </div>
         </div>
-      )
-      }
+      )}
 
       {isTokenModalOpen && (
         <TokenModal
           /* if blockchain choice is ethereum, then use tokenBalancesEthereum, else use tokenBalancesPolygon. If undefined, use ethereum */
           tokens={
-            args.find((a) => a.name === 'blockchain')?.value === 'ethereum' || args.find((a) => a.name === 'blockchain')?.value === undefined ?
-              userData.tokenBalancesEthereum : userData.tokenBalancesPolygon}
+            args.find((a) => a.name === "blockchain")?.value === "ethereum" ||
+            args.find((a) => a.name === "blockchain")?.value === undefined
+              ? userData.tokenBalancesEthereum
+              : userData.tokenBalancesPolygon
+          }
           onSelect={(tokenAddress: string, tokenName: string) => {
             handleTokenSelect(tokenAddress, tokenName);
             setIsTokenModalOpen(false);
@@ -408,24 +446,24 @@ const SelectStep = () => {
         />
       )}
 
-      {
-        isNftModalOpen && (
-          <NFTModal
-            nfts={
-              args.find((a) => a.name === 'blockchain')?.value === 'ethereum' || args.find((a) => a.name === 'blockchain')?.value === undefined ?
-                userData.NftBalancesEthereum : userData.NftBalancesPolygon}
-            onSelect={(nftAddress: string, tokenId: string, nftName: string) => {
-              handleNftSelect(nftAddress, tokenId, nftName);
-              setIsNftModalOpen(false);
-            }}
-            onClose={() => setIsNftModalOpen(false)}
-            isLoading={tokenFetchLoading}
-          />
-        )
-      }
-
-    </div >
+      {isNftModalOpen && (
+        <NFTModal
+          nfts={
+            args.find((a) => a.name === "blockchain")?.value === "ethereum" ||
+            args.find((a) => a.name === "blockchain")?.value === undefined
+              ? userData.NftBalancesEthereum
+              : userData.NftBalancesPolygon
+          }
+          onSelect={(nftAddress: string, tokenId: string, nftName: string) => {
+            handleNftSelect(nftAddress, tokenId, nftName);
+            setIsNftModalOpen(false);
+          }}
+          onClose={() => setIsNftModalOpen(false)}
+          isLoading={tokenFetchLoading}
+        />
+      )}
+    </div>
   );
-}
+};
 
 export { SelectStep };

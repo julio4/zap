@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import RandomService from "../services/randomService.js";
-import { SupportedValue, ZapRequestParams } from "@packages/zap-utils/types";
+import { SupportedValue, ZapRequestParams } from "@packages/zap-utils";
 
 export const getNumber = async (
   req: Request<ZapRequestParams>,

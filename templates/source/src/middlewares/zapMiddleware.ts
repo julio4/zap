@@ -7,7 +7,7 @@ import {
   SupportedValue,
   ZapResponse,
   ZapSignedResponse,
-} from "@packages/zap-utils/types";
+} from "@packages/zap-utils";
 import { ZapRequestExpress } from "../types.js";
 
 // This zap middleware will transform the response from ZapResponseExpress to Response<ZapSignedResponse>

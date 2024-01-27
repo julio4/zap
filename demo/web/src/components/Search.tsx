@@ -1,6 +1,6 @@
-import React, { useState, useRef } from "react"
+import React, { useState, useRef } from "react";
 import { Magnify } from "./logo";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 
 const Search = () => {
   const router = useRouter();
@@ -12,10 +12,10 @@ const Search = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!search || search === "") return;
-  
+
     // TODO: validate search
-    router.push('/verify?note=' + search);
-  }
+    router.push("/verify?note=" + search);
+  };
 
   const handleDivClick = () => {
     if (formRef.current) {
@@ -28,7 +28,7 @@ const Search = () => {
     if (inputRef.current) {
       inputRef.current.focus();
     }
-  }
+  };
 
   return (
     <div
@@ -39,14 +39,16 @@ const Search = () => {
       }}
     >
       <form
-        ref={formRef} onSubmit={handleSubmit}
+        ref={formRef}
+        onSubmit={handleSubmit}
         onKeyUp={(e) => {
           if (e.key === "Escape") {
             setIsOpen(false);
             setSearch("");
           }
         }}
-        className="group flex h-6 w-6 items-center justify-center sm:justify-start md:h-auto md:w-80 md:flex-none md:rounded-lg md:py-2.5 md:pl-4 md:pr-3.5 md:text-sm md:ring-1 md:ring-slate-200 md:hover:ring-slate-300 dark:md:bg-slate-800/75 dark:md:ring-inset dark:md:ring-white/5 dark:md:hover:bg-slate-700/40 dark:md:hover:ring-slate-500 lg:w-96 z-50">
+        className="group flex h-6 w-6 items-center justify-center sm:justify-start md:h-auto md:w-80 md:flex-none md:rounded-lg md:py-2.5 md:pl-4 md:pr-3.5 md:text-sm md:ring-1 md:ring-slate-200 md:hover:ring-slate-300 dark:md:bg-slate-800/75 dark:md:ring-inset dark:md:ring-white/5 dark:md:hover:bg-slate-700/40 dark:md:hover:ring-slate-500 lg:w-96 z-50"
+      >
         {/* Search Icon */}
         <div onClick={handleDivClick}>
           <Magnify />
@@ -57,20 +59,21 @@ const Search = () => {
             ref={inputRef}
             type="text"
             maxLength={1000}
-            style={{opacity: isOpen ? 1 : 0, width: isOpen ? "100%" : "0"}}
+            style={{ opacity: isOpen ? 1 : 0, width: isOpen ? "100%" : "0" }}
             className="font-thin cursor-pointer flex-auto ml-2.5 text-slate-100 placeholder-slate-400 bg-transparent focus:outline-none focus:ring-0"
             placeholder="Verify attestation..."
             value={isOpen ? search : ""}
             onChange={(e) => setSearch(e.target.value)}
             onBlur={() => {
-              setSearch("")
-              setIsOpen(false)
+              setSearch("");
+              setIsOpen(false);
             }}
           />
           <span
             hidden={isOpen}
             onClick={() => setIsOpen(true)}
-            className="font-thin sr-only md:not-sr-only md:text-slate-500 md:dark:text-slate-400">
+            className="font-thin sr-only md:not-sr-only md:text-slate-500 md:dark:text-slate-400"
+          >
             Verify attestation...
           </span>
         </div>
@@ -82,9 +85,7 @@ const Search = () => {
         </kbd> */}
       </form>
     </div>
-  )
-}
+  );
+};
 
-export {
-  Search
-}
+export { Search };

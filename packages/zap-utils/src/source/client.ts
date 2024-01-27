@@ -1,6 +1,6 @@
 import { Signature, PublicKey } from "o1js";
 
-import { ZapSignedResponse } from "../types.js";
+import { ZapSignedResponse } from "./types.js";
 
 import { encodeResAsFields } from "./encoding.js";
 
