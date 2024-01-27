@@ -1,13 +1,19 @@
 // Save attestation to local storage
 export function addAttestationNoteToLocalStorage(newNote: string): boolean {
   try {
+    const currentDate = new Date();
+    const formattedDate = currentDate.toLocaleString();
+
+    const noteWithDate = `${formattedDate}: ${newNote}`;
+
     const existingNotesString = localStorage.getItem("attestationNotes");
     const existingNotes: string[] = existingNotesString
       ? JSON.parse(existingNotesString)
       : [];
 
-    existingNotes.push(newNote);
+    existingNotes.push(noteWithDate);
     localStorage.setItem("attestationNotes", JSON.stringify(existingNotes));
+
     return true;
   } catch (error) {
     console.error("Error updating localStorage", error);

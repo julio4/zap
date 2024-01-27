@@ -213,6 +213,11 @@ export type AttestationNote = {
   sender: string;
 };
 
+export type AttestationNoteDated = {
+  attestationNote: AttestationNote;
+  date: string;
+};
+
 export type ArgsHashAttestationCalculator = {
   conditionType: string | number;
   hashRoute: string;
