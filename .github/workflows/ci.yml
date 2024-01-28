@@ -18,9 +18,11 @@ jobs:
       with:
         node-version: '14'
 
-
     - name: Install dependencies
       run: npm install -g pnpm && pnpm install
+
+    - name: Lint
+      run: pnpm run lint
 
     - name: Build and test  # todo: should do script to display coverage
       run: cd zap && npm run build && npm run test

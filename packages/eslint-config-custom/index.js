@@ -13,6 +13,10 @@ module.exports = {
     "no-constant-condition": "off",
     "prefer-const": "off",
     "@next/next/no-html-link-for-pages": "off",
+    "@typescript-eslint/no-unused-vars": "warn",
+    "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/no-empty-interface": "warn",
+    "turbo/no-undeclared-env-vars": "warn",
   },
   parser: "@typescript-eslint/parser",
   parserOptions: {
