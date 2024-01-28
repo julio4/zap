@@ -1,6 +1,6 @@
 <a name="readme-top"></a>
 
-[![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)](https://github.com/julio4/zap) [![Live Demo](https://img.shields.io/website?down_color=lightgrey&down_message=offline&style=for-the-badge&up_message=online&url=https%3A%2F%2Fmina-zap.vercel.app)](https://mina-zap.vercel.app/)
+[![Live Demo](https://img.shields.io/website?down_color=lightgrey&down_message=offline&up_message=online&style=for-the-badge&label=Live%20Demo&url=https%3A%2F%2Fmina-zap.vercel.app)](https://mina-zap.vercel.app/) ![Lint Warnings Badge](https://img.shields.io/badge/lint--warnings-15-red?style=for-the-badge)
 
 # Welcome to ZAP 🚀
 
