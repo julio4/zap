@@ -59,42 +59,42 @@ export const minaAddress = body("mina_address")
 
 export const idArg = body("args.id")
   .notEmpty()
-  .withMessage("arg.id is required")
+  .withMessage("args.id is required")
   .isInt()
-  .withMessage("arg.id must be an integer");
+  .withMessage("args.id must be an integer");
 
 export const ethereumAddressArg = body("args.address")
   .notEmpty()
-  .withMessage("arg.address is required")
+  .withMessage("args.address is required")
   .isEthereumAddress()
-  .withMessage("arg.address must be a valid ethereum address");
+  .withMessage("args.address must be a valid ethereum address");
 
 export const ethereumSignatureArg = body("args.signature")
   .notEmpty()
-  .withMessage("arg.signature is required")
+  .withMessage("args.signature is required")
   .isLength({ min: 132, max: 132 })
-  .withMessage("arg.signature must be a valid ethereum message signature");
+  .withMessage("args.signature must be a valid ethereum message signature");
 
 export const erc20AddressArg = body("args.token")
   .notEmpty()
-  .withMessage("arg.token is required")
+  .withMessage("args.token is required")
   .isEthereumAddress()
-  .withMessage("arg.token must be a valid ethereum address");
+  .withMessage("args.token must be a valid ethereum address");
 
 export const nftAddressArg = body("args.nftAddress")
   .notEmpty()
-  .withMessage("arg.nftAddress is required")
+  .withMessage("args.nftAddress is required")
   .isEthereumAddress()
-  .withMessage("arg.nftAddress must be a valid ethereum address");
+  .withMessage("args.nftAddress must be a valid ethereum address");
 
 export const blockchainArg = body("args.blockchain")
   .notEmpty()
-  .withMessage("arg.blockchain is required")
+  .withMessage("args.blockchain is required")
   .isIn(["ethereum", "polygon", "base"])
-  .withMessage("arg.blockchain must be a supported blockchain");
+  .withMessage("args.blockchain must be a supported blockchain");
 
 export const poapIdArg = body("args.poapId")
   .notEmpty()
-  .withMessage("arg.poapId is required")
+  .withMessage("args.poapId is required")
   .isNumeric()
-  .withMessage("arg.poapId must be a valid poap id");
+  .withMessage("args.poapId must be a valid poap id");

@@ -59,13 +59,13 @@ export const minaAddress = body("mina_address")
 
 export const idArg = body("args.id")
   .notEmpty()
-  .withMessage("arg.id is required")
+  .withMessage("args.id is required")
   .isInt()
-  .withMessage("arg.id must be an integer");
+  .withMessage("args.id must be an integer");
 
 // Example of a argument validation
 export const ethereumAddressArg = body("args.ethereum_address")
   .notEmpty()
-  .withMessage("arg.ethereum_address is required")
+  .withMessage("args.ethereum_address is required")
   .isEthereumAddress()
-  .withMessage("arg.ethereum_address must be a valid ethereum address");
+  .withMessage("args.ethereum_address must be a valid ethereum address");

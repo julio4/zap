@@ -44,14 +44,14 @@ describe("Endpoint /evm/nft", () => {
   });
 
   describe("Parameters validations", () => {
-    it("missing arg.nftAddress", async () => {
+    it("missing args.nftAddress", async () => {
       const missing = { ...reqBody, args: { ...reqBody.args, nftAddress: "" } };
       const res = await request(app).post(route.path).send(missing);
       expect(res.status).toBe(400);
-      expect(res.text).toContain("arg.nftAddress is required");
+      expect(res.text).toContain("args.nftAddress is required");
     });
 
-    it("wrong arg.nftAddress", async () => {
+    it("wrong args.nftAddress", async () => {
       const wrong = {
         ...reqBody,
         args: { ...reqBody.args, nftAddress: "wrong" },
@@ -59,18 +59,18 @@ describe("Endpoint /evm/nft", () => {
       const res = await request(app).post(route.path).send(wrong);
       expect(res.status).toBe(400);
       expect(res.text).toContain(
-        "arg.nftAddress must be a valid ethereum address"
+        "args.nftAddress must be a valid ethereum address"
       );
     });
 
-    it("missing arg.blockchain", async () => {
+    it("missing args.blockchain", async () => {
       const missing = { ...reqBody, args: { ...reqBody.args, blockchain: "" } };
       const res = await request(app).post(route.path).send(missing);
       expect(res.status).toBe(400);
-      expect(res.text).toContain("arg.blockchain is required");
+      expect(res.text).toContain("args.blockchain is required");
     });
 
-    it("wrong arg.blockchain", async () => {
+    it("wrong args.blockchain", async () => {
       const wrong = {
         ...reqBody,
         args: { ...reqBody.args, blockchain: "wrong" },
@@ -78,7 +78,7 @@ describe("Endpoint /evm/nft", () => {
       const res = await request(app).post(route.path).send(wrong);
       expect(res.status).toBe(400);
       expect(res.text).toContain(
-        "arg.blockchain must be a supported blockchain"
+        "args.blockchain must be a supported blockchain"
       );
     });
   });

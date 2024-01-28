@@ -12,19 +12,19 @@ describe("Endpoint /list/nfts", () => {
   const routePath = "/api/list/nfts";
 
   describe("Parameters validations", () => {
-    it("missing arg.address", async () => {
+    it("missing args.address", async () => {
       const missing = { ...reqBody, args: {} };
       const res = await request(app).post(routePath).send(missing);
       expect(res.status).toBe(400);
-      expect(res.text).toContain("arg.address is required");
+      expect(res.text).toContain("args.address is required");
     });
 
-    it("wrong arg.address", async () => {
+    it("wrong args.address", async () => {
       const wrong = { ...reqBody, args: { address: "wrong" } };
       const res = await request(app).post(routePath).send(wrong);
       expect(res.status).toBe(400);
       expect(res.text).toContain(
-        "arg.address must be a valid ethereum address"
+        "args.address must be a valid ethereum address"
       );
     });
   });

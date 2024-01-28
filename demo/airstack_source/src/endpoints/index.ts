@@ -10,12 +10,6 @@ import listEndpoints from "./listEndpoints.js";
 
 const router: Router = express.Router();
 
-// This 'hello' endpoint can be used to test the connection to the server
-// And the validation rules for all endpoints
-router.use("/hello", validateParams, (req, res) => {
-  res.send("Hello World!");
-});
-
 router.use("/list", ethereumAddressArg, listEndpoints);
 
 // Notice: Only /evm endpoints use ZapMiddleware

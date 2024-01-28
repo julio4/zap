@@ -40,18 +40,18 @@ describe("Endpoint /evm/poap", () => {
   });
 
   describe("Parameters validations", () => {
-    it("missing arg.poapId", async () => {
+    it("missing args.poapId", async () => {
       const missing = { ...reqBody, args: { ...reqBody.args, poapId: "" } };
       const res = await request(app).post(route.path).send(missing);
       expect(res.status).toBe(400);
-      expect(res.text).toContain("arg.poapId is required");
+      expect(res.text).toContain("args.poapId is required");
     });
 
-    it("wrong arg.poapId", async () => {
+    it("wrong args.poapId", async () => {
       const wrong = { ...reqBody, args: { ...reqBody.args, poapId: "wrong" } };
       const res = await request(app).post(route.path).send(wrong);
       expect(res.status).toBe(400);
-      expect(res.text).toContain("arg.poapId must be a valid poap id");
+      expect(res.text).toContain("args.poapId must be a valid poap id");
     });
   });
 

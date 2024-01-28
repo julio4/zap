@@ -43,28 +43,28 @@ describe("Endpoint /evm/balance", () => {
   });
 
   describe("Parameters validations", () => {
-    it("missing arg.token", async () => {
+    it("missing args.token", async () => {
       const missing = { ...reqBody, args: { ...reqBody.args, token: "" } };
       const res = await request(app).post(route.path).send(missing);
       expect(res.status).toBe(400);
-      expect(res.text).toContain("arg.token is required");
+      expect(res.text).toContain("args.token is required");
     });
 
-    it("wrong arg.token", async () => {
+    it("wrong args.token", async () => {
       const wrong = { ...reqBody, args: { ...reqBody.args, token: "wrong" } };
       const res = await request(app).post(route.path).send(wrong);
       expect(res.status).toBe(400);
-      expect(res.text).toContain("arg.token must be a valid ethereum address");
+      expect(res.text).toContain("args.token must be a valid ethereum address");
     });
 
-    it("missing arg.blockchain", async () => {
+    it("missing args.blockchain", async () => {
       const missing = { ...reqBody, args: { ...reqBody.args, blockchain: "" } };
       const res = await request(app).post(route.path).send(missing);
       expect(res.status).toBe(400);
-      expect(res.text).toContain("arg.blockchain is required");
+      expect(res.text).toContain("args.blockchain is required");
     });
 
-    it("wrong arg.blockchain", async () => {
+    it("wrong args.blockchain", async () => {
       const wrong = {
         ...reqBody,
         args: { ...reqBody.args, blockchain: "wrong" },
@@ -72,7 +72,7 @@ describe("Endpoint /evm/balance", () => {
       const res = await request(app).post(route.path).send(wrong);
       expect(res.status).toBe(400);
       expect(res.text).toContain(
-        "arg.blockchain must be a supported blockchain"
+        "args.blockchain must be a supported blockchain"
       );
     });
   });

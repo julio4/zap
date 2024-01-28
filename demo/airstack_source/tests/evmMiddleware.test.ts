@@ -42,30 +42,30 @@ describe("EvmMiddleware", () => {
   });
 
   describe("Parameters validations", () => {
-    it("missing arg.address", async () => {
+    it("missing args.address", async () => {
       const missing = { ...reqBody, args: { ...reqBody.args, address: "" } };
       const res = await request(app).post(route.path).send(missing);
       expect(res.status).toBe(400);
-      expect(res.text).toContain("arg.address is required");
+      expect(res.text).toContain("args.address is required");
     });
 
-    it("wrong arg.address", async () => {
+    it("wrong args.address", async () => {
       const wrong = { ...reqBody, args: { ...reqBody.args, address: "wrong" } };
       const res = await request(app).post(route.path).send(wrong);
       expect(res.status).toBe(400);
       expect(res.text).toContain(
-        "arg.address must be a valid ethereum address"
+        "args.address must be a valid ethereum address"
       );
     });
 
-    it("missing arg.signature", async () => {
+    it("missing args.signature", async () => {
       const missing = { ...reqBody, args: { ...reqBody.args, signature: "" } };
       const res = await request(app).post(route.path).send(missing);
       expect(res.status).toBe(400);
-      expect(res.text).toContain("arg.signature is required");
+      expect(res.text).toContain("args.signature is required");
     });
 
-    it("wrong arg.signature", async () => {
+    it("wrong args.signature", async () => {
       const wrong = {
         ...reqBody,
         args: { ...reqBody.args, signature: "wrong" },
@@ -73,7 +73,7 @@ describe("EvmMiddleware", () => {
       const res = await request(app).post(route.path).send(wrong);
       expect(res.status).toBe(400);
       expect(res.text).toContain(
-        "arg.signature must be a valid ethereum message signature"
+        "args.signature must be a valid ethereum message signature"
       );
     });
   });
@@ -108,7 +108,7 @@ describe("EvmMiddleware", () => {
       expect(res.text).toContain("Invalid signature");
     });
 
-    it("different arg.address and signer address", async () => {
+    it("different args.address and signer address", async () => {
       const falsyWallet = ethers.Wallet.createRandom();
       expect(falsyWallet.address).not.toBe(wallet.address);
 

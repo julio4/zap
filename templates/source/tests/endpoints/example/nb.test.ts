@@ -30,18 +30,18 @@ describe("Endpoint /example/nb", () => {
   });
 
   describe("Parameters validations", () => {
-    it("missing arg.id", async () => {
+    it("missing args.id", async () => {
       const missing = { ...reqBody, args: {} };
       const res = await request(app).post(route.path).send(missing);
       expect(res.status).toBe(400);
-      expect(res.text).toContain("arg.id is required");
+      expect(res.text).toContain("args.id is required");
     });
 
-    it("wrong arg.id", async () => {
+    it("wrong args.id", async () => {
       const wrong = { ...reqBody, args: { id: "wrong" } };
       const res = await request(app).post(route.path).send(wrong);
       expect(res.status).toBe(400);
-      expect(res.text).toContain("arg.id must be an integer");
+      expect(res.text).toContain("args.id must be an integer");
     });
 
     it("good", async () => {

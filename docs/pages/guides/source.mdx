@@ -111,9 +111,9 @@ Let's say we want to add the `/nb` endpoint that takes an id integer argument. W
 ```typescript
 export const idArg = body("args.ethereum_address")
   .notEmpty()
-  .withMessage("arg.ethereum_address is required")
+  .withMessage("args.ethereum_address is required")
   .isEthereumAddress()
-  .withMessage("arg.ethereum_address must be a valid ethereum address");
+  .withMessage("args.ethereum_address must be a valid ethereum address");
 ```
 
 Then, for each validation middleware, you need to add it to the route and end the route with the `validateParams` middleware.

@@ -15,7 +15,7 @@ export const evmMiddleware = async (
   res: Response,
   next: NextFunction
 ) => {
-  // Validate both arg.address and arg.signature
+  // Validate both args.address and args.signature
   const validations = [ethereumAddressArg, ethereumSignatureArg];
   for (const validation of validations) {
     const result = await validation.run(req);
