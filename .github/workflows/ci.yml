@@ -22,7 +22,7 @@ jobs:
       run: npm install -g pnpm && pnpm install
 
     - name: Lint
-      run: pnpm run lint
+      run: node .github/scripts/lint.js
 
-    - name: Build and test  # todo: should do script to display coverage
-      run: cd zap && npm run build && npm run test
+    - name: Build and test coverage SC  # todo: should do script to display coverage
+      run: cd zap && npm run build && npm run test-coverage > ../.artifacts/coverage-report-sc.txt && node ../.github/scripts/test-coverage-sc.js 

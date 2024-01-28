@@ -1,6 +1,8 @@
 <a name="readme-top"></a>
 
-[![Live Demo](https://img.shields.io/website?down_color=lightgrey&down_message=offline&up_message=online&style=for-the-badge&label=Live%20Demo&url=https%3A%2F%2Fmina-zap.vercel.app)](https://mina-zap.vercel.app/) ![Lint Warnings Badge](https://img.shields.io/badge/lint--warnings-15-red?style=for-the-badge)
+[![Live Demo](https://img.shields.io/website?down_color=lightgrey&down_message=offline&up_message=online&label=Live%20Demo&url=https%3A%2F%2Fmina-zap.vercel.app)](https://mina-zap.vercel.app/)
+![Lint Warnings Badge](https://img.shields.io/badge/lint--warnings-15-red)
+![Coverage Badge SC](https://img.shields.io/badge/coverage--sc-:87.23%25-brightgreen)
 
 # Welcome to ZAP 🚀
 
