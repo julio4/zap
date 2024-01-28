@@ -1,9 +1,9 @@
 {
-  "extends": "@packages/tsconfig/o1js.json",
+  "extends": "./o1js.json",
   "compilerOptions": {
     "plugins": [{ "name": "o1js" }],
     "outDir": "./build",
-    "rootDir": "./src"
+    "rootDir": "."
   },
   "include": ["./src"],
   "exclude": ["node_modules", "./src/**/*.test.ts"]

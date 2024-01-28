@@ -1,5 +1,6 @@
 import { Field } from "o1js";
 
+// export * from "./shared/index.js";
 export * from "./source/index.js";
 export * from "./frontend/index.js";
 

@@ -1,12 +1,10 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
-  "display": "Next.js",
-  "extends": "./base.json",
+  "display": "o1js",
   "compilerOptions": {
-    "plugins": [{ "name": "next" }],
     "target": "es2020",
-    "module": "esnext",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "module": "es2022",
+    "lib": ["dom", "esnext"],
     "strict": true,
     "strictPropertyInitialization": false,
     "skipLibCheck": true,
@@ -19,16 +17,6 @@
     "declaration": true,
     "sourceMap": true,
     "noFallthroughCasesInSwitch": true,
-    "allowSyntheticDefaultImports": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "incremental": true,
-    "resolveJsonModule": true,
-    "jsx": "preserve",
-    "paths": {
-      "@/*": ["./src/*"]
-    }
-  },
-  "include": ["src", "next-env.d.ts"],
-  "exclude": ["node_modules"]
+    "allowSyntheticDefaultImports": true
+  }
 }

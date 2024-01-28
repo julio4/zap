@@ -1,13 +1,13 @@
 import request from "supertest";
 import app from "../src/app.js";
 import { PrivateKey } from "o1js";
-import { hashRoute, verifyResponseSignature } from "@packages/zap-utils";
+import { hashRoute, verifyResponseSignature } from "@zap/utils";
 
 import {
   Route,
   ZapRequestParams,
   ZapSignedResponse,
-} from "@packages/zap-utils";
+} from "@zap/utils";
 
 describe("ZapMiddleware (With test endpoint /api/example/nb)", () => {
   let privateKey: PrivateKey;

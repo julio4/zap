@@ -6,8 +6,8 @@ import {
   Route,
   ZapRequestParams,
   ZapSignedResponse,
-} from "@packages/zap-utils";
-import { verifyResponseSignature } from "@packages/zap-utils";
+} from "@zap/utils";
+import { verifyResponseSignature } from "@zap/utils";
 
 // Example of tests for the /example/nb endpoint
 describe("Endpoint /example/nb", () => {

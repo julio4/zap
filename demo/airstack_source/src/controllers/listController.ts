@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import AirstackService from "../services/airstackService.js";
-import { ZapRequestParams } from "@packages/zap-utils";
+import { ZapRequestParams } from "@zap/utils";
 import { ERC20TokenBalance, NFTTokenBalance } from "services/airstack/types.js";
 
 export const getListBalances = async (

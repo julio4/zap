@@ -1,7 +1,7 @@
 packages:
-  - "zap"
-  - "docs"
   - "packages/*"
+  - "docs"
   - "demo/*"
   - "templates/*"
   - "new_docs/*"
+  - "deprecated/*"

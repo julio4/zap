@@ -1,7 +1,14 @@
-// tailwind config is required for editor support
-
-const sharedConfig = require("@packages/tailwind-config/tailwind.config.js");
+const colors = require("tailwindcss/colors");
 
 module.exports = {
-  presets: [sharedConfig],
+  content: [`src/**/*.{js,ts,jsx,tsx}`],
+  theme: {
+    extend: {
+      colors: {
+        brandblue: colors.blue[500],
+        brandred: colors.red[500],
+      },
+    },
+  },
+  plugins: [],
 };

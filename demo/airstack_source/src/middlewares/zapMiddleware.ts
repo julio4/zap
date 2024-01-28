@@ -2,12 +2,12 @@ import { Response, NextFunction } from "express";
 
 import { PrivateKey } from "o1js";
 
-import { signResponse } from "@packages/zap-utils";
+import { signResponse } from "@zap/utils";
 import {
   SupportedValue,
   ZapResponse,
   ZapSignedResponse,
-} from "@packages/zap-utils";
+} from "@zap/utils";
 import { ZapRequestExpress } from "../types.js";
 
 // This zap middleware will transform the response from ZapResponseExpress to Response<ZapSignedResponse>

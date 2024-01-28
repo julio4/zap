@@ -1,12 +1,10 @@
 {
   "private": true,
   "scripts": {
-    "demo": "turbo build --filter=zap && turbo dev --filter=@demo/source --filter=@demo/web",
-    "demo:source": "turbo dev --filter=@demo/source",
-    "demo:web": "turbo dev --filter=@demo/web",
+    "demo": "turbo build --filter=@zap/* && turbo dev --filter=@demo/web --filter=@deprecated/oracle",
+    "build": "turbo build --filter=@zap/*",
     "docs": "turbo dev --filter=docs",
     "test": "turbo test",
-    "build": "turbo build",
     "lint": "turbo lint",
     "clean": "turbo clean",
     "format": "prettier --write --ignore-unknown **/*"
@@ -16,10 +14,7 @@
     "@typescript-eslint/eslint-plugin": "^5.5.0",
     "@typescript-eslint/parser": "^5.5.0",
     "eslint": "^7.32.0",
-    "eslint-config-custom": "workspace:*",
     "eslint-plugin-o1js": "^0.4.0",
-    "prettier": "^2.7.1",
-    "prettier-plugin-tailwindcss": "^0.1.11",
     "turbo": "^1.11.3",
     "typescript": "^4.9.4"
   },

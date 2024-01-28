@@ -6,8 +6,8 @@ import {
   Route,
   ZapRequestParams,
   ZapSignedResponse,
-} from "@packages/zap-utils";
-import { verifyResponseSignature } from "@packages/zap-utils";
+} from "@zap/utils";
+import { verifyResponseSignature } from "@zap/utils";
 import { ethers } from "ethers";
 
 const CRYPTO_PUNKS_CONTRACT_ADDRESS =

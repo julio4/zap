@@ -1,4 +1,4 @@
-# Mina zkApp: Zap
+# Zap core contract
 
 This template uses TypeScript.
 
