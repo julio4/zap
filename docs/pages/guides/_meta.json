@@ -1,5 +1,6 @@
 {
   "user": "User guide",
   "localenv": "Test ZAP Locally",
-  "source": "Implement a ZAP Source"
+  "source": "Implement a ZAP Source",
+  "web": "Integrate ZAP in a Web Application"
 }
