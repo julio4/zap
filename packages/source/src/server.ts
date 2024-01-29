@@ -5,9 +5,9 @@ import {
   ZapHashedResponse,
   ZapSignedResponse,
   Route,
-} from "./types.js";
+} from "@zap/types";
 
-import { encodeResAsFields } from "./encoding.js";
+import { encodeResAsFields } from "@zap/shared";
 
 export const signResponse = (
   res: ZapResponse,

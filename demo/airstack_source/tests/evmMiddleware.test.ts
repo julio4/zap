@@ -6,8 +6,8 @@ import {
   Route,
   ZapRequestParams,
   ZapSignedResponse,
-} from "@zap/utils";
-import { verifyResponseSignature } from "@zap/utils";
+} from "@zap/types";
+import { verifyResponseSignature } from "@zap/client";
 import { ethers } from "ethers";
 
 // We will use basic endpoint /evm/ens to test the middleware

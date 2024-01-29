@@ -1,8 +1,8 @@
 import { Signature, PublicKey } from "o1js";
 
-import { ZapSignedResponse } from "./types.js";
+import { ZapSignedResponse } from "@zap/types";
 
-import { encodeResAsFields } from "./encoding.js";
+import { encodeResAsFields } from "@zap/shared";
 
 export const verifyResponseSignature = (
   res: ZapSignedResponse,

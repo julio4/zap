@@ -6,8 +6,8 @@ import {
   Route,
   ZapRequestParams,
   ZapSignedResponse,
-} from "@zap/utils";
-import { verifyResponseSignature } from "@zap/utils";
+} from "@zap/types";
+import { verifyResponseSignature } from "@zap/client";
 import { ethers } from "ethers";
 
 const USDT_CONTRACT_ADDRESS = "0xdac17f958d2ee523a2206206994597c13d831ec7";

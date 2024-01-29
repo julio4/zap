@@ -1,0 +1,19 @@
+{
+  "include": ["./src/**/*.ts", "./tests/**/*.ts"],
+  "compilerOptions": {
+    "target": "es2021", // goal: ship *the most modern syntax* that is supported by *all* browsers that support our Wasm
+    "module": "nodenext", // allow top-level await
+    "moduleResolution": "nodenext", // comply with node + "type": "module"
+    "baseUrl": "./src",
+    "paths": {
+      "*": ["*"]
+    },
+
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "./dist",
+    "allowJs": true
+  }
+}

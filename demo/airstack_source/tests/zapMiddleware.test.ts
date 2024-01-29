@@ -1,13 +1,14 @@
 import request from "supertest";
 import app from "../src/app.js";
 import { PrivateKey } from "o1js";
-import { hashRoute, verifyResponseSignature } from "@zap/utils";
+import { hashRoute } from "@zap/source";
+import { verifyResponseSignature } from "@zap/client";
 
 import {
   Route,
   ZapRequestParams,
   ZapSignedResponse,
-} from "@zap/utils";
+} from "@zap/types";
 import { ethers } from "ethers";
 
 // We will use basic endpoint /evm/ens to test the middleware

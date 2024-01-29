@@ -3,8 +3,7 @@ import { useEffect } from "react";
 import GradientBG from "../components/GradientBG.js";
 import styles from "../styles/Home.module.css";
 
-import { ZapRequestParams } from "@zap/utils";
-import { Route } from "@zap/utils/source";
+import { Route, ZapRequestParams } from "@zap/types";
 
 const loadZap = async () => {
   const { Mina, PublicKey } = await import("o1js");

@@ -10,7 +10,8 @@
     "ts-watch": "tsc --noEmit --incremental --watch"
   },
   "dependencies": {
-    "@zap/utils": "workspace:*",
+    "@zap/client": "workspace:*",
+    "@zap/types": "workspace:*",
     "@zap/core": "workspace:*",
     "@types/node": "20.11.8",
     "@types/react": "18.2.48",

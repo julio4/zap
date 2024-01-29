@@ -2,12 +2,12 @@ import { Response, NextFunction } from "express";
 
 import { PrivateKey } from "o1js";
 
+import { signResponse } from "@zap/source";
 import {
   SupportedValue,
   ZapResponse,
   ZapSignedResponse,
-  signResponse,
-} from "@zap/utils";
+} from "@zap/types";
 
 import { ZapRequestExpress } from "../types.js";
 
