@@ -256,6 +256,9 @@ importers:
       '@types/jest':
         specifier: ^27.0.3
         version: 27.0.3
+      '@zap/source':
+        specifier: workspace:*
+        version: link:../source
       jest:
         specifier: ^27.3.1
         version: 27.3.1(ts-node@10.9.2)
@@ -330,6 +333,9 @@ importers:
       '@types/jest':
         specifier: ^27.0.3
         version: 27.0.3
+      '@zap/source':
+        specifier: workspace:*
+        version: link:../source
       jest:
         specifier: ^27.3.1
         version: 27.3.1(ts-node@10.9.2)

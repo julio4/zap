@@ -1,10 +1,7 @@
-import {
-  signResponse,
-  hashRoute,
-  verifyResponseSignature,
-} from "../../src/index.js";
+import { verifyResponseSignature } from "../src/index.js";
 import { PrivateKey } from "o1js";
-import { ZapResponse } from "types.js";
+import { ZapResponse } from "@zap/types";
+import { signResponse, hashRoute } from "@zap/source";
 
 describe("Source client", () => {
   const res: ZapResponse = {
