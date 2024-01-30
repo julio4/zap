@@ -3,31 +3,32 @@ import { PublicKey } from "o1js";
 import { useEffect, useState } from "react";
 import GradientBG from "../components/GradientBG.js";
 import styles from "../styles/Home.module.css";
-import ZkappWorkerClient from "./zapWorkerClient.js";
+
+import { ZapWorkerClient } from "@zap/client";
 
 let transactionFee = 0.1;
-const ZKAPP_ADDRESS = "B62qnhBxxQr7h2AE9f912AyvzJwK1fhEJq7NMZXbzXbhoepUZ7z7237";
+const ZAP_ADDRESS = "B62qnhBxxQr7h2AE9f912AyvzJwK1fhEJq7NMZXbzXbhoepUZ7z7237";
 
 type ZapState = {
-  zkappWorkerClient: null | ZkappWorkerClient;
+  zapWorkerClient: null | ZapWorkerClient;
   hasWallet: null | boolean;
   hasBeenSetup: boolean;
   accountExists: boolean;
   // currentNum: null | Field,
   publicKey: null | PublicKey;
-  zkappPublicKey: null | PublicKey;
+  zapPublicKey: null | PublicKey;
   creatingTransaction: boolean;
 };
 
 export default function Home(): JSX.Element {
   const [zapState, setZapState] = useState<ZapState>({
-    zkappWorkerClient: null,
+    zapWorkerClient: null,
     hasWallet: null,
     hasBeenSetup: false,
     accountExists: false,
     // currentNum: null,
     publicKey: null,
-    zkappPublicKey: null,
+    zapPublicKey: null,
     creatingTransaction: false,
   });
   const [displayText, setDisplayText] = useState("");
@@ -49,7 +50,7 @@ export default function Home(): JSX.Element {
       if (!zapState.hasBeenSetup) {
         setDisplayText("Loading web worker...");
         console.log("Loading web worker...");
-        const zkappWorkerClient = new ZkappWorkerClient();
+        const zkappWorkerClient = new ZapWorkerClient();
         await timeout(5);
 
         setDisplayText("Done loading web worker");
@@ -86,7 +87,7 @@ export default function Home(): JSX.Element {
         console.log("zkApp compiled");
         setDisplayText("zkApp compiled...");
 
-        const zkappPublicKey = PublicKey.fromBase58(ZKAPP_ADDRESS);
+        const zkappPublicKey = PublicKey.fromBase58(ZAP_ADDRESS);
 
         await zkappWorkerClient.initZapInstance(zkappPublicKey);
 
@@ -99,11 +100,11 @@ export default function Home(): JSX.Element {
 
         setZapState({
           ...zapState,
-          zkappWorkerClient,
+          zapWorkerClient: zkappWorkerClient,
           hasWallet: true,
           hasBeenSetup: true,
           publicKey,
-          zkappPublicKey,
+          zapPublicKey: zkappPublicKey,
           accountExists,
           // currentNum
         });
@@ -120,7 +121,7 @@ export default function Home(): JSX.Element {
         for (;;) {
           setDisplayText("Checking if fee payer account exists...");
           console.log("Checking if fee payer account exists...");
-          const res = await zapState.zkappWorkerClient!.fetchAccount({
+          const res = await zapState.zapWorkerClient!.fetchAccount({
             publicKey: zapState.publicKey!,
           });
           const accountExists = res.error == null;
@@ -143,7 +144,7 @@ export default function Home(): JSX.Element {
     setDisplayText('Creating a transaction...');
     console.log('Creating a transaction...');
 
-    await zapState.zkappWorkerClient!.fetchAccount({
+    await zapState.zapWorkerClient!.fetchAccount({
       publicKey: zapState.publicKey!
     });
 
@@ -183,8 +184,8 @@ export default function Home(): JSX.Element {
     console.log('Getting zkApp state...');
     setDisplayText('Getting zkApp state...');
 
-    await zapState.zkappWorkerClient!.fetchAccount({
-      publicKey: zapState.zkappPublicKey!
+    await zapState.zapWorkerClient!.fetchAccount({
+      publicKey: zapState.zapPublicKey!
     });
     // const currentNum = await zapState.zkappWorkerClient!.getNum();
     // setZapState({ ...zapState, currentNum });

@@ -1,12 +1,12 @@
 import { fetchAccount, Field, PublicKey, Signature } from "o1js";
 
-import type {
+import {
   ZapWorkerRequest,
   ZapWorkerReponse,
   WorkerFunctions,
-} from "./zapWorker";
+} from "./zapWorker.js";
 
-export default class ZapWorkerClient {
+export class ZapWorkerClient {
   // ---------------------------------------------------------------------------------------
 
   setActiveInstanceToBerkeley() {
@@ -79,7 +79,7 @@ export default class ZapWorkerClient {
   nextId: number;
 
   constructor() {
-    this.worker = new Worker(new URL("./zkappWorker.ts", import.meta.url));
+    this.worker = new Worker(new URL("./zapWorker.js", import.meta.url));
     this.promises = {};
     this.nextId = 0;
     this.worker.onmessage = (event: MessageEvent<ZapWorkerReponse>) => {

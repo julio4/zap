@@ -1,10 +1,7 @@
 import { Mina, PublicKey, fetchAccount, Signature, Field } from "o1js";
+import type { Zap } from "@zap/core";
 
 type Transaction = Awaited<ReturnType<typeof Mina.transaction>>;
-
-// ---------------------------------------------------------------------------------------
-
-import type { Zap } from "@zap/core";
 
 const state = {
   Zap: null as null | typeof Zap,
@@ -12,9 +9,7 @@ const state = {
   tx: null as null | Transaction,
 };
 
-// ---------------------------------------------------------------------------------------
-
-const functions = {
+const functions: Record<string, (...args: any[]) => any> = {
   setActiveInstanceToBerkeley: async (args: {}) => {
     const Berkeley = Mina.Network(
       "https://proxy.berkeley.minaexplorer.com/graphql"
@@ -67,8 +62,6 @@ const functions = {
   },
 };
 
-// ---------------------------------------------------------------------------------------
-
 export type WorkerFunctions = keyof typeof functions;
 
 export type ZapWorkerRequest = {
@@ -94,4 +87,4 @@ if (typeof window !== "undefined") {
   });
 }
 
-console.log("Zap Web Worker Successfully Initialized.");
+console.log("Zap Worker Successfully Initialized");

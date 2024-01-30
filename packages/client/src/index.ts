@@ -1,15 +1,5 @@
-import { Signature, PublicKey } from "o1js";
+export * from "./encoding.js";
 
-import { ZapSignedResponse } from "@zap/types";
-
-import { encodeResAsFields } from "@zap/shared";
-
-export const verifyResponseSignature = (
-  res: ZapSignedResponse,
-  publicKey: PublicKey
-): boolean => {
-  const data = encodeResAsFields(res.data);
-  const signature = Signature.fromBase58(res.signature);
-
-  return signature.verify(publicKey, data).toBoolean();
-};
+// Web specific
+export * from "./zapWorkerClient.js";
+// export * from "./zapWorker.js"; // we don't expose the worker directly
