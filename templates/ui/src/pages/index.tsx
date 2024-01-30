@@ -1,9 +1,9 @@
 import Head from "next/head";
-import { Field, PublicKey } from "o1js";
+import { PublicKey } from "o1js";
 import { useEffect, useState } from "react";
 import GradientBG from "../components/GradientBG.js";
 import styles from "../styles/Home.module.css";
-import ZkappWorkerClient from "./zkappWorkerClient.js";
+import ZkappWorkerClient from "./zapWorkerClient.js";
 
 let transactionFee = 0.1;
 const ZKAPP_ADDRESS = "B62qnhBxxQr7h2AE9f912AyvzJwK1fhEJq7NMZXbzXbhoepUZ7z7237";
@@ -88,7 +88,7 @@ export default function Home(): JSX.Element {
 
         const zkappPublicKey = PublicKey.fromBase58(ZKAPP_ADDRESS);
 
-        await zkappWorkerClient.initZkappInstance(zkappPublicKey);
+        await zkappWorkerClient.initZapInstance(zkappPublicKey);
 
         console.log("Getting zkApp state...");
         setDisplayText("Getting zkApp state...");
