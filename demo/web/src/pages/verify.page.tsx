@@ -129,11 +129,20 @@ export default function Home(): JSX.Element {
     // Then we verify that the attestation hash is in the events
     for (let event of events) {
       let valueArray: Provable<any> = event.event.data;
-      const currentHash = (valueArray as any).value[1][1];
+      const currentHash = (valueArray as any).value[1][1][0];
+      const validTill = (valueArray as any).value[1][1][1];
       if (BigInt(currentHash) === BigInt(hashAttestation)) {
         // Then we verify that the base64 displayed in the frontend corresponds to the event
 
         console.log("AttestationHash Found!");
+        // Then we verify that the timestamp is correct
+        const now = new Date();
+        const timestamp = now.getTime() / 1000;
+        if (timestamp > validTill) {
+          setError("Attestation expired");
+          console.log("Attestation expired");
+          return false;
+        }
         return true;
       }
     }
