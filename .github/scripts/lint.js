@@ -7,7 +7,7 @@ exec('pnpm run lint', (error, stdout, stderr) => {
         return;
     }
 
-    const warningRegex = /warning/g;
+    const warningRegex = /warning/gi;
     const warningCount = (stdout.match(warningRegex) || []).length;
 
     console.log(`Number of warnings : ${warningCount}`);

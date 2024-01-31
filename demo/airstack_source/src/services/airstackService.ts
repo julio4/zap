@@ -1,33 +1,32 @@
-import { GraphQLClient, gql, request } from "graphql-request";
+import { GraphQLClient, gql, request } from 'graphql-request'
 import {
-  AirstackEnsHolder,
-  AirstackNFTSaleTransactions,
-  AirstackNftHolder,
-  AirstackPoapHolder,
-  AirstackSocialsHolder,
-  AirstackTokenBalance,
-  AirstackXmtpEnabled,
-  BlockchainName,
-  ERC20TokenBalance,
-  TokenBalancesResponse,
-  EthereumNFTTokenBalancesResponse,
-  NFTTokenBalance,
-  PolygonNFTTokenBalancesResponse,
-} from "./airstack/types.js";
-import { deduplicateTokens } from "./airstack/utils.js";
-import util from "util";
-import "dotenv/config";
+  type AirstackEnsHolder,
+  type AirstackNftHolder,
+  type AirstackPoapHolder,
+  type AirstackSocialsHolder,
+  type AirstackTokenBalance,
+  type AirstackXmtpEnabled,
+  type BlockchainName,
+  type ERC20TokenBalance,
+  type TokenBalancesResponse,
+  type EthereumNFTTokenBalancesResponse,
+  type NFTTokenBalance,
+  type PolygonNFTTokenBalancesResponse
+} from './airstack/types.js'
+import { deduplicateTokens } from './airstack/utils.js'
+import util from 'util'
+import 'dotenv/config'
 
-const defaultBlockchain = "ethereum";
-const API = process.env.AIRSTACK_ENDPOINT || "https://api.airstack.xyz/gql/";
+const defaultBlockchain = 'ethereum'
+const API = process.env.AIRSTACK_ENDPOINT ?? 'https://api.airstack.xyz/gql/'
 
-if (!process.env.AIRSTACK_API_KEY)
-  throw new Error("AIRSTACK_API_KEY env var is not set");
-const AIRSTACK_API_KEY: string = process.env.AIRSTACK_API_KEY;
+if (!process.env.AIRSTACK_API_KEY) { throw new Error('AIRSTACK_API_KEY env var is not set') }
+const AIRSTACK_API_KEY: string = process.env.AIRSTACK_API_KEY
 
 // This is an example service that returns random data
+// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 class AirstackService {
-  static async getAllERC20Tokens(
+  static async getAllERC20Tokens (
     owner: string
   ): Promise<[ERC20TokenBalance[], ERC20TokenBalance[]]> {
     const balanceQueryEthereum = gql`
@@ -55,7 +54,7 @@ class AirstackService {
           }
         }
       }
-    `;
+    `
 
     const balanceQueryPolygon = gql`
       query TokenBalancesPolygon {
@@ -82,56 +81,56 @@ class AirstackService {
           }
         }
       }
-    `;
+    `
 
     try {
       const graphQLClient = new GraphQLClient(API, {
         headers: {
-          Authorization: AIRSTACK_API_KEY,
-        },
-      });
+          Authorization: AIRSTACK_API_KEY
+        }
+      })
 
       const resEthereum = await graphQLClient.request<TokenBalancesResponse>(
         balanceQueryEthereum
-      );
+      )
       const resPolygon = await graphQLClient.request<TokenBalancesResponse>(
         balanceQueryPolygon
-      );
+      )
 
-      let tokensEthereum = resEthereum.TokenBalances.TokenBalance || [];
-      let tokensPolygon = resPolygon.TokenBalances.TokenBalance || [];
+      let tokensEthereum = resEthereum.TokenBalances.TokenBalance || []
+      let tokensPolygon = resPolygon.TokenBalances.TokenBalance || []
 
       // deduplicate tokens
-      tokensEthereum = deduplicateTokens(tokensEthereum);
-      tokensPolygon = deduplicateTokens(tokensPolygon);
+      tokensEthereum = deduplicateTokens(tokensEthereum)
+      tokensPolygon = deduplicateTokens(tokensPolygon)
 
       // filter to keep only non-spam tokens
       if (!resEthereum.TokenBalances.TokenBalance) {
-        resEthereum.TokenBalances.TokenBalance = [];
+        resEthereum.TokenBalances.TokenBalance = []
       }
       if (!resPolygon.TokenBalances.TokenBalance) {
-        resPolygon.TokenBalances.TokenBalance = [];
+        resPolygon.TokenBalances.TokenBalance = []
       }
 
       tokensEthereum = resEthereum.TokenBalances.TokenBalance.filter(
         (token) => !token.token.isSpam
-      );
+      )
       tokensPolygon = resPolygon.TokenBalances.TokenBalance.filter(
         (token) => !token.token.isSpam
-      );
+      )
 
       // sort by balance
-      tokensEthereum.sort((a, b) => b.formattedAmount - a.formattedAmount);
-      tokensPolygon.sort((a, b) => b.formattedAmount - a.formattedAmount);
+      tokensEthereum.sort((a, b) => b.formattedAmount - a.formattedAmount)
+      tokensPolygon.sort((a, b) => b.formattedAmount - a.formattedAmount)
 
-      return [tokensEthereum, tokensPolygon];
+      return [tokensEthereum, tokensPolygon]
     } catch (e) {
-      console.log("Error in getBalances: ", e);
-      throw new Error((e as Error)?.message);
+      console.log('Error in getBalances: ', e)
+      throw new Error((e as Error)?.message)
     }
   }
 
-  static async getAllNftTokens(
+  static async getAllNftTokens (
     owner: string
   ): Promise<[NFTTokenBalance[], NFTTokenBalance[]]> {
     const queryNFTsEth = gql`
@@ -139,7 +138,7 @@ class AirstackService {
         ethereum: TokenBalances(
           input: {
             filter: {
-              owner: { _eq: "0xbbbC1f6BE7a36F9B49F807AE24ed7EbAB34D82ce" }
+              owner: { _eq: "${owner}" }
               tokenType: { _in: [ERC1155, ERC721] }
             }
             blockchain: ethereum
@@ -171,14 +170,14 @@ class AirstackService {
           }
         }
       }
-    `;
+    `
 
     const queryNFTsPolygon = gql`
       query GetNFTsETH {
         polygon: TokenBalances(
           input: {
             filter: {
-              owner: { _eq: "0xbbbC1f6BE7a36F9B49F807AE24ed7EbAB34D82ce" }
+              owner: { _eq: "${owner}" }
               tokenType: { _in: [ERC1155, ERC721] }
             }
             blockchain: polygon
@@ -210,35 +209,35 @@ class AirstackService {
           }
         }
       }
-    `;
+    `
 
     try {
       const graphQLClient = new GraphQLClient(API, {
         headers: {
-          Authorization: AIRSTACK_API_KEY,
-        },
-      });
+          Authorization: AIRSTACK_API_KEY
+        }
+      })
 
       const resEthereum =
         await graphQLClient.request<EthereumNFTTokenBalancesResponse>(
           queryNFTsEth
-        );
+        )
       const resPolygon =
         await graphQLClient.request<PolygonNFTTokenBalancesResponse>(
           queryNFTsPolygon
-        );
+        )
 
-      let NFTsEthereum = resEthereum.ethereum.TokenBalance || [];
-      let NFTsPolygon = resPolygon.polygon.TokenBalance || [];
+      const NFTsEthereum = resEthereum.ethereum.TokenBalance || []
+      const NFTsPolygon = resPolygon.polygon.TokenBalance || []
 
-      return [NFTsEthereum, NFTsPolygon];
+      return [NFTsEthereum, NFTsPolygon]
     } catch (e) {
-      console.error("Error in getAllERC20Tokens: ", e);
-      throw new Error((e as Error)?.message);
+      console.error('Error in getAllERC20Tokens: ', e)
+      throw new Error((e as Error)?.message)
     }
   }
 
-  static async getBalance(
+  static async getBalance (
     owner: string,
     token: string,
     blockchain: BlockchainName
@@ -246,12 +245,12 @@ class AirstackService {
     if (!blockchain) {
       console.log(
         `No blockchain specified, defaulting to ${defaultBlockchain}`
-      );
-      blockchain = defaultBlockchain;
+      )
+      blockchain = defaultBlockchain
     }
 
-    if (token == undefined) {
-      throw new Error("No token specified");
+    if (token === undefined) {
+      throw new Error('No token specified')
     }
 
     const balanceQuery = gql`
@@ -273,35 +272,35 @@ class AirstackService {
           }
         }
       }
-    `;
+    `
 
     try {
       const graphQLClient = new GraphQLClient(API, {
         headers: {
-          Authorization: AIRSTACK_API_KEY,
-        },
-      });
+          Authorization: AIRSTACK_API_KEY
+        }
+      })
       const res = await graphQLClient.request<AirstackTokenBalance>(
         balanceQuery
-      );
+      )
 
       if (!res.TokenBalances.TokenBalance) {
-        console.log("No token balance found");
-        return 0;
+        console.log('No token balance found')
+        return 0
       }
 
-      return res.TokenBalances.TokenBalance[0].formattedAmount;
+      return res.TokenBalances.TokenBalance[0].formattedAmount
     } catch (e) {
-      throw new Error((e as Error)?.message);
+      throw new Error((e as Error)?.message)
     }
   }
 
-  static async isPoapHolder(
+  static async isPoapHolder (
     owner: string,
     poapId: string // eventId
   ): Promise<number> {
-    if (poapId == undefined) {
-      throw new Error("No poapId specified");
+    if (poapId === undefined) {
+      throw new Error('No poapId specified')
     }
 
     const poapQuery = gql`
@@ -320,14 +319,14 @@ class AirstackService {
           }
         }
       }
-    `;
+    `
 
-    const res = await request<AirstackPoapHolder>(API, poapQuery);
+    const res = await request<AirstackPoapHolder>(API, poapQuery)
 
-    return res.Poaps.Poap ? 1 : 0;
+    return res.Poaps.Poap ? 1 : 0
   }
 
-  static async isNftHolder(
+  static async isNftHolder (
     owner: string,
     nftAddress: string, // address
     blockchain: BlockchainName // ethereum or polygon
@@ -335,12 +334,12 @@ class AirstackService {
     if (!blockchain) {
       console.log(
         `No blockchain specified, defaulting to ${defaultBlockchain}`
-      );
-      blockchain = defaultBlockchain;
+      )
+      blockchain = defaultBlockchain
     }
 
-    if (nftAddress == undefined) {
-      throw new Error("No nftAddress specified");
+    if (nftAddress === undefined) {
+      throw new Error('No nftAddress specified')
     }
 
     const nftQuery = gql`
@@ -362,18 +361,18 @@ class AirstackService {
           }
         }
       }
-    `;
+    `
 
-    const response = await request<AirstackNftHolder>(API, nftQuery);
+    const response = await request<AirstackNftHolder>(API, nftQuery)
 
     const nftCount = response.TokenBalances.TokenBalance
       ? response.TokenBalances.TokenBalance.length
-      : 0;
+      : 0
 
-    return nftCount;
+    return nftCount
   }
 
-  static async isXMTPenabled(owner: string): Promise<number> {
+  static async isXMTPenabled (owner: string): Promise<number> {
     const XMTPquery = gql`
       query GetSocial {
         Wallet(
@@ -387,14 +386,14 @@ class AirstackService {
           }
         }
       }
-    `;
+    `
 
-    const response = await request<AirstackXmtpEnabled>(API, XMTPquery);
+    const response = await request<AirstackXmtpEnabled>(API, XMTPquery)
 
-    return response.Wallet.xmtp ? 1 : 0;
+    return response.Wallet.xmtp ? 1 : 0
   }
 
-  static async isEnsHolder(owner: string): Promise<number> {
+  static async isEnsHolder (owner: string): Promise<number> {
     const EnsQuery = gql`
       query GetSocial {
         Wallet(
@@ -408,20 +407,20 @@ class AirstackService {
           }
         }
       }
-    `;
+    `
 
-    const response = await request<AirstackEnsHolder>(API, EnsQuery);
+    const response = await request<AirstackEnsHolder>(API, EnsQuery)
 
-    let domainCount = 0;
+    let domainCount = 0
 
     if (response.Wallet.domains) {
-      domainCount = response.Wallet.domains.length;
+      domainCount = response.Wallet.domains.length
     }
 
-    return domainCount;
+    return domainCount
   }
 
-  static async isLensHolder(owner: string): Promise<number> {
+  static async isLensHolder (owner: string): Promise<number> {
     const LensQuery = gql`
       query GetSocial {
         Wallet(
@@ -436,21 +435,21 @@ class AirstackService {
           }
         }
       }
-    `;
+    `
 
-    const response = await request<AirstackSocialsHolder>(API, LensQuery);
-    let lensHeld = 0;
+    const response = await request<AirstackSocialsHolder>(API, LensQuery)
+    let lensHeld = 0
     if (response.Wallet.socials) {
       lensHeld = response.Wallet.socials.some(
-        (social) => social.dappName === "lens"
+        (social) => social.dappName === 'lens'
       )
         ? 1
-        : 0;
+        : 0
     }
-    return lensHeld; // not Lens holder
+    return lensHeld // not Lens holder
   }
 
-  static async isFarcasterHolder(owner: string): Promise<number> {
+  static async isFarcasterHolder (owner: string): Promise<number> {
     const FarcasterQuery = gql`
       query GetSocial {
         Wallet(
@@ -465,24 +464,23 @@ class AirstackService {
           }
         }
       }
-    `;
+    `
 
-    const response = await request<AirstackSocialsHolder>(API, FarcasterQuery);
-    let farcasterHeld = 0;
+    const response = await request<AirstackSocialsHolder>(API, FarcasterQuery)
+    let farcasterHeld = 0
     if (response.Wallet.socials) {
       farcasterHeld = response.Wallet.socials.some(
-        (social) => social.dappName === "farcaster"
+        (social) => social.dappName === 'farcaster'
       )
         ? 1
-        : 0;
+        : 0
     }
-    return farcasterHeld; // not Farcaster holder
+    return farcasterHeld // not Farcaster holder
   }
 
-  static async getNftSaleVolume(owner: string): Promise<number> {
-    let cursor = ""; // initialize cursor
+  static async getNftSaleVolume (owner: string): Promise<number> {
 
-    let totalVolume = 0; // initialize total amount
+    const totalVolume = 0 // initialize total amount
 
     // TODO Fix this query
     // Seems like Airstack deprecated `NFTSaleTransactions`
@@ -526,8 +524,8 @@ class AirstackService {
     //   if (!cursor) break; // stop if there's no next cursor
     // }
 
-    return totalVolume;
+    return totalVolume
   }
 }
 
-export default AirstackService;
+export default AirstackService

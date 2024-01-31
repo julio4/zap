@@ -147,7 +147,7 @@ export async function getAllERC20Tokens(
       ethereum: TokenBalances(
         input: {
           filter: {
-            owner: { _eq: "0xbbbC1f6BE7a36F9B49F807AE24ed7EbAB34D82ce" }
+            owner: { _eq: "${owner}" }
             tokenType: { _in: [ERC1155, ERC721] }
           }
           blockchain: ethereum
@@ -186,7 +186,7 @@ export async function getAllERC20Tokens(
       polygon: TokenBalances(
         input: {
           filter: {
-            owner: { _eq: "0xbbbC1f6BE7a36F9B49F807AE24ed7EbAB34D82ce" }
+            owner: { _eq: "${owner}" }
             tokenType: { _in: [ERC1155, ERC721] }
           }
           blockchain: polygon
@@ -239,8 +239,8 @@ export async function getAllERC20Tokens(
         queryNFTsPolygon
       );
 
-    let NFTsEthereum = resEthereum.ethereum.TokenBalance || [];
-    let NFTsPolygon = resPolygon.polygon.TokenBalance || [];
+    const NFTsEthereum = resEthereum.ethereum.TokenBalance || [];
+    const NFTsPolygon = resPolygon.polygon.TokenBalance || [];
 
     return [NFTsEthereum, NFTsPolygon];
   } catch (e) {
@@ -562,7 +562,7 @@ export async function getNftSaleVolume(owner: string): Promise<number> {
     );
 
     if (response.NFTSaleTransactions.NFTSaleTransaction) {
-      for (let transaction of response.NFTSaleTransactions.NFTSaleTransaction) {
+      for (const transaction of response.NFTSaleTransactions.NFTSaleTransaction) {
         const transactionInEth = parseInt(transaction.paymentAmount) / 1e18;
         totalVolume += transactionInEth;
       }

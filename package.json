@@ -5,7 +5,7 @@
     "build": "turbo build --filter=@zap/*",
     "docs": "turbo dev --filter=docs",
     "test": "turbo test",
-    "lint": "turbo lint",
+    "lint": "turbo lint --filter=@zap/* --filter=@demo/web --filter=@deprecated/oracle --no-daemon",
     "clean": "turbo clean",
     "format": "prettier --write --ignore-unknown **/*"
   },
