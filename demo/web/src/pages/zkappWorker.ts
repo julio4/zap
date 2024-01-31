@@ -28,7 +28,7 @@ const functions = {
   },
 
   loadContract: async () => {
-    const { Zap } = await import("../../../../zap/build/Zap.js");
+    const { Zap } = await import("@zap/core");
     state.Zap = Zap;
   },
 
