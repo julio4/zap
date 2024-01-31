@@ -1,5 +1,6 @@
 import React from "react";
 import { NFTTokenBalance } from "../../../types";
+import Image from "next/image";
 
 interface NFTModalProps {
   nfts: NFTTokenBalance[];
@@ -52,7 +53,7 @@ const NFTModal: React.FC<NFTModalProps> = ({
                 >
                   <div className="flex justify-between items-center">
                     <div className="flex items-center">
-                      <img
+                      <Image
                         src={fetchNFTImage(nft)}
                         alt=""
                         className="w-12 h-12 mr-2 object-cover"

@@ -1,5 +1,6 @@
 import React from "react";
 import { TokenBalance } from "../../../types";
+import Image from "next/image";
 
 interface TokenModalProps {
   tokens: TokenBalance[];
@@ -50,7 +51,7 @@ const TokenModal: React.FC<TokenModalProps> = ({
                   <div className="flex justify-between items-center">
                     <div className="flex items-center">
                       {
-                        <img
+                        <Image
                           src={fetchLogo(token as any)}
                           alt=""
                           className="w-6 h-6 mr-2"
