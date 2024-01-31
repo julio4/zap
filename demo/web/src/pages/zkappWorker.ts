@@ -4,8 +4,7 @@ type Transaction = Awaited<ReturnType<typeof Mina.transaction>>;
 
 // ---------------------------------------------------------------------------------------
 
-// import type { Zap } from '../../../contracts/src/Zap';
-import type { Zap } from "zap/src/Zap";
+import type { Zap } from "@zap/core";
 import { Condition } from "../types";
 
 const state = {
@@ -161,13 +160,11 @@ export type WorkerFunctions = keyof typeof functions;
 export type ZkappWorkerRequest = {
   id: number;
   fn: WorkerFunctions;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   args: any;
 };
 
 export type ZkappWorkerReponse = {
   id: number;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any;
 };
 

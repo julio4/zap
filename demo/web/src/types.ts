@@ -1,7 +1,6 @@
 import { JsonRpcSigner } from "ethers";
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   interface Window {
     ethereum: any;
     mina: any;
@@ -77,7 +76,6 @@ export enum OracleRoute {
 
 export type OracleRequest = {
   route: OracleRoute;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   args: { [key: string]: any };
 };
 

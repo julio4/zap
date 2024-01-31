@@ -14,7 +14,6 @@ import { calculateAttestationHash } from "../utils/calculateAttestationHash";
 type MinaEvent = {
   type: string;
   event: {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data: ProvablePure<any>;
     transactionInfo: {
       transactionHash: string;
@@ -129,9 +128,7 @@ export default function Home(): JSX.Element {
 
     // Then we verify that the attestation hash is in the events
     for (let event of events) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let valueArray: Provable<any> = event.event.data;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const currentHash = (valueArray as any).value[1][1];
       if (BigInt(currentHash) === BigInt(hashAttestation)) {
         // Then we verify that the base64 displayed in the frontend corresponds to the event
