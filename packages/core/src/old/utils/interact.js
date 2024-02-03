@@ -16,7 +16,7 @@ import {
   PublicKey,
 } from 'o1js';
 
-import { Zap } from '../../build/src/Zap.js';
+import { Zap } from '../../../build/src/Zap.js';
 
 // you can use this with any spec-compliant graphql endpoint
 let Berkeley = Mina.Network('https://proxy.berkeley.minaexplorer.com/graphql');
