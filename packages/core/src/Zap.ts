@@ -55,6 +55,24 @@ class ProvableStatement extends Struct({
   }
 }
 
+class Attestation extends Struct({
+  statement: ProvableStatement,
+  address: PublicKey,
+  // timestamp: Field,
+}) {
+  hash() {
+    const { hashRoute, conditionType, targetValue, source } = this.statement;
+    return Poseidon.hash([
+      hashRoute,
+      conditionType,
+      targetValue,
+    ]
+    .concat(source.toFields())
+    .concat(this.address.toFields()));
+  }
+}
+
+
 /**
  * ZAP: Zero-knowledge Attestation Protocol
  *
@@ -63,12 +81,6 @@ class ProvableStatement extends Struct({
  * The contract emits an event containing the verified statement id -> it's an attestation.
  */
 export class Zap extends SmartContract {
-  @state(PublicKey) oraclePublicKey = State<PublicKey>();
-
-  // contract events
-  events = {
-    verified: Field,
-  };
 
   deploy(args: DeployArgs) {
     super.deploy(args);
@@ -78,76 +90,23 @@ export class Zap extends SmartContract {
     });
   }
 
-  @method setOraclePublicKey(publicKey: PublicKey) {
-    this.oraclePublicKey.set(publicKey);
-  }
-
-  @method getOraclePublicKey() {
-    this.oraclePublicKey.assertEquals(this.oraclePublicKey.get());
-    return this.oraclePublicKey.get();
-  }
-
   @method verify(
-    // The statement to attest
-    conditionType: Field,
-    targetValue: Field,
-    // The private data attesting the statement from the trusted oracle
-    hashRoute: Field,
+    // The statement
+    statement: ProvableStatement,
+    // The value given to the statement variable used to verify the statement and emit the attestation
     privateData: Field,
-    // The signature that allows us to be sure that the private data are coming from our trusted oracle
-    signature: Signature
-  ) {
-    /* VERIFICATION OF ORACLE SIGNATURE AND ROUTE: START */
-    // Get the oracle public key from the contract state
-    const oraclePublicKey = this.oraclePublicKey.getAndAssertEquals();
+    signature: Signature,
+    // STATEMENT/ATTESTATION VERIFICATION
+    statement.assertValidSignature(privateData, signature);
+    statement.assertValidCondition(privateData);
 
-    // Evaluate whether the signature is valid for the provided data, and that the right
-    // statement is being attested
-    const validSignature = signature.verify(oraclePublicKey, [
-      privateData,
-      hashRoute,
-    ]);
-
-    // Check that the signature is valid
-    validSignature.assertTrue();
-    /* SIGNATURE VERIFICATION: END */
-
-    /* STATEMENT VERIFICATION: START */
-    // conditionType are <: 1, >: 2, ==: 3, !=: 4
-    // crash if conditionType is > 3 todo handle != case
-    conditionType.lessThanOrEqual(Field(3)).assertTrue();
-
-    // determine which operator to use
-    const whichOperator: Bool[] = [
-      conditionType.equals(Field(1)),
-      conditionType.equals(Field(2)),
-      conditionType.equals(Field(3)),
-    ];
-
-    // verify that the privateData attest the statement
-    const isPrivateDataValid = Provable.switch(whichOperator, Bool, [
-      privateData.lessThan(targetValue), // privateData < targetValue
-      privateData.greaterThan(targetValue), // privateData > targetValue
-      privateData.equals(targetValue), // privateData == targetValue
-    ]);
-
-    isPrivateDataValid.assertTrue();
-
-    // STATEMENT VERIFICATION: END
-
-    /* Generate the attestation and emit an event*/
-    // todo add timestamp later
-    // Attestation hash should contain information about the statement, so we can verify that this attestation corresponds to the right
-    // statement
-
-    // TODO maybe we should hash and then sign, more secure (Birthday problem)
-    const attestationHash = Poseidon.hash([
-      hashRoute,
-      conditionType,
-      targetValue,
-      this.sender.toFields()[0],
-      //timestamp
-    ]);
+    // ATTESTATION GENERATION
+    const sender = this.sender;
+    AccountUpdate.createSigned(sender);
+    const attestation = new Attestation({
+      statement,
+      address: sender
+    });
 
     // Emit an event only if everything is valid, containing the attestation hash and also the timestamp
     // Thus, external watchers can only see that "some proof" (but it is hashed so they don't know what statement it is) has been verified
