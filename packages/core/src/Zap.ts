@@ -1,8 +1,6 @@
 import {
   Field,
   SmartContract,
-  state, // eslint-disable-line
-  State,
   method, // eslint-disable-line
   DeployArgs,
   Permissions,
@@ -11,14 +9,9 @@ import {
   Provable,
   Bool,
   Poseidon,
+  Struct,
+  AccountUpdate,
 } from 'o1js';
-
-type Statement = {
-  conditionType: Field;
-  targetValue: Field;
-  hashRoute: Field;
-  source: PublicKey;
-};
 
 class ProvableStatement extends Struct({
   conditionType: Field,
@@ -62,16 +55,40 @@ class Attestation extends Struct({
 }) {
   hash() {
     const { hashRoute, conditionType, targetValue, source } = this.statement;
-    return Poseidon.hash([
-      hashRoute,
-      conditionType,
-      targetValue,
-    ]
-    .concat(source.toFields())
-    .concat(this.address.toFields()));
+    return Poseidon.hash(
+      [hashRoute, conditionType, targetValue]
+        .concat(source.toFields())
+        .concat(this.address.toFields())
+    );
   }
 }
 
+interface IHandler {
+  handle(attestation: Attestation): void;
+}
+
+// Example handler that just emit an event
+export class Handler extends SmartContract implements IHandler {
+  events = {
+    verified: Field,
+  };
+
+  @method handle(attestation: Attestation) {
+    this.emitEvent('verified', attestation.hash());
+  }
+}
+
+interface IZap {
+  verify(
+    // The statement
+    statement: ProvableStatement,
+    // The value given to the statement variable used to verify the statement and emit the attestation
+    privateData: Field,
+    signature: Signature,
+    // Handler (contract that implements IHandler)
+    handler: PublicKey
+  ): Bool;
+}
 
 /**
  * ZAP: Zero-knowledge Attestation Protocol
@@ -80,8 +97,7 @@ class Attestation extends Struct({
  * The statement are validated with data signed by a source.
  * The contract emits an event containing the verified statement id -> it's an attestation.
  */
-export class Zap extends SmartContract {
-
+export class Zap extends SmartContract implements IZap {
   deploy(args: DeployArgs) {
     super.deploy(args);
     this.account.permissions.set({
@@ -91,11 +107,11 @@ export class Zap extends SmartContract {
   }
 
   @method verify(
-    // The statement
     statement: ProvableStatement,
-    // The value given to the statement variable used to verify the statement and emit the attestation
     privateData: Field,
     signature: Signature,
+    handler: PublicKey
+  ): Bool {
     // STATEMENT/ATTESTATION VERIFICATION
     statement.assertValidSignature(privateData, signature);
     statement.assertValidCondition(privateData);
@@ -105,15 +121,14 @@ export class Zap extends SmartContract {
     AccountUpdate.createSigned(sender);
     const attestation = new Attestation({
       statement,
-      address: sender
+      address: sender,
     });
 
-    // Emit an event only if everything is valid, containing the attestation hash and also the timestamp
-    // Thus, external watchers can only see that "some proof" (but it is hashed so they don't know what statement it is) has been verified
-    // at a certain time
-    this.emitEvent(
-      'verified',
-      attestationHash // todo add timestamp later
-    );
+    // ATTESTATION HANDLING
+    const handlerContract = new Handler(handler);
+    handlerContract.handle(attestation);
+
+    // Calling contract can further handle the attestation if needed
+    return Bool(true);
   }
 }
