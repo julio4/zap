@@ -1,3 +1,3 @@
-import { Zap } from './Zap.js';
+import { Verifier } from './verifier/Verifier.js';
 
-export { Zap };
+export { Verifier };
