@@ -1,15 +1,5 @@
 import { Field, Provable, PublicKey, Signature, Struct, Bool, Poseidon, Encoding } from 'o1js';
-
-export type Statement = {
-  sourceKey: string;
-  route: string;
-  args: [] | null;
-  condition: {
-    /* type: 1: '<' | 2: '>' | 3: '==' | 4: '!='; */
-    type: number;
-    targetValue: number;
-  };
-};
+import { Statement } from "@zap/types";
 
 export class ProvableStatement extends Struct({
   conditionType: Field,
@@ -22,7 +12,7 @@ export class ProvableStatement extends Struct({
       conditionType: Field(statement.condition.type),
       targetValue: Field(statement.condition.targetValue),
       hashRoute: Poseidon.hash(Encoding.stringToFields(statement.route)),
-      source: PublicKey.fromJSON(JSON.parse(statement.sourceKey)),
+      source: PublicKey.fromBase58(statement.sourceKey),
     });
   }
 
