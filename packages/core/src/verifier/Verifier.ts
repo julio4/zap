@@ -6,7 +6,6 @@ import {
   Permissions,
   PublicKey,
   Signature,
-  Bool,
   AccountUpdate,
 } from 'o1js';
 import { ProvableStatement } from '../Statement';
@@ -22,7 +21,7 @@ interface IVerifier {
     signature: Signature,
     // Handler (contract that implements IHandler)
     handler: PublicKey
-  ): Bool;
+  ): void;
 }
 
 /**
@@ -46,7 +45,7 @@ export class Verifier extends SmartContract implements IVerifier {
     privateData: Field,
     signature: Signature,
     handler: PublicKey
-  ): Bool {
+  ) {
     // STATEMENT/ATTESTATION VERIFICATION
     statement.assertValidSignature(privateData, signature);
     statement.assertValidCondition(privateData);
@@ -62,8 +61,5 @@ export class Verifier extends SmartContract implements IVerifier {
     // ATTESTATION HANDLING
     const handlerContract = new Handler(handler);
     handlerContract.handle(attestation);
-
-    // Calling contract can further handle the attestation if needed
-    return Bool(true);
   }
 }

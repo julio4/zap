@@ -1,16 +1,22 @@
 import {
-  Field,
   SmartContract,
-  state, // eslint-disable-line
+  Field,
+  state,
   State,
-  method, // eslint-disable-line
+  method,
   DeployArgs,
-  Permissions,
   PublicKey,
+  Permissions,
   Poseidon,
 } from 'o1js';
 
 import { initialRoot, RegistryMerkleWitness } from './RegistryStorage';
+
+export type IRegistry = {
+  // States
+  registryRoot: State<Field>;
+  register(witness: RegistryMerkleWitness, publicKey: PublicKey): void;
+};
 
 /**
  * Registry: This contract is used as a registry of Zap sources.
@@ -20,7 +26,7 @@ import { initialRoot, RegistryMerkleWitness } from './RegistryStorage';
  * The storage of the registry is offchain, and this contract is only used to verify the integrity of the registry.
  * => Potentially adds metadata later on.
  */
-export class Registry extends SmartContract {
+export class Registry extends SmartContract implements IRegistry {
   @state(Field) registryRoot = State<Field>();
 
   init() {

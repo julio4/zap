@@ -1,5 +1,15 @@
-import { Field, Provable, PublicKey, Signature, Struct, Bool, Poseidon, Encoding } from 'o1js';
-import { Statement } from "@zap/types";
+import {
+  Field,
+  Provable,
+  PublicKey,
+  Signature,
+  Struct,
+  Bool,
+  Poseidon,
+  Encoding,
+  PrivateKey,
+} from 'o1js';
+import { Statement } from '@zap/types';
 
 export class ProvableStatement extends Struct({
   conditionType: Field,
@@ -14,6 +24,17 @@ export class ProvableStatement extends Struct({
       hashRoute: Poseidon.hash(Encoding.stringToFields(statement.route)),
       source: PublicKey.fromBase58(statement.sourceKey),
     });
+  }
+
+  static sign(
+    statement: Statement,
+    privateData: Field,
+    privateKey: PrivateKey
+  ): Signature {
+    return Signature.create(privateKey, [
+      privateData,
+      Poseidon.hash(Encoding.stringToFields(statement.route)),
+    ]);
   }
 
   assertValidSignature(privateData: Field, signature: Signature) {
