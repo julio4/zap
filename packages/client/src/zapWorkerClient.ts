@@ -44,18 +44,20 @@ export class ZapWorkerClient {
   }
 
   createVerifyTransaction(
-    conditionType: Field,
-    targetValue: Field,
-    hashRoute: Field,
-    privateData: Field,
-    signature: Signature
+    sourceKey: string,
+    conditionType: number,
+    targetValue: number,
+    route: string,
+    privateData: string,
+    signature: string
   ) {
     return this._call("createVerifyTransaction", {
-      conditionType: JSON.stringify(conditionType.toJSON()),
-      targetValue: JSON.stringify(targetValue.toJSON()),
-      hashRoute: JSON.stringify(hashRoute.toJSON()),
-      privateData: JSON.stringify(privateData.toJSON()),
-      signature: JSON.stringify(signature.toJSON()),
+      sourceKey,
+      conditionType,
+      targetValue,
+      route,
+      privateData,
+      signature,
     });
   }
 

@@ -38,6 +38,9 @@ importers:
       '@types/node':
         specifier: ^20.10.5
         version: 20.10.5
+      '@zap/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       '@zap/source':
         specifier: workspace:*
         version: link:../../packages/source
@@ -307,6 +310,9 @@ importers:
 
   packages/core:
     dependencies:
+      '@zap/shared':
+        specifier: workspace:*
+        version: link:../shared
       '@zap/types':
         specifier: workspace:*
         version: link:../types

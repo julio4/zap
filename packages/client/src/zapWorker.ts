@@ -1,11 +1,12 @@
 import { Mina, PublicKey, fetchAccount, Signature, Field } from "o1js";
-import type { Zap } from "@zap/core";
+import { Verifier, ProvableStatement } from "@zap/core";
+import { Statement } from "@zap/types";
 
 type Transaction = Awaited<ReturnType<typeof Mina.transaction>>;
 
 const state = {
-  Zap: null as null | typeof Zap,
-  zap: null as null | Zap,
+  Verifier: null as null | typeof Verifier,
+  verifier: null as null | Verifier,
   tx: null as null | Transaction,
 };
 
@@ -18,11 +19,11 @@ const functions: Record<string, (...args: any[]) => any> = {
     Mina.setActiveInstance(Berkeley);
   },
   loadContract: async (args: {}) => {
-    const { Zap } = await import("@zap/core");
-    state.Zap = Zap;
+    const { Verifier } = await import("@zap/core");
+    state.Verifier = Verifier;
   },
   compileContract: async (args: {}) => {
-    await state.Zap!.compile();
+    await state.Verifier!.compile();
   },
   fetchAccount: async (args: { publicKey58: string }) => {
     const publicKey = PublicKey.fromBase58(args.publicKey58);
@@ -30,26 +31,34 @@ const functions: Record<string, (...args: any[]) => any> = {
   },
   initZapInstance: async (args: { publicKey58: string }) => {
     const publicKey = PublicKey.fromBase58(args.publicKey58);
-    state.zap = new state.Zap!(publicKey);
+    state.verifier = new state.Verifier!(publicKey);
   },
-  getOraclePublicKey: async (args: {}) => {
-    const publicKey = state.zap!.oraclePublicKey.get();
-    return JSON.stringify(publicKey.toJSON());
-  },
+
   createVerifyTransaction: async (args: {
-    conditionType: string;
-    targetValue: string;
-    hashRoute: string;
+    sourceKey: string;
+    conditionType: number;
+    targetValue: number;
+    route: string;
     privateData: string;
     signature: string;
   }) => {
     const transaction = await Mina.transaction(() => {
-      state.zap!.verify(
-        Field.fromJSON(JSON.parse(args.conditionType)),
-        Field.fromJSON(JSON.parse(args.targetValue)),
-        Field.fromJSON(JSON.parse(args.hashRoute)),
-        Field.fromJSON(JSON.parse(args.privateData)),
-        Signature.fromJSON(JSON.parse(args.signature))
+      const statement: Statement = {
+        sourceKey: args.sourceKey,
+        route: args.route,
+        condition: {
+          type: args.conditionType,
+          targetValue: args.targetValue,
+        },
+      };
+
+      const provableStatement = ProvableStatement.from(statement);
+
+      state.verifier!.verify(
+        provableStatement,
+        Field(args.privateData),
+        Signature.fromBase58(args.signature),
+        PublicKey.fromBase58(args.sourceKey)
       );
     });
     state.tx = transaction;
