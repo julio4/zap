@@ -1,3 +1,5 @@
+import { PublicKey, PrivateKey } from "o1js";
+
 export type Statement = {
   /* in base58, @see PublicKey.toBase58 */
   sourceKey: string;
@@ -11,4 +13,9 @@ export type Statement = {
     type: number;
     targetValue: number;
   };
+};
+
+export type KeyPair = {
+  publicKey: PublicKey; // The public key of the key pair.
+  privateKey: PrivateKey; // The private key of the key pair.
 };

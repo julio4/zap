@@ -23,7 +23,8 @@
     "lint": "npx eslint src/* --fix"
   },
   "dependencies": {
-    "@zap/types": "workspace:*"
+    "@zap/types": "workspace:*",
+    "@zap/shared": "workspace:*"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.16.4",
