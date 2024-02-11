@@ -2,13 +2,16 @@ import { EventHandler } from './EventHandler';
 import { Attestation } from '../Attestation';
 import { AccountUpdate, Field, Mina, Poseidon, PrivateKey } from 'o1js';
 import { ProvableStatement } from '../Statement';
-import { KeyPair } from '@zap/types';
-import { Handler } from './Handler';
-// import { generateKeyPair } from '@zap/shared';
+import { KeyPair, Statement } from '@zap/types';
+import { generateKeyPair } from '@zap/shared';
 
 let proofsEnabled = false;
 
-async function localDeploy(app: Handler, appKeys: KeyPair, deployer: KeyPair) {
+async function localDeploy(
+  app: EventHandler,
+  appKeys: KeyPair,
+  deployer: KeyPair
+) {
   const tx = await Mina.transaction(deployer.publicKey, () => {
     AccountUpdate.fundNewAccount(deployer.publicKey);
     app.deploy({
@@ -20,46 +23,53 @@ async function localDeploy(app: Handler, appKeys: KeyPair, deployer: KeyPair) {
 }
 
 describe('EventHandler', () => {
-  let eventHandler: EventHandler;
   let attestation: Attestation;
-  let zkappHandler: Handler, deployer: KeyPair, handlerKeys: KeyPair;
-
-  //   beforeEach(() => {
-  //     const sourceKey = PrivateKey.random().toPublicKey();
-  //     const addressSource = PrivateKey.random().toPublicKey();
-  //     const addressHandler = PrivateKey.random().toPublicKey();
-  //     const statement = {
-  //       sourceKey: sourceKey.toBase58(),
-  //       route: '/route',
-  //       condition: {
-  //         type: 1,
-  //         targetValue: 1,
-  //       },
-  //     };
-  //     attestation = new Attestation({
-  //       statement: ProvableStatement.from(statement),
-  //       address: addressSource,
-  //     });
-  //     eventHandler = new EventHandler(addressHandler);
-  //   });
+  let eventHandler: EventHandler,
+    deployer: KeyPair,
+    handlerKeys: KeyPair,
+    user: KeyPair;
 
   beforeEach(async () => {
     // create local blockchain
     const Local = Mina.LocalBlockchain({ proofsEnabled });
     Mina.setActiveInstance(Local);
-
     // Set up keys
     deployer = Local.testAccounts[0];
-    // handlerKeys = generateKeyPair();
+    handlerKeys = generateKeyPair();
+    user = Local.testAccounts[1];
 
-    // // Deploy the zap contract
-    // zkappHandler = new Handler(handlerKeys.publicKey);
-    // await Handler.compile();
-    // await localDeploy(zkappHandler, handlerKeys, deployer);
+    eventHandler = new EventHandler(handlerKeys.publicKey);
+    await EventHandler.compile();
+    await localDeploy(eventHandler, handlerKeys, deployer);
   });
 
-  it('should emit verified event with correct attestation hash', () => {
-    eventHandler.handle(attestation);
-    expect(eventHandler.events.verified).toEqual(attestation.hash());
+  it('should emit verified event with correct attestation hash', async () => {
+    const sourceKey = PrivateKey.random().toPublicKey();
+    const statement: Statement = {
+      sourceKey: sourceKey.toBase58(),
+      route: '/route',
+      condition: {
+        type: 1,
+        targetValue: 1,
+      },
+    };
+
+    attestation = new Attestation({
+      statement: ProvableStatement.from(statement),
+      address: handlerKeys.publicKey, // TODO: which address should be used here?
+    });
+
+    const txn = await Mina.transaction(user.publicKey, () => {
+      eventHandler.handle(attestation);
+    });
+    await txn.prove();
+    await txn.sign([user.privateKey]).send();
+
+    const expectedDataInEvent = attestation.hash();
+    const eventsFetched = await eventHandler.fetchEvents();
+
+    const dataInEventFetched = eventsFetched[0].event.data;
+    expect(eventsFetched[0].type).toEqual('verified');
+    expect(dataInEventFetched).toEqual(expectedDataInEvent);
   });
 });
