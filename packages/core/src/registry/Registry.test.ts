@@ -1,16 +1,51 @@
-import { Poseidon, PrivateKey } from 'o1js';
-import {
-  initialRoot,
-  RegistryStorage,
-} from './RegistryStorage';
+import { Registry } from './Registry';
+import { RegistryStorage, initialRoot } from './RegistryStorage';
+import { Mina, PrivateKey, PublicKey, AccountUpdate, Poseidon } from 'o1js';
 
-describe('RegistryStorage', () => {
-  const registryStorage = new RegistryStorage();
+let proofsEnabled = false;
 
-  it('should init with correct initial state', async () => {
-    expect(registryStorage.tree.getRoot()).toEqual(initialRoot);
-    expect(registryStorage.tree.height).toEqual(20);
-    expect(registryStorage.index).toEqual(0);
+describe('Registry', () => {
+  let deployerAccount: PublicKey,
+    deployerKey: PrivateKey,
+    zkAppAddress: PublicKey,
+    zkAppPrivateKey: PrivateKey,
+    zkApp: Registry,
+    registryStorage: RegistryStorage;
+
+  beforeAll(async () => {
+    if (proofsEnabled) {
+      await Registry.compile();
+    }
+  });
+
+  beforeEach(() => {
+    const Local = Mina.LocalBlockchain({ proofsEnabled });
+    Mina.setActiveInstance(Local);
+    ({ privateKey: deployerKey, publicKey: deployerAccount } =
+      Local.testAccounts[0]);
+    // ({ privateKey: senderKey, publicKey: senderAccount } =
+    //   Local.testAccounts[1]);
+    zkAppPrivateKey = PrivateKey.random();
+    zkAppAddress = zkAppPrivateKey.toPublicKey();
+    zkApp = new Registry(zkAppAddress);
+    registryStorage = new RegistryStorage();
+  });
+
+  async function localDeploy() {
+    const txn = await Mina.transaction(deployerAccount, () => {
+      AccountUpdate.fundNewAccount(deployerAccount);
+      zkApp.deploy({
+        zkappKey: zkAppPrivateKey,
+      });
+    });
+    await txn.prove();
+    await txn.sign([deployerKey, zkAppPrivateKey]).send();
+  }
+
+  it('generates and deploys the `Registry` smart contract', async () => {
+    await localDeploy();
+    const initialRegistryRoot = await zkApp.registryRoot.get();
+    expect(initialRegistryRoot).toEqual(initialRoot);
   });
 
   it('assertSynced', async () => {
