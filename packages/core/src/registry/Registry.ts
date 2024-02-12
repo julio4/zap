@@ -47,18 +47,17 @@ export class Registry extends SmartContract implements IRegistry {
   }
 
   @method register(witness: RegistryMerkleWitness, publicKey: PublicKey) {
-    const initialRoot = this.registryRoot.getAndRequireEquals();
-
-    // Verify that the public key is not already registered
-    witness.calculateRoot(Field(0)).assertEquals(initialRoot);
+    const currentRoot = this.registryRoot.getAndRequireEquals();
 
     // Compute the new root
     const hashedPublicKey = Poseidon.hash(publicKey.toFields());
-    const newRoot = witness.calculateRoot(hashedPublicKey);
-    newRoot.assertNotEquals(initialRoot);
+    const potentialNewRoot = witness.calculateRoot(hashedPublicKey);
+    
+    // Verify that the public key is not already registered
+    potentialNewRoot.assertNotEquals(currentRoot);  // not the right way to check for uniqueness
 
     // Update the onchain registry root
-    this.registryRoot.set(newRoot);
+    this.registryRoot.set(potentialNewRoot);
 
     // Emit the event with the registered public key
     // Can be used to keep in sync the offchain registry

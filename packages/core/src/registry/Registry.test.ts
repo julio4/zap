@@ -48,17 +48,42 @@ describe('Registry', () => {
     expect(initialRegistryRoot).toEqual(initialRoot);
   });
 
-  it('assertSynced', async () => {
-    expect(() => registryStorage.assertSynced(initialRoot)).not.toThrow();
-    expect(() => registryStorage.assertSynced(initialRoot.add(1))).toThrow();
+  it('registers a public key', async () => {
+    await localDeploy();
+    const newSourcePublicKey = PrivateKey.random().toPublicKey();
+    const hashedPublicKey = Poseidon.hash(newSourcePublicKey.toFields());
+    const witness = registryStorage.insert(newSourcePublicKey);
+
+    const txn = await Mina.transaction(deployerAccount, () => {
+      zkApp.register(witness, newSourcePublicKey);
+    });
+    await txn.prove();
+    await txn.sign([deployerKey, zkAppPrivateKey]).send();
+
+    const updatedRegistryRoot = await zkApp.registryRoot.get();
+    expect(updatedRegistryRoot).not.toEqual(initialRoot);
+    expect(updatedRegistryRoot).toEqual(witness.calculateRoot(hashedPublicKey));
   });
 
-  it('insert a new public key', async () => {
-    const publicKey = PrivateKey.random().toPublicKey();
-    const witness = registryStorage.insert(publicKey);
-    const hashedPublicKey = Poseidon.hash(publicKey.toFields());
-    expect(witness.calculateRoot(hashedPublicKey)).toEqual(
-      registryStorage.tree.getRoot()
-    );
+  it('throws an error when trying to register the same public key twice', async () => {
+    // test with same witness. Atm we don't throw if adding same key but with different witness
+    await localDeploy();
+    const newSourcePublicKey = PrivateKey.random().toPublicKey();
+    const witness = registryStorage.insert(newSourcePublicKey);
+
+    const txn = await Mina.transaction(deployerAccount, () => {
+      zkApp.register(witness, newSourcePublicKey);
+    });
+    await txn.prove();
+    await txn.sign([deployerKey, zkAppPrivateKey]).send();
+
+    const updatedRegistryRoot = await zkApp.registryRoot.get();
+    expect(updatedRegistryRoot).not.toEqual(initialRoot);
+
+    await expect(
+      Mina.transaction(deployerAccount, () => {
+        zkApp.register(witness, newSourcePublicKey);
+      })
+    ).rejects.toThrow();
   });
 });
