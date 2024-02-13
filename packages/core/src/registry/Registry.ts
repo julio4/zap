@@ -61,6 +61,6 @@ export class Registry extends SmartContract implements IRegistry {
 
     // Emit the event with the registered public key
     // Can be used to keep in sync the offchain registry
-    // this.emitEvent("registered", publicKey);
+    this.emitEvent("registered", publicKey.toFields()[0]);
   }
 }

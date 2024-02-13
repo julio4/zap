@@ -86,4 +86,21 @@ describe('Registry', () => {
       })
     ).rejects.toThrow();
   });
+
+  it('emits a `registered` event when a new public key is registered', async () => {
+    await localDeploy();
+    const newSourcePublicKey = PrivateKey.random().toPublicKey();
+    const witness = registryStorage.insert(newSourcePublicKey);
+
+    const txn = await Mina.transaction(deployerAccount, () => {
+      zkApp.register(witness, newSourcePublicKey);
+    });
+    await txn.prove();
+    await txn.sign([deployerKey, zkAppPrivateKey]).send();
+
+    const eventsFetched = await zkApp.fetchEvents();
+    const dataInEventFetched = eventsFetched[0].event.data;
+    expect(eventsFetched[0].type).toEqual('registered');
+    expect(dataInEventFetched).toEqual(newSourcePublicKey.toFields()[0]);
+  });
 });
