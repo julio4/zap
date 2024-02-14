@@ -56,7 +56,7 @@ describe('EventHandler', () => {
 
     attestation = new Attestation({
       statement: ProvableStatement.from(statement),
-      address: handlerKeys.publicKey, // TODO: which address should be used here?
+      address: user.publicKey, // TODO: which address should be used here?
     });
 
     const txn = await Mina.transaction(user.publicKey, () => {

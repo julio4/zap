@@ -3,15 +3,7 @@ import { ProvableStatement } from '../Statement';
 import { Verifier } from './Verifier';
 import { EventHandler } from '../handler/EventHandler';
 
-import {
-  Mina,
-  PrivateKey,
-  PublicKey,
-  AccountUpdate,
-  Poseidon,
-  Field,
-  Signature,
-} from 'o1js';
+import { Mina, PrivateKey, PublicKey, AccountUpdate, Field } from 'o1js';
 import { Attestation } from '../Attestation';
 // import { SecondaryZkApp } from '../handler/EventHandler';
 
@@ -88,7 +80,7 @@ describe('Verifier', () => {
     await localDeployVerifier();
   });
 
-  it.only('verifies a statement with emitEvent handler', async () => {
+  it('verifies a statement with emitEvent handler', async () => {
     await localDeployVerifier();
     await localDeployHandler();
 
@@ -106,5 +98,54 @@ describe('Verifier', () => {
 
     await txn.prove();
     await txn.sign([userKey]).send();
+
+    const attestation = new Attestation({
+      statement: provableStatement,
+      address: userAccount,
+    });
+    const expectedDataInEvent = attestation.hash();
+    const eventsFetched = await handler.fetchEvents();
+    const dataInEventFetched = eventsFetched[0].event.data;
+    expect(eventsFetched[0].type).toEqual('verified');
+    expect(dataInEventFetched).toEqual(expectedDataInEvent);
+  });
+
+  it("should throw an error if the statement's signature is invalid", async () => {
+    await localDeployVerifier();
+    await localDeployHandler();
+
+    const provableStatement = ProvableStatement.from(statement);
+    const privateData = new Field(1);
+    const signature = ProvableStatement.sign(
+      statement,
+      privateData,
+      sourcePrivateKey
+    );
+    signature.r = Field.random();
+
+    await expect(
+      Mina.transaction(userAccount, () => {
+        zkApp.verify(provableStatement, privateData, signature, handlerAddress);
+      })
+    ).rejects.toThrow();
+  });
+
+  it('should throw an error if the statement condition is invalid', async () => {
+    await localDeployVerifier();
+    await localDeployHandler();
+
+    const provableStatement = ProvableStatement.from(statement);
+    const privateData = new Field(0);
+    const signature = ProvableStatement.sign(
+      statement,
+      privateData,
+      sourcePrivateKey
+    );
+
+    await expect(
+      Mina.transaction(userAccount, () => {
+        zkApp.verify(provableStatement, privateData, signature, handlerAddress);
+      })
+    ).rejects.toThrow();
   });
 });

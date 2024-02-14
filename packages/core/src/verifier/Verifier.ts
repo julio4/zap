@@ -10,7 +10,7 @@ import {
 } from 'o1js';
 import { ProvableStatement } from '../Statement';
 import { Attestation } from '../Attestation';
-import { Handler } from '../handler/Handler';
+import { EventHandler } from '../handler/EventHandler';
 
 interface IVerifier {
   verify(
@@ -59,7 +59,7 @@ export class Verifier extends SmartContract implements IVerifier {
     });
 
     // ATTESTATION HANDLING
-    const handlerContract = new Handler(handler);
+    const handlerContract = new EventHandler(handler);
     handlerContract.handle(attestation);
   }
 }
