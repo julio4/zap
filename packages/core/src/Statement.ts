@@ -47,19 +47,22 @@ export class ProvableStatement extends Struct({
 
   assertValidCondition(privateData: Field) {
     // conditionType are <: 1, >: 2, ==: 3, !=: 4
-    // todo handle case 4
-    this.conditionType.lessThanOrEqual(Field(3)).assertTrue();
+    this.conditionType.lessThanOrEqual(Field(4)).assertTrue();
 
     const whichOperator: Bool[] = [
       this.conditionType.equals(Field(1)),
       this.conditionType.equals(Field(2)),
       this.conditionType.equals(Field(3)),
+      this.conditionType.equals(Field(4)),
     ];
 
     const truthValue = Provable.switch(whichOperator, Bool, [
       privateData.lessThan(this.targetValue),
       privateData.greaterThan(this.targetValue),
       privateData.equals(this.targetValue),
+      privateData
+        .greaterThan(this.targetValue)
+        .or(privateData.lessThan(this.targetValue)),
     ]);
 
     truthValue.assertTrue();
