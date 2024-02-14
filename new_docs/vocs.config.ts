@@ -2,13 +2,15 @@ import { defineConfig } from "vocs";
 
 export default defineConfig({
   titleTemplate: "%s – ZAP",
-  logoUrl: "⚡",
-  iconUrl: "⚡",
+  logoUrl: {
+    light: "/zapTitleLight.png",
+    dark: "/zapTitleDark.png",
+  },
+  iconUrl: "/zapLogo.png",
   editLink: {
     pattern: "https://github.com/julio4/zap/edit/main/docs/:path",
     text: "Edit on GitHub",
   },
-
   // TODO: footer
   // todo: sidebar
   // todo: navbar
