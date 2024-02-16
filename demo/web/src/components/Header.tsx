@@ -4,7 +4,7 @@ import { Search } from "./Search";
 import { Github } from "./logo";
 
 import { FaRegUserCircle } from "react-icons/fa";
-import { getAttestationNotesFromLocalStorage } from "../utils/localStorageAttestation";
+import { useAttestationStore } from "../utils/attestationStore";
 
 const Header = ({
   MinaWalletComponent,
@@ -16,22 +16,8 @@ const Header = ({
   showSearch?: boolean;
 }) => {
 
-  const [numberOfAttestations, setNumberOfAttestations] = useState<string>("");
-
-  useEffect(() => {
-
-    const attestations = getAttestationNotesFromLocalStorage();
-    const numberOfAttestations = attestations ? attestations.length : 0;
-    if (numberOfAttestations > 99) {
-      setNumberOfAttestations("99+");
-      return;
-    }
-    if (numberOfAttestations === 0) {
-      setNumberOfAttestations("");
-      return;
-    }
-    setNumberOfAttestations(numberOfAttestations.toString());
-  }, []);
+  const attestationNotes = useAttestationStore(state => state.attestationNotes);
+  let numberOfAttestations = attestationNotes.length > 99 ? "99+" : attestationNotes.length === 0 ? "" : attestationNotes.length.toString();
 
   return (
     <header className="sticky top-0 z-50 flex flex-wrap items-center justify-between px-4 py-5 transition duration-500 sm:px-6 lg:px-8 bg-transparent">

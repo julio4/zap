@@ -2,15 +2,21 @@ import React, { useState, useEffect } from "react";
 import AttestationSidebar from "./attestationSidebar";
 import { AttestationNote, AttestationNoteDated } from "../../types";
 import { decodeAttestationNote } from "../../utils/base64Attestation";
-import { getAttestationNotesFromLocalStorage } from "../../utils/localStorageAttestation";
-
+import { useAttestationStore } from "../../utils/attestationStore";
 interface AttestationHistoryProps { }
 
 const AttestationHistory: React.FC<AttestationHistoryProps> = () => {
-  const [attestationsNotesDated, setAttestationsNotesDated] = useState<AttestationNoteDated[]>(
-    []
-  );
   const [selectedAttestation, setSelectedAttestation] = useState<any>(null);
+  const attestations = useAttestationStore(state => state.attestationNotes);
+
+  const attestationsNotesDated = attestations.map((attestationWithDate, index) => {
+    const [date, base64Attestation] = attestationWithDate.split(/:(.+)/);
+    const decodedAttestation = decodeAttestationNote(base64Attestation.trim());
+    return {
+      attestationNote: decodedAttestation,
+      date,
+    };
+  });
 
   const handleClick = (attestation: any) => {
     if (attestation === selectedAttestation) {
@@ -29,23 +35,6 @@ const AttestationHistory: React.FC<AttestationHistoryProps> = () => {
     const match = str.match(regex);
     return match ? match[1] : null;
   };
-
-  useEffect(() => {
-    const attestations = getAttestationNotesFromLocalStorage();
-    if (attestations) {
-      const decodedAttestationsDated = attestations.map((attestationWithDate) => {
-        const [date, base64Attestation] = attestationWithDate.split(/:(.+)/);
-
-        const decodedAttestation = decodeAttestationNote(base64Attestation.trim());
-        const attestationDated: AttestationNoteDated = {
-          attestationNote: decodedAttestation,
-          date,
-        };
-        return attestationDated;
-      });
-      setAttestationsNotesDated(decodedAttestationsDated)
-    }
-  }, []);
 
   return (
     <div
