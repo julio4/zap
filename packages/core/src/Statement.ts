@@ -45,12 +45,29 @@ export class ProvableStatement extends Struct({
     ]);
   }
 
+  isValidSignature(privateData: Field, signature: Signature): Bool {
+    return signature.verify(this.source, [privateData, this.hashRoute]);
+  }
+
   assertValidSignature(privateData: Field, signature: Signature) {
-    const validSignature = signature.verify(this.source, [
-      privateData,
-      this.hashRoute,
-    ]);
-    validSignature.assertTrue();
+    this.isValidSignature(privateData, signature).assertTrue();
+  }
+
+  isValidCondition(privateData: Field): Bool {
+    // see types/ConditionType
+    // conditionType are <: 1, >: 2, ==: 3, !=: 4
+    // todo handle case 4
+    return this.conditionType.lessThanOrEqual(Field(3)).and(
+      Provable.switch(
+        this.conditionType.equals(Field(1)),
+        Bool,
+        [
+          privateData.lessThan(this.targetValue),
+          privateData.greaterThan(this.targetValue),
+          privateData.equals(this.targetValue),
+        ]
+      )
+    );
   }
 
   assertValidCondition(privateData: Field) {

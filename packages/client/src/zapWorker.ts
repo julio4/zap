@@ -35,30 +35,18 @@ const functions: Record<string, (...args: any[]) => any> = {
   },
 
   createVerifyTransaction: async (args: {
-    sourceKey: string;
-    conditionType: number;
-    targetValue: number;
-    route: string;
+    statement: Statement;
     privateData: string;
     signature: string;
   }) => {
+    const provableStatement = ProvableStatement.from(args.statement);
     const transaction = await Mina.transaction(() => {
-      const statement: Statement = {
-        sourceKey: args.sourceKey,
-        route: args.route,
-        condition: {
-          type: args.conditionType,
-          targetValue: args.targetValue,
-        },
-      };
-
-      const provableStatement = ProvableStatement.from(statement);
-
       state.verifier!.verify(
-        provableStatement,
-        Field(args.privateData),
-        Signature.fromBase58(args.signature),
-        PublicKey.fromBase58(args.sourceKey)
+        Field.fromJSON(JSON.parse(args.conditionType)),
+        Field.fromJSON(JSON.parse(args.targetValue)),
+        Field.fromJSON(JSON.parse(args.hashRoute)),
+        Field.fromJSON(JSON.parse(args.privateData)),
+        Signature.fromJSON(JSON.parse(args.signature))
       );
     });
     state.tx = transaction;

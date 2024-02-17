@@ -1,4 +1,3 @@
-import { Signature, PublicKey } from "o1js";
 import { ConditionTypeString } from "@zap/types";
 
 /**
