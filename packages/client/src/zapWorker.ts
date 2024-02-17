@@ -1,4 +1,4 @@
-import { Mina, PublicKey, fetchAccount, Signature, Field } from "o1js";
+import { Mina, PublicKey, fetchAccount, Signature, Field, PrivateKey } from "o1js";
 import { Verifier, ProvableStatement } from "@zap/core";
 import { Statement } from "@zap/types";
 
@@ -42,11 +42,10 @@ const functions: Record<string, (...args: any[]) => any> = {
     const provableStatement = ProvableStatement.from(args.statement);
     const transaction = await Mina.transaction(() => {
       state.verifier!.verify(
-        Field.fromJSON(JSON.parse(args.conditionType)),
-        Field.fromJSON(JSON.parse(args.targetValue)),
-        Field.fromJSON(JSON.parse(args.hashRoute)),
+        provableStatement,
         Field.fromJSON(JSON.parse(args.privateData)),
-        Signature.fromJSON(JSON.parse(args.signature))
+        Signature.fromJSON(JSON.parse(args.signature)),
+        PrivateKey.random().toPublicKey() // TODO
       );
     });
     state.tx = transaction;

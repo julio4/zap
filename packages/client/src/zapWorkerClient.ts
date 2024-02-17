@@ -1,4 +1,4 @@
-import { fetchAccount, Field, PublicKey, Signature } from "o1js";
+import { fetchAccount, PublicKey } from "o1js";
 
 import {
   ZapWorkerRequest,

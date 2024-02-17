@@ -2,6 +2,7 @@ import { ConditionType, ConditionTypeString } from "@zap/types";
 
 export * from "./encoding.js";
 export * from "./source.js";
+export * from "./provider/index.js";
 
 // To decide later where to put this
 export function mapConditionTypeStringToNumber(type: ConditionTypeString): ConditionType {

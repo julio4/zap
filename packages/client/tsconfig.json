@@ -8,7 +8,7 @@
     "paths": {
       "*": ["*"]
     },
-
+    "jsx": "react",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
