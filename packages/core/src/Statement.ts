@@ -56,25 +56,6 @@ export class ProvableStatement extends Struct({
   isValidCondition(privateData: Field): Bool {
     // see types/ConditionType
     // conditionType are <: 1, >: 2, ==: 3, !=: 4
-    // todo handle case 4
-    return this.conditionType.lessThanOrEqual(Field(3)).and(
-      Provable.switch(
-        this.conditionType.equals(Field(1)),
-        Bool,
-        [
-          privateData.lessThan(this.targetValue),
-          privateData.greaterThan(this.targetValue),
-          privateData.equals(this.targetValue),
-        ]
-      )
-    );
-  }
-
-  assertValidCondition(privateData: Field) {
-    // see types/ConditionType
-    // conditionType are <: 1, >: 2, ==: 3, !=: 4
-    this.conditionType.lessThanOrEqual(Field(4)).assertTrue();
-
     const whichOperator: Bool[] = [
       this.conditionType.equals(Field(1)),
       this.conditionType.equals(Field(2)),
@@ -82,7 +63,7 @@ export class ProvableStatement extends Struct({
       this.conditionType.equals(Field(4)),
     ];
 
-    const truthValue = Provable.switch(whichOperator, Bool, [
+    return Provable.switch(whichOperator, Bool, [
       privateData.lessThan(this.targetValue),
       privateData.greaterThan(this.targetValue),
       privateData.equals(this.targetValue),
@@ -90,7 +71,12 @@ export class ProvableStatement extends Struct({
         .greaterThan(this.targetValue)
         .or(privateData.lessThan(this.targetValue)),
     ]);
+  }
 
-    truthValue.assertTrue();
+  assertValidCondition(privateData: Field) {
+    // see types/ConditionType
+    // conditionType are <: 1, >: 2, ==: 3, !=: 4
+    this.conditionType.lessThanOrEqual(Field(4)).assertTrue();
+    this.isValidCondition(privateData).assertTrue();
   }
 }

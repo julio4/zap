@@ -25,7 +25,10 @@ describe('Verifier', () => {
   const sourceKey = sourcePrivateKey.toPublicKey();
   const statement: Statement = {
     sourceKey: sourceKey.toBase58(),
-    route: '/route',
+    route: {
+      path: '/route',
+      args: {},
+    },
     // "target == 1"
     condition: {
       type: 3,
