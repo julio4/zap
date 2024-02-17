@@ -3,7 +3,7 @@ import { PrivateKey } from "o1js";
 import { ZapResponse } from "@zap/types";
 import { signResponse, hashRoute } from "@zap/source";
 
-describe("Source client", () => {
+describe("Client <-> Source", () => {
   const res: ZapResponse = {
     value: 10,
     route: {

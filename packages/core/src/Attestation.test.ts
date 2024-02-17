@@ -8,7 +8,10 @@ describe('Attestation', () => {
   const address = PrivateKey.random().toPublicKey();
   const statement: Statement = {
     sourceKey: sourceKey.toBase58(),
-    route: '/route',
+    route: {
+      path: '/route',
+      args: {},
+    },
     condition: {
       type: 1,
       targetValue: 1,

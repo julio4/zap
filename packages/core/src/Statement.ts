@@ -17,11 +17,19 @@ export class ProvableStatement extends Struct({
   hashRoute: Field,
   source: PublicKey,
 }) {
+  // TODO? Maybe move this elsewhere
+  private static hashRoute(statement: Statement): Field {
+    return Poseidon.hash([
+      ...Encoding.stringToFields(statement.route.path),
+      ...Encoding.stringToFields(JSON.stringify(statement.route.args)),
+    ]);
+  }
+
   static from(statement: Statement): ProvableStatement {
     return new ProvableStatement({
       conditionType: Field(statement.condition.type),
       targetValue: Field(statement.condition.targetValue),
-      hashRoute: Poseidon.hash(Encoding.stringToFields(statement.route)),
+      hashRoute: this.hashRoute(statement),
       source: PublicKey.fromBase58(statement.sourceKey),
     });
   }
@@ -33,7 +41,7 @@ export class ProvableStatement extends Struct({
   ): Signature {
     return Signature.create(privateKey, [
       privateData,
-      Poseidon.hash(Encoding.stringToFields(statement.route)),
+      this.hashRoute(statement),
     ]);
   }
 
@@ -46,6 +54,7 @@ export class ProvableStatement extends Struct({
   }
 
   assertValidCondition(privateData: Field) {
+    // see types/ConditionType
     // conditionType are <: 1, >: 2, ==: 3, !=: 4
     this.conditionType.lessThanOrEqual(Field(4)).assertTrue();
 

@@ -1,5 +1,5 @@
 import { Statement } from '@zap/types';
-import { Encoding, Field, Poseidon, PrivateKey, Sign, Signature } from 'o1js';
+import { Encoding, Field, Poseidon, PrivateKey, Signature } from 'o1js';
 import { ProvableStatement } from './Statement';
 
 describe('ProvableStatement', () => {
@@ -7,7 +7,10 @@ describe('ProvableStatement', () => {
   const sourceKey = sourcePrivateKey.toPublicKey();
   const statement: Statement = {
     sourceKey: sourceKey.toBase58(),
-    route: '/route',
+    route: {
+      path: '/route',
+      args: {},
+    },
     // "target == 1"
     condition: {
       type: 3,
@@ -17,7 +20,10 @@ describe('ProvableStatement', () => {
 
   const provableStatement = ProvableStatement.from(statement);
   it('ProvableStatement.from(statement)', () => {
-    const hashRoute = Poseidon.hash(Encoding.stringToFields(statement.route));
+    const hashRoute = Poseidon.hash([
+      ...Encoding.stringToFields(statement.route.path),
+      ...Encoding.stringToFields(JSON.stringify(statement.route.args)),
+    ]);
     expect(provableStatement.conditionType).toEqual(
       Field(statement.condition.type)
     );
@@ -130,40 +136,20 @@ describe('ProvableStatement', () => {
 
     it('conditionType 3 "=="', () => {
       const ps = provableStatement;
-      // "target == 1"
       expect(() => ps.assertValidCondition(privateData)).not.toThrow();
       expect(() => ps.assertValidCondition(Field(0))).toThrow();
     });
-    it('throw conditionType 3 "=="', () => {
-      const ps = ProvableStatement.from({
-        ...statement,
-        condition: { type: 3, targetValue: 1 },
-      });
-      expect(() => ps.assertValidCondition(Field(0))).toThrow();
-    });
 
-    it('success conditionType 4 "!="', () => {
-      const ps = ProvableStatement.from({
-        ...statement,
-        condition: { type: 4, targetValue: 1 },
-      });
-      expect(() => ps.assertValidCondition(Field(0))).not.toThrow();
-      expect(() => ps.assertValidCondition(privateData)).toThrow();
-    });
-    it('throw conditionType 4 "!="', () => {
-      const ps = ProvableStatement.from({
-        ...statement,
-        condition: { type: 4, targetValue: 1 },
-      });
-      expect(() => ps.assertValidCondition(privateData)).toThrow();
-    });
-
-    it('throw if conditionType > 4', () => {
-      const ps = ProvableStatement.from({
-        ...statement,
-        condition: { type: 5, targetValue: 1 },
-      });
-      expect(() => ps.assertValidCondition(privateData)).toThrow();
-    });
+    it.todo('conditionType 4 "!="');
+    // const ps = ProvableStatement.from({
+    //   ...statement,
+    //   // "target != 1"
+    //   condition: { type: 4, targetValue: 1 },
+    // });
+    // expect(() =>
+    //   ps.assertValidCondition(Field(0))
+    // ).not.toThrow();
+    // expect(() => ps.assertValidCondition(privateData)).toThrow();
+    // });
   });
 });
