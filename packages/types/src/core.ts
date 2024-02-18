@@ -1,5 +1,4 @@
 import { PrivateKey, PublicKey } from "o1js";
-import { Route } from "./index.js";
 
 /* type: 1: '<' | 2: '>' | 3: '==' | 4: '!='; */
 export enum ConditionType {
@@ -14,6 +13,13 @@ export type ConditionTypeString = "<" | ">" | "==" | "!=";
 export type StatementCondition = {
   type: ConditionType;
   targetValue: number;
+};
+
+export type Route = {
+  path: string;
+  args?: {
+    [key: string]: any;
+  };
 };
 
 export type Statement = {

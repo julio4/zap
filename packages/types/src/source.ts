@@ -1,12 +1,7 @@
+import { Route } from "./core.js";
+
 export type ZapRequestParams = {
   mina_address: string;
-  args?: {
-    [key: string]: any;
-  };
-};
-
-export type Route = {
-  path: string;
   args?: {
     [key: string]: any;
   };
