@@ -9,7 +9,13 @@ import {
   Encoding,
   PrivateKey,
 } from 'o1js';
-import { Statement } from '@zap/types';
+import { Route, Statement } from '@zap/types';
+
+export const hashRoute = (route: Route): Field =>
+  Poseidon.hash([
+    ...Encoding.stringToFields(route.path),
+    ...Encoding.stringToFields(JSON.stringify(route.args)),
+  ]);
 
 export class ProvableStatement extends Struct({
   conditionType: Field,
@@ -17,19 +23,11 @@ export class ProvableStatement extends Struct({
   hashRoute: Field,
   source: PublicKey,
 }) {
-  // TODO? Maybe move this elsewhere
-  private static hashRoute(statement: Statement): Field {
-    return Poseidon.hash([
-      ...Encoding.stringToFields(statement.route.path),
-      ...Encoding.stringToFields(JSON.stringify(statement.route.args)),
-    ]);
-  }
-
   static from(statement: Statement): ProvableStatement {
     return new ProvableStatement({
       conditionType: Field(statement.condition.type),
       targetValue: Field(statement.condition.targetValue),
-      hashRoute: this.hashRoute(statement),
+      hashRoute: hashRoute(statement.route),
       source: PublicKey.fromBase58(statement.sourceKey),
     });
   }
@@ -41,7 +39,7 @@ export class ProvableStatement extends Struct({
   ): Signature {
     return Signature.create(privateKey, [
       privateData,
-      this.hashRoute(statement),
+      hashRoute(statement.route),
     ]);
   }
 

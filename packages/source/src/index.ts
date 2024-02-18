@@ -1,18 +1,13 @@
-import { PrivateKey, Signature, Encoding, Field, Poseidon } from "o1js";
+import { PrivateKey, Signature } from "o1js";
 
 import {
   ZapResponse,
   ZapHashedResponse,
   ZapSignedResponse,
-  Route,
 } from "@zap/types";
 
 import { encodeResAsFields } from "@zap/shared";
-
-export const hashRoute = (route: Route): Field => {
-  const routeAsFields: Field[] = Encoding.stringToFields(JSON.stringify(route));
-  return Poseidon.hash(routeAsFields);
-};
+import { hashRoute } from "@zap/core";
 
 export const hashResponse = (res: ZapResponse): ZapHashedResponse => ({
   value: res.value,
