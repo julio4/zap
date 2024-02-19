@@ -1,7 +1,7 @@
 import { calculateAttestationHash, getConditionString } from "@zap/shared";
 import { AttestationNote, Statement } from "@zap/types";
 import { Field } from "o1js";
-import { AttestContext } from "./provider/attest.jsx";
+import { AttestContext } from "../provider/attest.js";
 import { useContext } from "react";
 
 /**
@@ -10,7 +10,7 @@ import { useContext } from "react";
  * - generates the attestation/proof
  */
 // shouldn't it be a custom hook in order to import useContext ??
-export const createTransaction = async () => {
+export const verifyAndProveStatement = async () => {
   const attest = useContext(AttestContext);
 
   if (!attest.workerClient) {
@@ -40,7 +40,7 @@ export const createTransaction = async () => {
 
   await attest.workerClient.proveTransaction();
 
-  const _txJson = await attest.workerClient.getTransactionJSON();
+  const txJson = await attest.workerClient.getTransactionJSON();
   // setTransactionJSON(txJson as string); // maybe pass stateUpdateFn from frontend to this fct
 
   const attestationHash = calculateAttestationHash(
@@ -50,15 +50,18 @@ export const createTransaction = async () => {
     attest.minaWallet.address
   );
 
-  // can maybe set the note as a variable in attest context
-  // setAttestationHashBase64(
-  createAttestationNoteEncoded(
+  // could maybe set the note as a variable in attest context (instead )
+  const attestationNoteBase64 = createAttestationNoteEncoded(
     attest.statement,
     attest.privateData.data.hashRoute,
     attestationHash,
     attest.minaWallet.address
   );
-  // );
+
+  return {
+    verificationTransactionJson: txJson,
+    attestationNoteBase64,
+  };
 };
 
 const createAttestationNoteEncoded = (

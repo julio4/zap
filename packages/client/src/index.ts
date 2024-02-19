@@ -4,23 +4,25 @@ export * from "./encoding.js";
 export * from "./source.js";
 export * from "./selectStatement.js";
 export * from "./provider/index.js";
+export * from "./proof/index.js";
 
 // To decide later where to put this
-export function mapConditionTypeStringToNumber(type: ConditionTypeString): ConditionType {
+export function mapConditionTypeStringToNumber(
+  type: ConditionTypeString
+): ConditionType {
   switch (type) {
-    case '<':
+    case "<":
       return ConditionType.LT;
-    case '>':
+    case ">":
       return ConditionType.GT;
-    case '==':
+    case "==":
       return ConditionType.EQ;
-    case '!=':
+    case "!=":
       return ConditionType.NEQ;
     default:
       throw new Error(`Invalid condition type: ${type}`);
   }
 }
-
 
 // Web specific
 export * from "./zapWorkerClient.js";
