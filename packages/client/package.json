@@ -25,6 +25,7 @@
     "react-dom": "18.2.0"
   },
   "devDependencies": {
+    "@zap/core": "workspace:*",
     "@zap/source": "workspace:*",
     "@types/jest": "^27.0.3",
     "jest": "^27.3.1",

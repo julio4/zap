@@ -2,8 +2,8 @@ import React, { createContext, useState } from "react";
 import {
   MinaWallet,
   // EthereumWallet,
-  ClientStatement,
-  PrivateData,
+  Statement,
+  ZapSignedResponse,
 } from "@zap/types";
 import { ZapWorkerClient } from "../zapWorkerClient.js";
 
@@ -18,10 +18,10 @@ export type AttestContextType = {
   // to put into a sourceProvider :
   // ethereumWallet: EthereumWallet;
   // setEthereumWallet: (ethereumWallet: EthereumWallet) => void;
-  statement: ClientStatement | null;
-  setStatement: (statement: ClientStatement) => void;
-  privateData: PrivateData | null;
-  setPrivateData: (privateData: PrivateData) => void;
+  statement: Statement | null;
+  setStatement: (statement: Statement) => void;
+  privateData: ZapSignedResponse | null;
+  setPrivateData: (privateData: ZapSignedResponse) => void;
   privateDataInput: Field[];
   setPrivateDataInput: (privateDataInput: Field[]) => void;
   creatingTransaction: boolean;
@@ -51,12 +51,12 @@ const defaultAttestContext: AttestContextType = {
   setStatement: () => {},
   privateData: null,
   setPrivateData: () => {},
-  privateDataInput: [],
-  setPrivateDataInput: () => {},
-  creatingTransaction: false,
-  displayText: "",
-  setDisplayText: () => {},
-  set: () => {},
+  privateDataInput: [], // unused
+  setPrivateDataInput: () => {}, // used but privateDataInput unused
+  creatingTransaction: false, // set to true but never: 1) read 2) set back to false
+  displayText: "", // unused
+  setDisplayText: () => {}, // unused
+  set: () => {}, // used only for setting "creatingTransaction" to true (useless -> see above)
   finalResult: "",
   setFinalResult: () => {},
 };
@@ -85,13 +85,13 @@ const AttestProvider = ({ children }: { children: React.ReactNode }) => {
     //     ethereumWallet,
     //   }));
     // },
-    setStatement: (statement: ClientStatement) => {
+    setStatement: (statement: Statement) => {
       setAttest((prevAttest) => ({
         ...prevAttest,
         statement,
       }));
     },
-    setPrivateData: (privateData: PrivateData) => {
+    setPrivateData: (privateData: ZapSignedResponse) => {
       setAttest((prevAttest) => ({
         ...prevAttest,
         privateData,

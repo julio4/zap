@@ -1,2 +1,1 @@
-// TODO: configure ts jsx compilation
-// export * from "./attest.js";
+export * from "./attest.js";
