@@ -5,7 +5,7 @@ import {
   Statement,
   ZapSignedResponse,
 } from "@zap/types";
-import { ZapWorkerClient } from "../zapWorkerClient.js";
+import { ZapWorkerClient } from "../worker/zapWorkerClient.js";
 
 import { Field } from "o1js";
 
