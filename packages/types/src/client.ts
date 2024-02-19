@@ -3,12 +3,11 @@ export type MinaWallet = {
   address: string;
 };
 
-// cf SignedResponse
-// export type PrivateData = {
-//   data: {
-//     value: number;
-//     hashRoute: string;
-//   };
-//   signature: string;
-//   publicKey: string;
-// };
+export type AttestationNote = {
+  attestationHash: string;
+  statement: string;
+  targetValue: number;
+  conditionType: string;
+  hashRoute: string;
+  sender: string;
+};

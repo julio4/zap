@@ -5,6 +5,7 @@ import {
   ZapWorkerReponse,
   WorkerFunctions,
 } from "./zapWorker.js";
+import { Statement } from "@zap/types";
 
 export class ZapWorkerClient {
   // ---------------------------------------------------------------------------------------
@@ -44,18 +45,12 @@ export class ZapWorkerClient {
   }
 
   createVerifyTransaction(
-    sourceKey: string,
-    conditionType: number,
-    targetValue: number,
-    route: string,
+    statement: Statement,
     privateData: string,
     signature: string
   ) {
     return this._call("createVerifyTransaction", {
-      sourceKey,
-      conditionType,
-      targetValue,
-      route,
+      statement,
       privateData,
       signature,
     });
@@ -66,8 +61,7 @@ export class ZapWorkerClient {
   }
 
   async getTransactionJSON() {
-    const result = await this._call("getTransactionJSON", {});
-    return result;
+    return await this._call("getTransactionJSON", {});
   }
 
   // ---------------------------------------------------------------------------------------
