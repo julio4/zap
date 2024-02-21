@@ -43,12 +43,6 @@ export const submitProof = async (
   }
 };
 
-declare global {
-  interface Window {
-    mina: any;
-  }
-}
-
 // Save attestation note to local storage
 const addAttestationNoteToLocalStorage = (newNote: string): boolean => {
   try {
