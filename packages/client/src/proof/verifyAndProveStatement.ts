@@ -79,7 +79,7 @@ const createAttestationNoteEncoded = (
       statement.route.args
     )}.`,
     targetValue: statement.condition.targetValue,
-    conditionType: operation,
+    conditionType: statement.condition.type,
     hashRoute,
     sender,
   };

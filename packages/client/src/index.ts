@@ -6,6 +6,7 @@ export * from "./selectStatement.js";
 export * from "./provider/index.js";
 export * from "./proof/index.js";
 export * from "./minaWallet.js";
+export * from "./verifyAttestation/verifyAttestation.js";
 
 // To decide later where to put this
 export function mapConditionTypeStringToNumber(
