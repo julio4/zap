@@ -4,7 +4,7 @@ import { Search } from "./Search";
 import { Github } from "./logo";
 
 import { FaRegUserCircle } from "react-icons/fa";
-import { useAttestationStore } from "../utils/attestationStore";
+import { useAttestationStore } from "@zap/client";
 
 const Header = ({
   MinaWalletComponent,

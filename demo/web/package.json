@@ -12,6 +12,7 @@
     "@types/node": "20.4.1",
     "@types/react": "18.2.14",
     "@types/react-dom": "18.2.7",
+    "@zap/client": "workspace:*",
     "@zap/core": "workspace:*",
     "axios": "^1.4.0",
     "coi-serviceworker": "^0.1.7",
@@ -22,8 +23,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^5.0.1",
-    "typescript": "5.1.6",
-    "zustand": "^4.5.1"
+    "typescript": "5.1.6"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.13",
