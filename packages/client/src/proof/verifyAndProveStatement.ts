@@ -3,14 +3,21 @@ import { AttestationNote, Statement } from "@zap/types";
 import { Field } from "o1js";
 import { AttestContext } from "../provider/attest.js";
 import { useContext } from "react";
+import { useMutation } from "@tanstack/react-query";
 
 /**
  * This function:
  * - verifies the statement using ZAP protocol
  * - generates the attestation/proof
  */
+export const useVerifyAndProveStatement = () => {
+  return useMutation({
+    mutationFn: verifyAndProveStatement,
+  });
+}
+
 // shouldn't it be a custom hook in order to import useContext ??
-export const verifyAndProveStatement = async () => {
+const verifyAndProveStatement = async () => {
   const attest = useContext(AttestContext);
 
   if (!attest.workerClient) {
@@ -50,7 +57,7 @@ export const verifyAndProveStatement = async () => {
     attest.minaWallet.address
   );
 
-  // could maybe set the note as a variable in attest context (instead )
+  // could maybe set the note as a variable in attest context
   const attestationNoteBase64 = createAttestationNoteEncoded(
     attest.statement,
     attest.privateData.data.hashRoute,

@@ -17,6 +17,7 @@ export const generateBase64Attestation = (
   const concatFields = `${hashRoute};${conditionType};${targetValue};${sender}`;
   let buff = Buffer.from(concatFields, "utf-8");
   let base64Data = buff.toString("base64");
+
   return base64Data;
 };
 
@@ -27,5 +28,6 @@ export const generateBase64Attestation = (
 export const decodeBase64Attestation = (base64String: string) => {
   let buff = Buffer.from(base64String, "base64");
   let originalData = buff.toString("utf-8");
+
   return originalData;
 };

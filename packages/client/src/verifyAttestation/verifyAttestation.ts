@@ -1,7 +1,8 @@
 import { calculateAttestationHash } from "@zap/shared";
 import { AttestationNote } from "@zap/types";
 import { Provable, ProvablePure, UInt32, Mina, PublicKey } from "o1js";
-import { Verifier } from "@zap/core"; // does not work yet (see Julien's fix i think)
+import { Verifier } from "@zap/core";
+import { useMutation } from "@tanstack/react-query";
 
 const MINAURL = "https://proxy.berkeley.minaexplorer.com/graphql";
 const ARCHIVEURL = "https://archive.berkeley.minaexplorer.com";
@@ -62,7 +63,13 @@ enum AttestationVerificationErrors {
  * @param attestationNote the decoded attestion note you wish to verify
  * @returns either true if the verification is successful or an error indicating the verification failure reason
  */
-export const verifyAttestation = async (attestationNote: AttestationNote) => {
+export const useVerifyAttestation = (attestationNote: AttestationNote) => {
+  return useMutation({
+    mutationFn: () => verifyAttestation(attestationNote),
+  });
+}
+
+const verifyAttestation = async (attestationNote: AttestationNote): Promise<boolean> => {
   // we probably don't wanna call fetchZapEvents() every time we call verifyAttestation
   // or maybe move declaration of "network" and zap instance "zkapp" out of fetchZapEvents (as global variables?)
   const events = await fetchZapEvents();

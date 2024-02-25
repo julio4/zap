@@ -61,7 +61,7 @@ export class ZapWorkerClient {
   }
 
   async getTransactionJSON() {
-    return await this._call("getTransactionJSON", {});
+    return await this._call("getTransactionJSON", {}) as string;
   }
 
   // ---------------------------------------------------------------------------------------
