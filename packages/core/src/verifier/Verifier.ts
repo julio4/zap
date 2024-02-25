@@ -4,14 +4,11 @@ import {
   method,
   DeployArgs,
   Permissions,
-  PublicKey,
   Signature,
   AccountUpdate,
   Bool,
 } from 'o1js';
 import { ProvableStatement } from '../Statement';
-import { Attestation } from '../Attestation';
-import { EventHandler } from '../handler/EventHandler';
 
 interface IVerifier {
   verify(
@@ -20,8 +17,6 @@ interface IVerifier {
     // The value given to the statement variable used to verify the statement and emit the attestation
     privateData: Field,
     signature: Signature,
-    // Handler (contract that implements IHandler)
-    handler: PublicKey
   ): void;
 }
 
@@ -45,7 +40,6 @@ export class Verifier extends SmartContract implements IVerifier {
     statement: ProvableStatement,
     privateData: Field,
     signature: Signature,
-    handler: PublicKey
   ): Bool {
     // STATEMENT/ATTESTATION VERIFICATION
     statement.assertValidSignature(privateData, signature);
@@ -54,10 +48,6 @@ export class Verifier extends SmartContract implements IVerifier {
     // ATTESTATION GENERATION
     const sender = this.sender;
     AccountUpdate.createSigned(sender);
-    const attestation = new Attestation({
-      statement,
-      address: sender,
-    });
 
     // ATTESTATION HANDLING
     return Bool(true);

@@ -1,11 +1,9 @@
 import { Statement } from '@zap/types';
 import { ProvableStatement } from '../Statement';
 import { Verifier } from './Verifier';
-import { EventHandler } from '../handler/EventHandler';
+import { EventHandler } from '../handler_deprecated/EventHandler';
 
 import { Mina, PrivateKey, PublicKey, AccountUpdate, Field } from 'o1js';
-import { Attestation } from '../Attestation';
-// import { SecondaryZkApp } from '../handler/EventHandler';
 
 let proofsEnabled = false;
 
@@ -96,7 +94,7 @@ describe('Verifier', () => {
     );
 
     const txn = await Mina.transaction(userAccount, () => {
-      zkApp.verify(provableStatement, privateData, signature, handlerAddress);
+      zkApp.verify(provableStatement, privateData, signature);
     });
 
     await txn.prove();
@@ -128,7 +126,7 @@ describe('Verifier', () => {
 
     await expect(
       Mina.transaction(userAccount, () => {
-        zkApp.verify(provableStatement, privateData, signature, handlerAddress);
+        zkApp.verify(provableStatement, privateData, signature);
       })
     ).rejects.toThrow();
   });
@@ -147,7 +145,7 @@ describe('Verifier', () => {
 
     await expect(
       Mina.transaction(userAccount, () => {
-        zkApp.verify(provableStatement, privateData, signature, handlerAddress);
+        zkApp.verify(provableStatement, privateData, signature);
       })
     ).rejects.toThrow();
   });
