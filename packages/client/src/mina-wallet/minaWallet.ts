@@ -1,6 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
 import { AttestContext } from "../provider/attest.js";
 import { useContext } from "react";
+import { WrongNetworkError } from "errors/mina-wallet/wrongNetwork.js";
+import { ConnectionError } from "errors/mina-wallet/connection.js";
 
 // Needed to declare mina object in window
 declare global {
@@ -25,9 +27,7 @@ const connectToMinaWallet = async (): Promise<void> => {
     const network = await window.mina.requestNetwork();
 
     if (network.name !== "Berkeley") {
-      throw new Error(
-        "Mina wallet is not connected to Berkeley Testnet. Please switch to Berkeley Testnet and try again."
-      );
+      throw new WrongNetworkError();
     }
 
     // Accounts is an array of string Mina addresses.
@@ -44,8 +44,6 @@ const connectToMinaWallet = async (): Promise<void> => {
       address: publicKeyBase58,
     });
   } catch (err) {
-    throw new Error(
-      "Error connecting to Mina wallet. See following details: " + err
-    );
+    throw new ConnectionError(err);
   }
 };
