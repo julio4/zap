@@ -2,11 +2,11 @@ import { ConditionType, ConditionTypeString } from "@zap/types";
 
 export * from "./encoding.js";
 export * from "./source.js";
-export * from "./selectStatement.js";
+export * from "./statement/selectStatement.js";
 export * from "./provider/index.js";
 export * from "./proof/index.js";
-export * from "./minaWallet.js";
-export * from "./verifyAttestation/verifyAttestation.js";
+export * from "./mina-wallet/minaWallet.js";
+export * from "./verify-attestation/verifyAttestation.js";
 
 // To decide later where to put this
 export function mapConditionTypeStringToNumber(

@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { AttestContext } from "./provider/attest.js";
+import { AttestContext } from "../provider/attest.js";
 import { useContext } from "react";
 
 // Needed to declare mina object in window

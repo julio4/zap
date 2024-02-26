@@ -3,8 +3,8 @@ import { useContext } from "react";
 import { ZapSignedResponse, Statement } from "@zap/types";
 import { hashRoute } from "@zap/core";
 
-import { verifyResponseSignature } from "./source.js";
-import { AttestContext } from "./provider/attest.js";
+import { verifyResponseSignature } from "../source.js";
+import { AttestContext } from "../provider/attest.js";
 
 export const verifyRouteHash = (
   statement: Statement,
