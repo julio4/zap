@@ -5,6 +5,8 @@ import { hashRoute } from "@zap/core";
 
 import { verifyResponseSignature } from "../source.js";
 import { AttestContext } from "../provider/attest.js";
+import { SignatureVerificationError } from "errors/statement/signatureVerification.js";
+import { HashRouteVerificationError } from "errors/statement/hashRouteVerification.js";
 
 export const verifyRouteHash = (
   statement: Statement,
@@ -28,14 +30,12 @@ export const selectStatement = (
   // We can first verify here but really the most important is to verify within the proof
 
   const publicKey = PublicKey.fromBase58(sourcePublicKey);
-  if (!verifyResponseSignature(sourceResponse, publicKey)) {
-    throw new Error("Signature verification failed");
-  }
+  if (!verifyResponseSignature(sourceResponse, publicKey))
+    throw new SignatureVerificationError();
 
   const sourceRouteHash = sourceResponse.data.hashRoute;
-  if (!verifyRouteHash(statement, sourceRouteHash)) {
-    throw new Error("Hash route verification failed");
-  }
+  if (!verifyRouteHash(statement, sourceRouteHash))
+    throw new HashRouteVerificationError();
 
   // States changes
   attest.setStatement(statement);
