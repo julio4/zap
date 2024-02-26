@@ -3,6 +3,11 @@ import { AttestationNote } from "@zap/types";
 import { Provable, ProvablePure, UInt32, Mina, PublicKey } from "o1js";
 import { Verifier } from "@zap/core";
 import { useMutation } from "@tanstack/react-query";
+import { NotExistsError } from "errors/verify-attestation/notExists.js";
+import { DifferentHashError } from "errors/verify-attestation/differentHash.js";
+import { ExpiredError } from "errors/verify-attestation/expired.js";
+import { NotFoundInEventsError } from "errors/verify-attestation/notFoundInEvents.js";
+import { InvalidNoteError } from "errors/verify-attestation/index.js";
 
 const MINAURL = "https://proxy.berkeley.minaexplorer.com/graphql";
 const ARCHIVEURL = "https://archive.berkeley.minaexplorer.com";
@@ -44,21 +49,6 @@ type MinaEvent = {
 };
 
 /**
- * 1- I created an enum because then I thought when calling this function in frontend,
- * its easy for the developers to see what possible errors they might encounter when calling this function and act on them
- * 2- We could possibly also create custom error types (maybe not a bad idea if we do that for the whole project ? Might look clean and more professional ?)
- *    -> for example, those errors would all inherit from a common custom parent error type like "AttestationVerification" or smth
- *    -> but might not be the most relevant/important work to do ahah
- * 3- Or we could just delete this enum and use plain strings directly in the function
- */
-enum AttestationVerificationErrors {
-  NOT_EXISTS = "Attestation note does not exist",
-  DIFFERENT_HASH = "Note details do not correspond to the attestation hash, base64 note might have been modified",
-  EXPIRED = "Attestation expired",
-  NOT_FOUND_IN_EVENTS = "Attestation not found. Be sure that your transaction has been validated and that the event is indexed in the archives",
-}
-
-/**
  * Verifies the attestation has not been tampered with and corresponds to an event previously emitted to our Zap protocol.
  * @param attestationNote the decoded attestion note you wish to verify
  * @returns either true if the verification is successful or an error indicating the verification failure reason
@@ -76,7 +66,7 @@ const verifyAttestation = async (attestationNote: AttestationNote): Promise<bool
 
   // First we make sure the attestation note has not been tampered with
   if (attestationNote == null)
-    throw new Error(AttestationVerificationErrors.NOT_EXISTS);
+    throw new NotExistsError();
 
   const recalculatedHash = calculateAttestationHash(
     attestationNote.conditionType,
@@ -86,7 +76,7 @@ const verifyAttestation = async (attestationNote: AttestationNote): Promise<bool
   );
 
   if (recalculatedHash !== attestationNote.attestationHash)
-    throw new Error(AttestationVerificationErrors.DIFFERENT_HASH);
+    throw new DifferentHashError();
 
   // Then we verify that the attestation hash is in the events
   for (let event of events) {
@@ -102,13 +92,13 @@ const verifyAttestation = async (attestationNote: AttestationNote): Promise<bool
       const timestamp = now.getTime() / 1000;
 
       if (timestamp > validTill)
-        throw new Error(AttestationVerificationErrors.EXPIRED);
+        throw new ExpiredError();
 
       return true;
     }
   }
 
-  throw new Error(AttestationVerificationErrors.NOT_FOUND_IN_EVENTS);
+  throw new NotFoundInEventsError();
 };
 
 /**
@@ -144,7 +134,7 @@ export const decodeAttestationNote = (
     !("hashRoute" in attestation) ||
     !("sender" in attestation)
   ) {
-    throw new Error("Invalid note");
+    throw new InvalidNoteError();
   }
 
   return attestation as AttestationNote;
