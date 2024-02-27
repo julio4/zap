@@ -4,6 +4,7 @@ import { Field } from "o1js";
 import { AttestContext } from "../provider/attest.js";
 import { useContext } from "react";
 import { useMutation } from "@tanstack/react-query";
+import { UndefinedFieldError } from "errors/proof/verifyAndProveStatement/undefinedField.js";
 
 /**
  * This function:
@@ -20,24 +21,21 @@ export const useVerifyAndProveStatement = () => {
 const verifyAndProveStatement = async () => {
   const attest = useContext(AttestContext);
 
-  if (!attest.workerClient) {
-    throw new Error("workerClient is not defined");
-  }
+  if (!attest.workerClient)
+    throw new UndefinedFieldError("workerClient");
 
   const { minaWallet } = attest;
-  if (!minaWallet) {
-    throw new Error("minaWallet is not defined");
-  }
+  if (!minaWallet)
+    throw new UndefinedFieldError("minaWallet");
 
   // might be useless as creatingTransaction is never read
   attest.set({ ...attest, creatingTransaction: true });
 
-  if (attest.privateData === null) {
-    throw new Error("privateData is not defined");
-  }
-  if (attest.statement === null) {
-    throw new Error("statement is not defined");
-  }
+  if (attest.privateData === null)
+    throw new UndefinedFieldError("privateData");
+
+    if (attest.statement === null)
+    throw new UndefinedFieldError("statement");
 
   await attest.workerClient.createVerifyTransaction(
     attest.statement,
@@ -96,5 +94,6 @@ const createAttestationNoteEncoded = (
 
 const noteToBase64 = (note: AttestationNote): string => {
   const jsonString = JSON.stringify(note);
+
   return Buffer.from(jsonString).toString("base64");
 };
