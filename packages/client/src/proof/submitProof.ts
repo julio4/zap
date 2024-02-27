@@ -1,6 +1,9 @@
 import { useMutation } from "@tanstack/react-query";
 import { AttestContext } from "../provider/attest.js";
 import { useContext } from "react";
+import { VerificationTxJsonError } from "errors/proof/submitProof/verificationTxJson.js";
+import { AttestationHashBase64Error } from "errors/proof/submitProof/attestationHashBase64.js";
+import { SendingProofError } from "errors/proof/submitProof/sendingProof.js";
 
 /**
  * Submits the zero-knowledge statement verification proof to the ZAP protocol on Mina
@@ -15,19 +18,18 @@ export const useSubmitProof = (
   return useMutation({
     mutationFn: () => submitProof(verificationTxJson, attestationHashBase64),
   });
-}
+};
 
-// shouldn't it be a custom hook in order to use useContext ?? todo, maybe revert to the original function
+// shouldn't it be a custom hook in order to use useContext ??
 const submitProof = async (
   verificationTxJson: string,
   attestationHashBase64: string
 ) => {
   const attest = useContext(AttestContext);
 
-  if (verificationTxJson === null || attestationHashBase64 === null) {
-    console.log("verificationTxJson or attestationHashBase64 is null");
-    return;
-  }
+  if (verificationTxJson === null) throw new VerificationTxJsonError();
+
+  if (attestationHashBase64 === null) throw new AttestationHashBase64Error();
 
   try {
     const { hash } = await window.mina.sendTransaction({
@@ -45,11 +47,7 @@ const submitProof = async (
       hash,
     };
   } catch (error) {
-    console.error(
-      "Error sending transaction: " +
-        (error as Error).message +
-        "\n Please try again."
-    );
+    throw new SendingProofError((error as Error).message);
   }
 };
 
