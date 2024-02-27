@@ -7,9 +7,10 @@ import { useMutation } from "@tanstack/react-query";
 import { UndefinedFieldError } from "errors/proof/verifyAndProveStatement/undefinedField.js";
 
 /**
- * This function:
+* Custom hook that:
  * - verifies the statement using ZAP protocol
  * - generates the attestation/proof
+ * @throws VerifyAndProveStatementError
  */
 export const useVerifyAndProveStatement = () => {
   return useMutation({

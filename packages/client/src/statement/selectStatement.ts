@@ -14,10 +14,11 @@ export const verifyRouteHash = (
 ): boolean => sourceRouteHash !== hashRoute(statement.route).toString();
 
 /**
- * This function verifies the source's 1) response signature 2) hashed route.
+* Function that verifies the source's 1) response signature 2) hashed route.
  * @param statement The statement the client is proving
  * @param sourceResponse The response from the source call
  * @param sourcePublicKey The source's public key the client has
+ * @throws StatementError
  */
 // shouldn't it be a custom hook in order to import useContext ??
 export const selectStatement = (

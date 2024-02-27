@@ -49,24 +49,26 @@ type MinaEvent = {
 };
 
 /**
- * Verifies the attestation has not been tampered with and corresponds to an event previously emitted to our Zap protocol.
+ * Custom hook that verifies the attestation has not been tampered with and corresponds to an event previously emitted to our Zap protocol.
  * @param attestationNote the decoded attestion note you wish to verify
  * @returns either true if the verification is successful or an error indicating the verification failure reason
+ * @throws VerifyAttestationError
  */
 export const useVerifyAttestation = (attestationNote: AttestationNote) => {
   return useMutation({
     mutationFn: () => verifyAttestation(attestationNote),
   });
-}
+};
 
-const verifyAttestation = async (attestationNote: AttestationNote): Promise<boolean> => {
+const verifyAttestation = async (
+  attestationNote: AttestationNote
+): Promise<boolean> => {
   // we probably don't wanna call fetchZapEvents() every time we call verifyAttestation
   // or maybe move declaration of "network" and zap instance "zkapp" out of fetchZapEvents (as global variables?)
   const events = await fetchZapEvents();
 
   // First we make sure the attestation note has not been tampered with
-  if (attestationNote == null)
-    throw new NotExistsError();
+  if (attestationNote == null) throw new NotExistsError();
 
   const recalculatedHash = calculateAttestationHash(
     attestationNote.conditionType,
@@ -91,8 +93,7 @@ const verifyAttestation = async (attestationNote: AttestationNote): Promise<bool
       const now = new Date();
       const timestamp = now.getTime() / 1000;
 
-      if (timestamp > validTill)
-        throw new ExpiredError();
+      if (timestamp > validTill) throw new ExpiredError();
 
       return true;
     }
@@ -105,6 +106,7 @@ const verifyAttestation = async (attestationNote: AttestationNote): Promise<bool
  * Decode the encoded attestation note, which you want to verify
  * @param encodedAttestationNote the encoded attestation note, which you want to decode
  * @returns the decoded attestation note
+ * @throws InvalidNoteError
  */
 export const decodeAttestationNote = (
   encodedAttestationNote: string

@@ -11,6 +11,10 @@ declare global {
   }
 }
 
+/**
+ * Custom hook that connects to Mina wallet.
+ * @throws MinaWalletError
+ */
 export const useConnectToMinaWallet = () => {
   // omitting data related fields as connectToMinaWallet returns void
   const { data, ...rest } = useMutation({
@@ -18,7 +22,7 @@ export const useConnectToMinaWallet = () => {
   });
 
   return { ...rest };
-}
+};
 
 // isn't it supposed to be a custom hook as it calls useContext() ??
 const connectToMinaWallet = async (): Promise<void> => {

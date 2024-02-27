@@ -6,10 +6,11 @@ import { AttestationHashBase64Error } from "errors/proof/submitProof/attestation
 import { SendingProofError } from "errors/proof/submitProof/sendingProof.js";
 
 /**
- * Submits the zero-knowledge statement verification proof to the ZAP protocol on Mina
+* Custom hook that submits the zero-knowledge statement verification proof to the ZAP protocol on Mina
  * @param verificationTxJson the statement verification transaction json obtained from `verifyTransaction()`
  * @param attestationHashBase64 the statement validity attestation note obtained from `verifyTransaction()`
  * @returns hash of the proof submission transaction to the ZAP protocol on Mina
+ * @throws SubmitProofError
  */
 export const useSubmitProof = (
   verificationTxJson: string,
