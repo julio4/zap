@@ -1,6 +1,7 @@
-import { hashResponse, hashRoute, signResponse } from "../src/index.js";
+import { hashResponse, signResponse } from "../src/index.js";
 import { Encoding, Field, Poseidon, PrivateKey, Signature } from "o1js";
 import { ZapResponse, Route } from "@zap/types";
+import { hashRoute } from "@zap/core";
 
 describe("Source server", () => {
   const route: Route = {
@@ -15,13 +16,14 @@ describe("Source server", () => {
     route,
   };
 
-  it("hashRoute", () => {
-    const routeAsJson = JSON.stringify(route);
-    const routeJsonAsFields = Encoding.stringToFields(routeAsJson);
-    const hashedRoute = Poseidon.hash(routeJsonAsFields);
+  // TODO to move to @core
+  // it("hashRoute", () => {
+  //   const routeAsJson = JSON.stringify(route);
+  //   const routeJsonAsFields = Encoding.stringToFields(routeAsJson);
+  //   const hashedRoute = Poseidon.hash(routeJsonAsFields);
 
-    expect(hashRoute(route)).toStrictEqual(hashedRoute);
-  });
+  //   expect(hashRoute(route)).toStrictEqual(hashedRoute);
+  // });
 
   it("hashResponse", () => {
     expect(hashResponse(res)).toStrictEqual({

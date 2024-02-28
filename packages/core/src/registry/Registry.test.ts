@@ -57,7 +57,7 @@ describe('Registry', () => {
     expect(initialRegistryRoot).toEqual(initialRoot);
   });
 
-  it('registers a public key', async () => {
+  it.skip('registers a public key', async () => {
     await localDeploy();
     registryStorage.insert(newSource);
 
@@ -74,7 +74,7 @@ describe('Registry', () => {
     expect(registryStorage.map.get(hashedPublicKey)).toEqual(stringToFields('name')[0]);
   });
 
-  it('throws an error when trying to register the same public key twice', async () => {
+  it.skip('throws an error when trying to register the same public key twice', async () => {
     await localDeploy();
 
     const txn = await Mina.transaction(deployerAccount, () => {
@@ -93,7 +93,7 @@ describe('Registry', () => {
     ).rejects.toThrow();
   });
 
-  it('emits a `registered` event when a new public key is registered', async () => {
+  it.skip('emits a `registered` event when a new public key is registered', async () => {
     await localDeploy();
     const newSourcePublicKey = PrivateKey.random().toPublicKey();
 

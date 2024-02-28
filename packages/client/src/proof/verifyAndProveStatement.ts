@@ -3,40 +3,43 @@ import { AttestationNote, Statement } from "@zap/types";
 import { Field } from "o1js";
 import { AttestContext } from "../provider/attest.js";
 import { useContext } from "react";
-import { useMutation } from "@tanstack/react-query";
-import { UndefinedFieldError } from "errors/proof/verifyAndProveStatement/undefinedField.js";
+import { useMutation, UseMutationResult } from "@tanstack/react-query";
+import { UndefinedFieldError } from "../errors/proof/verifyAndProveStatement/undefinedField.js";
 
 /**
-* Custom hook that:
+ * Custom hook that:
  * - verifies the statement using ZAP protocol
  * - generates the attestation/proof
  * @throws VerifyAndProveStatementError
  */
-export const useVerifyAndProveStatement = () => {
-  return useMutation({
+export const useVerifyAndProveStatement = (): UseMutationResult<
+  {
+    verificationTransactionJson: string;
+    attestationNoteBase64: string;
+  },
+  Error,
+  void,
+  unknown
+> =>
+  useMutation({
     mutationFn: verifyAndProveStatement,
   });
-}
 
 // shouldn't it be a custom hook in order to import useContext ??
 const verifyAndProveStatement = async () => {
   const attest = useContext(AttestContext);
 
-  if (!attest.workerClient)
-    throw new UndefinedFieldError("workerClient");
+  if (!attest.workerClient) throw new UndefinedFieldError("workerClient");
 
   const { minaWallet } = attest;
-  if (!minaWallet)
-    throw new UndefinedFieldError("minaWallet");
+  if (!minaWallet) throw new UndefinedFieldError("minaWallet");
 
   // might be useless as creatingTransaction is never read
   attest.set({ ...attest, creatingTransaction: true });
 
-  if (attest.privateData === null)
-    throw new UndefinedFieldError("privateData");
+  if (attest.privateData === null) throw new UndefinedFieldError("privateData");
 
-    if (attest.statement === null)
-    throw new UndefinedFieldError("statement");
+  if (attest.statement === null) throw new UndefinedFieldError("statement");
 
   await attest.workerClient.createVerifyTransaction(
     attest.statement,

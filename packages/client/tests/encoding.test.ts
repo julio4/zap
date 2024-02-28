@@ -1,7 +1,7 @@
 import { PrivateKey } from "o1js";
-import { hashRoute } from "@zap/source";
 import { generateBase64Attestation, decodeBase64Attestation } from "../src/index.js";
 import { Route } from "@zap/types";
+import { hashRoute } from "@zap/core";
 
 describe("Encoding", () => {
   describe("Base64 Attestation note", () => {

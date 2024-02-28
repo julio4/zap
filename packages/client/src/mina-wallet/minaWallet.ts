@@ -1,8 +1,8 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, UseMutationResult } from "@tanstack/react-query";
 import { AttestContext } from "../provider/attest.js";
 import { useContext } from "react";
-import { WrongNetworkError } from "errors/mina-wallet/wrongNetwork.js";
-import { ConnectionError } from "errors/mina-wallet/connection.js";
+import { WrongNetworkError } from "../errors/mina-wallet/wrongNetwork.js";
+import { ConnectionError } from "../errors/mina-wallet/connection.js";
 
 // Needed to declare mina object in window
 declare global {
@@ -15,13 +15,18 @@ declare global {
  * Custom hook that connects to Mina wallet.
  * @throws MinaWalletError
  */
-export const useConnectToMinaWallet = () => {
-  // omitting data related fields as connectToMinaWallet returns void
-  const { data, ...rest } = useMutation({
+export const useConnectToMinaWallet = (): UseMutationResult<
+  void,
+  Error,
+  void,
+  unknown
+> => {
+  // TODO ? omitting data related fields as connectToMinaWallet returns void ?
+  // const { data, ...rest }:
+  // return { ...rest };
+  return useMutation({
     mutationFn: connectToMinaWallet,
   });
-
-  return { ...rest };
 };
 
 // isn't it supposed to be a custom hook as it calls useContext() ??

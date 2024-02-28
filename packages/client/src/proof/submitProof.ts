@@ -1,12 +1,12 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, UseMutationResult } from "@tanstack/react-query";
 import { AttestContext } from "../provider/attest.js";
 import { useContext } from "react";
-import { VerificationTxJsonError } from "errors/proof/submitProof/verificationTxJson.js";
-import { AttestationHashBase64Error } from "errors/proof/submitProof/attestationHashBase64.js";
-import { SendingProofError } from "errors/proof/submitProof/sendingProof.js";
+import { VerificationTxJsonError } from "../errors/proof/submitProof/verificationTxJson.js";
+import { AttestationHashBase64Error } from "../errors/proof/submitProof/attestationHashBase64.js";
+import { SendingProofError } from "../errors/proof/submitProof/sendingProof.js";
 
 /**
-* Custom hook that submits the zero-knowledge statement verification proof to the ZAP protocol on Mina
+ * Custom hook that submits the zero-knowledge statement verification proof to the ZAP protocol on Mina
  * @param verificationTxJson the statement verification transaction json obtained from `verifyTransaction()`
  * @param attestationHashBase64 the statement validity attestation note obtained from `verifyTransaction()`
  * @returns hash of the proof submission transaction to the ZAP protocol on Mina
@@ -15,11 +15,17 @@ import { SendingProofError } from "errors/proof/submitProof/sendingProof.js";
 export const useSubmitProof = (
   verificationTxJson: string,
   attestationHashBase64: string
-) => {
-  return useMutation({
+): UseMutationResult<
+  {
+    hash: any;
+  },
+  Error,
+  void,
+  unknown
+> =>
+  useMutation({
     mutationFn: () => submitProof(verificationTxJson, attestationHashBase64),
   });
-};
 
 // shouldn't it be a custom hook in order to use useContext ??
 const submitProof = async (

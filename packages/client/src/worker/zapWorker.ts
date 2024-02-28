@@ -44,8 +44,7 @@ const functions: Record<string, (...args: any[]) => any> = {
       state.verifier!.verify(
         provableStatement,
         Field.fromJSON(JSON.parse(args.privateData)),
-        Signature.fromJSON(JSON.parse(args.signature)),
-        PrivateKey.random().toPublicKey() // TODO
+        Signature.fromJSON(JSON.parse(args.signature))
       );
     });
     state.tx = transaction;

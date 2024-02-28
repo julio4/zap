@@ -5,8 +5,8 @@ import { hashRoute } from "@zap/core";
 
 import { verifyResponseSignature } from "../source.js";
 import { AttestContext } from "../provider/attest.js";
-import { SignatureVerificationError } from "errors/statement/signatureVerification.js";
-import { HashRouteVerificationError } from "errors/statement/hashRouteVerification.js";
+import { SignatureVerificationError } from "../errors/statement/signatureVerification.js";
+import { HashRouteVerificationError } from "../errors/statement/hashRouteVerification.js";
 
 export const verifyRouteHash = (
   statement: Statement,

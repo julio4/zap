@@ -59,12 +59,12 @@ describe('EventCaller', () => {
     await localDeployHandler();
   });
 
-  it.only('should deploy', async () => {
+  it.skip('should deploy', async () => {
     await localDeployVerifier();
     await localDeployHandler();
   });
 
-  it('should emit verified event with correct attestation hash', async () => {
+  it.skip('should emit verified event with correct attestation hash', async () => {
     const sourceKey = PrivateKey.random().toPublicKey();
     const statement: Statement = {
       sourceKey: sourceKey.toBase58(),

@@ -2,12 +2,12 @@ import { calculateAttestationHash } from "@zap/shared";
 import { AttestationNote } from "@zap/types";
 import { Provable, ProvablePure, UInt32, Mina, PublicKey } from "o1js";
 import { Verifier } from "@zap/core";
-import { useMutation } from "@tanstack/react-query";
-import { NotExistsError } from "errors/verify-attestation/notExists.js";
-import { DifferentHashError } from "errors/verify-attestation/differentHash.js";
-import { ExpiredError } from "errors/verify-attestation/expired.js";
-import { NotFoundInEventsError } from "errors/verify-attestation/notFoundInEvents.js";
-import { InvalidNoteError } from "errors/verify-attestation/index.js";
+import { useMutation, UseMutationResult } from "@tanstack/react-query";
+import { NotExistsError } from "../errors/verify-attestation/notExists.js";
+import { DifferentHashError } from "../errors/verify-attestation/differentHash.js";
+import { ExpiredError } from "../errors/verify-attestation/expired.js";
+import { NotFoundInEventsError } from "../errors/verify-attestation/notFoundInEvents.js";
+import { InvalidNoteError } from "../errors/verify-attestation/index.js";
 
 const MINAURL = "https://proxy.berkeley.minaexplorer.com/graphql";
 const ARCHIVEURL = "https://archive.berkeley.minaexplorer.com";
@@ -54,11 +54,12 @@ type MinaEvent = {
  * @returns either true if the verification is successful or an error indicating the verification failure reason
  * @throws VerifyAttestationError
  */
-export const useVerifyAttestation = (attestationNote: AttestationNote) => {
-  return useMutation({
+export const useVerifyAttestation = (
+  attestationNote: AttestationNote
+): UseMutationResult<boolean, Error, void, unknown> =>
+  useMutation({
     mutationFn: () => verifyAttestation(attestationNote),
   });
-};
 
 const verifyAttestation = async (
   attestationNote: AttestationNote
