@@ -5,17 +5,16 @@ import {
   State,
   method,
   DeployArgs,
-  PublicKey,
   Permissions,
-  Poseidon,
 } from 'o1js';
 
-import { initialRoot, RegistryMerkleWitness } from './RegistryStorage';
+import { initialRoot, RegistryStorage } from './RegistryStorage';
+import { Source } from './Source';
 
 export type IRegistry = {
   // States
   registryRoot: State<Field>;
-  register(witness: RegistryMerkleWitness, publicKey: PublicKey): void;
+  register(source: Source): void;
 };
 
 /**
@@ -28,6 +27,7 @@ export type IRegistry = {
  */
 export class Registry extends SmartContract implements IRegistry {
   @state(Field) registryRoot = State<Field>();
+  @state(Field) registryStorage = new RegistryStorage();
 
   init() {
     super.init();
@@ -46,21 +46,20 @@ export class Registry extends SmartContract implements IRegistry {
     });
   }
 
-  @method register(witness: RegistryMerkleWitness, publicKey: PublicKey) {
-    const currentRoot = this.registryRoot.getAndRequireEquals();
-
+  @method register(source: Source) {
     // Compute the new root
-    const hashedPublicKey = Poseidon.hash(publicKey.toFields());
-    const potentialNewRoot = witness.calculateRoot(hashedPublicKey);
-    
-    // Verify that the public key is not already registered
-    potentialNewRoot.assertNotEquals(currentRoot);  // not the right way to check for uniqueness
+    this.registryStorage.insert(source);
 
-    // Update the onchain registry root
-    this.registryRoot.set(potentialNewRoot);
+    // Check if root has changed
+    const currentRoot = this.registryRoot.getAndRequireEquals();
+    const newRoot = this.registryStorage.map.getRoot();
+    newRoot.assertNotEquals(currentRoot);    
+
+    // Update the root
+    this.registryRoot.set(newRoot);
 
     // Emit the event with the registered public key
     // Can be used to keep in sync the offchain registry
-    this.emitEvent("registered", publicKey.toFields()[0]);
+    this.emitEvent('registered', source.publicKey.toFields()[0]);
   }
 }

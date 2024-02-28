@@ -1,6 +1,8 @@
 import { Registry } from './Registry';
 import { RegistryStorage, initialRoot } from './RegistryStorage';
 import { Mina, PrivateKey, PublicKey, AccountUpdate, Poseidon } from 'o1js';
+import { Source } from './Source';
+import { stringToFields } from 'o1js/dist/node/bindings/lib/encoding';
 
 let proofsEnabled = false;
 
@@ -11,6 +13,13 @@ describe('Registry', () => {
     zkAppPrivateKey: PrivateKey,
     zkApp: Registry,
     registryStorage: RegistryStorage;
+
+  let newSource: Source = {
+    publicKey: PrivateKey.random().toPublicKey(),
+    urlApi: stringToFields('http://test.com')[0],
+    name: stringToFields('name')[0],
+    description: stringToFields('description')[0],
+  };
 
   beforeAll(async () => {
     if (proofsEnabled) {
@@ -50,29 +59,26 @@ describe('Registry', () => {
 
   it('registers a public key', async () => {
     await localDeploy();
-    const newSourcePublicKey = PrivateKey.random().toPublicKey();
-    const hashedPublicKey = Poseidon.hash(newSourcePublicKey.toFields());
-    const witness = registryStorage.insert(newSourcePublicKey);
+    registryStorage.insert(newSource);
 
     const txn = await Mina.transaction(deployerAccount, () => {
-      zkApp.register(witness, newSourcePublicKey);
+      zkApp.register(newSource);
     });
     await txn.prove();
     await txn.sign([deployerKey, zkAppPrivateKey]).send();
 
     const updatedRegistryRoot = await zkApp.registryRoot.get();
     expect(updatedRegistryRoot).not.toEqual(initialRoot);
-    expect(updatedRegistryRoot).toEqual(witness.calculateRoot(hashedPublicKey));
+
+    const hashedPublicKey = Poseidon.hash(newSource.publicKey.toFields());
+    expect(registryStorage.map.get(hashedPublicKey)).toEqual(stringToFields('name')[0]);
   });
 
   it('throws an error when trying to register the same public key twice', async () => {
-    // test with same witness. Atm we don't throw if adding same key but with different witness
     await localDeploy();
-    const newSourcePublicKey = PrivateKey.random().toPublicKey();
-    const witness = registryStorage.insert(newSourcePublicKey);
 
     const txn = await Mina.transaction(deployerAccount, () => {
-      zkApp.register(witness, newSourcePublicKey);
+      zkApp.register(newSource);
     });
     await txn.prove();
     await txn.sign([deployerKey, zkAppPrivateKey]).send();
@@ -82,7 +88,7 @@ describe('Registry', () => {
 
     await expect(
       Mina.transaction(deployerAccount, () => {
-        zkApp.register(witness, newSourcePublicKey);
+        zkApp.register(newSource);
       })
     ).rejects.toThrow();
   });
@@ -90,10 +96,9 @@ describe('Registry', () => {
   it('emits a `registered` event when a new public key is registered', async () => {
     await localDeploy();
     const newSourcePublicKey = PrivateKey.random().toPublicKey();
-    const witness = registryStorage.insert(newSourcePublicKey);
 
     const txn = await Mina.transaction(deployerAccount, () => {
-      zkApp.register(witness, newSourcePublicKey);
+      zkApp.register(newSource);
     });
     await txn.prove();
     await txn.sign([deployerKey, zkAppPrivateKey]).send();
