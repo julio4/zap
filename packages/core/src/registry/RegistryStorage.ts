@@ -1,36 +1,42 @@
-import { Field, MerkleTree, MerkleWitness, Poseidon, PublicKey } from 'o1js';
+import {
+  Field,
+  MerkleMap,
+  MerkleMapWitness,
+  MerkleWitness,
+  Poseidon,
+  PublicKey,
+} from 'o1js';
 
-const height = 20;
-export class RegistryMerkleWitness extends MerkleWitness(height) {}
-export class RegistryMerkleTree extends MerkleTree {
-  constructor() {
-    super(height);
-  }
-}
-export const initialRoot = new RegistryMerkleTree().getRoot();
+import { Source } from './Source';
+
+export const initialRoot = new MerkleMap().getRoot();
 
 /**
  * Simple implementation of a off-chain storage to keep track of the Registry state.
  */
 export class RegistryStorage {
-  tree: RegistryMerkleTree;
-  index: number;
+  map: MerkleMap;
+  count: number;
 
   constructor() {
-    this.tree = new RegistryMerkleTree();
-    this.index = 0;
+    this.map = new MerkleMap();
+    this.count = 0;
   }
 
   assertSynced = (root: Field) => {
-    this.tree.getRoot().assertEquals(root);
+    this.map.getRoot().assertEquals(root);
   };
 
-  insert = (publicKey: PublicKey): RegistryMerkleWitness => {
-    const hashedPublicKey = Poseidon.hash(publicKey.toFields());
-    const nextLeaf = BigInt(this.index);
-    this.tree.setLeaf(nextLeaf, hashedPublicKey);
-    const witness = this.tree.getWitness(nextLeaf);
-    this.index += 1;
-    return new RegistryMerkleWitness(witness);
+  insert = (source: Source): MerkleMapWitness => {
+    const hashedPublicKey = Poseidon.hash(source.publicKey.toFields());
+    this.map.set(hashedPublicKey, source.name.toFields()[0]); // TODO: store the entire struct
+    const witness = this.map.getWitness(hashedPublicKey);
+    this.count += 1;
+    return witness;
   };
+  
+  getValue = (publicKey: PublicKey): Field => {
+    const hashedPublicKey = Poseidon.hash(publicKey.toFields());
+    return this.map.get(hashedPublicKey);
+  }
 }
