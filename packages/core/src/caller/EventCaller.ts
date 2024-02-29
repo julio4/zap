@@ -3,7 +3,6 @@ import { Caller } from './Caller';
 import { Verifier } from '../verifier/Verifier';
 import { ProvableStatement } from '../Statement';
 import { Attestation } from '../Attestation';
-import { Statement } from '@zap/types';
 
 // Example caller that just emit an event
 export class EventCaller extends Caller {
@@ -18,13 +17,14 @@ export class EventCaller extends Caller {
     verifierAddress: PublicKey
   ) {
     const verifier = new Verifier(verifierAddress);
-    const isVerified: Bool = verifier.verify(
-      statement,
-      privateData,
-      signature
-    );
+    const isVerified: Bool = verifier.verify(statement, privateData, signature);
     isVerified.assertTrue('Statement is not verified.');
 
-    this.emitEvent('verified', Field(42));
+    const attestation = new Attestation({
+      statement: statement,
+      address: this.address,
+    });
+
+    this.emitEvent('verified', attestation.hash());
   }
 }
