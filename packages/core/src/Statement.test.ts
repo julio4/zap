@@ -140,16 +140,29 @@ describe('ProvableStatement', () => {
       expect(() => ps.assertValidCondition(Field(0))).toThrow();
     });
 
-    it.todo('conditionType 4 "!="');
-    // const ps = ProvableStatement.from({
-    //   ...statement,
-    //   // "target != 1"
-    //   condition: { type: 4, targetValue: 1 },
-    // });
-    // expect(() =>
-    //   ps.assertValidCondition(Field(0))
-    // ).not.toThrow();
-    // expect(() => ps.assertValidCondition(privateData)).toThrow();
-    // });
+    it('success conditionType 4 "!="', () => {
+      const ps = ProvableStatement.from({
+        ...statement,
+        condition: { type: 4, targetValue: 1 },
+      });
+      expect(() => ps.assertValidCondition(Field(0))).not.toThrow();
+      expect(() => ps.assertValidCondition(privateData)).toThrow();
+    });
+    it('throw conditionType 4 "!="', () => {
+      const ps = ProvableStatement.from({
+        ...statement,
+        condition: { type: 4, targetValue: 1 },
+      });
+      expect(() => ps.assertValidCondition(privateData)).toThrow();
+    });
+
+    it('throw if conditionType > 4', () => {
+      const ps = ProvableStatement.from({
+        ...statement,
+        // eslint-disable-next-line
+        condition: { type: 5 as any, targetValue: 1 },
+      });
+      expect(() => ps.assertValidCondition(privateData)).toThrow();
+    });
   });
 });

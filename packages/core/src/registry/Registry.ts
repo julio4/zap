@@ -46,7 +46,7 @@ export class Registry extends SmartContract implements IRegistry {
     });
   }
 
-  @method register(source: Source) {
+  @method register(source: Source) {  // TODO: use the real on chain logic on merklemap
     // Compute the new root
     this.registryStorage.insert(source);
 
