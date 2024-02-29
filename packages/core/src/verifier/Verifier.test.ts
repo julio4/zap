@@ -37,6 +37,7 @@ describe('Verifier', () => {
   beforeAll(async () => {
     if (proofsEnabled) {
       await Verifier.compile();
+      await EventHandler.compile();
     }
   });
 
