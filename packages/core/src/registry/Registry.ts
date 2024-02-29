@@ -6,6 +6,7 @@ import {
   method,
   DeployArgs,
   Permissions,
+  MerkleMapWitness,
 } from 'o1js';
 
 import { initialRoot, RegistryStorage } from './RegistryStorage';
@@ -14,7 +15,7 @@ import { Source } from './Source';
 export type IRegistry = {
   // States
   registryRoot: State<Field>;
-  register(source: Source): void;
+  register(witness: MerkleMapWitness, source: Source): void;
 };
 
 /**
@@ -46,14 +47,15 @@ export class Registry extends SmartContract implements IRegistry {
     });
   }
 
-  @method register(source: Source) {  // TODO: use the real on chain logic on merklemap
-    // Compute the new root
-    this.registryStorage.insert(source);
-
+  @method register(witness: MerkleMapWitness, source: Source) {
     // Check if root has changed
-    const currentRoot = this.registryRoot.getAndRequireEquals();
-    const newRoot = this.registryStorage.map.getRoot();
-    newRoot.assertNotEquals(currentRoot);    
+    const previousRoot = this.registryRoot.getAndRequireEquals();
+    const [emptyRoot] = witness.computeRootAndKey(Field(0)); // New leaf starts with 0
+    emptyRoot.assertEquals(previousRoot);
+
+    // Add the source to the tree by updating the root with the new leaf, TODO: add the entire struct with toFields method
+    // for the moment we only add the name
+    const [newRoot] = witness.computeRootAndKey(source.name.toFields()[0]);
 
     // Update the root
     this.registryRoot.set(newRoot);
