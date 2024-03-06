@@ -8,7 +8,7 @@ import {
   AccountUpdate,
   Bool,
 } from 'o1js';
-import { ProvableStatement } from '../Statement';
+import { ProvableStatement } from '../Statement.js';
 
 interface IVerifier {
   verify(

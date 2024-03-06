@@ -1,5 +1,5 @@
 import { Struct, Poseidon, PublicKey, Field } from 'o1js';
-import { ProvableStatement } from './Statement';
+import { ProvableStatement } from './Statement.js';
 
 export class Attestation extends Struct({
   statement: ProvableStatement,

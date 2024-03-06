@@ -9,8 +9,8 @@ import {
   MerkleMapWitness,
 } from 'o1js';
 
-import { initialRoot, RegistryStorage } from './RegistryStorage';
-import { Source } from './Source';
+import { initialRoot, RegistryStorage } from './RegistryStorage.js';
+import { Source } from './Source.js';
 
 export type IRegistry = {
   // States

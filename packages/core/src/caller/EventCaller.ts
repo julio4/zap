@@ -1,11 +1,11 @@
-import { Bool, Field, PublicKey, Signature, method } from 'o1js';
+import { Bool, Field, PublicKey, Signature, SmartContract, method } from 'o1js';
 import { Caller } from './Caller';
-import { Verifier } from '../verifier/Verifier';
-import { ProvableStatement } from '../Statement';
-import { Attestation } from '../Attestation';
+import { Verifier } from '../verifier/Verifier.js';
+import { ProvableStatement } from '../Statement.js';
+import { Attestation } from '../Attestation.js';
 
 // Example caller that just emit an event
-export class EventCaller extends Caller {
+export class EventCaller extends SmartContract implements Caller {
   events = {
     verified: Field,
   };

@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function */
 
 import { Field, method, PublicKey, Signature, SmartContract } from 'o1js';
-import { Statement } from '@zap/types';
-import { ProvableStatement } from '../Statement';
+import { ProvableStatement } from '../Statement.js';
 
 interface ICaller {
   call(
