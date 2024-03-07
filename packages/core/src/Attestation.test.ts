@@ -48,6 +48,8 @@ describe('Attestation', () => {
   it('assertEqual()', () => {
     const hash = attestation.hash();
     expect(() => attestation.assertEqual(hash)).not.toThrow();
-    expect(() => attestation.assertEqual(Poseidon.hash([Field(0x1)]))).toThrow();
+    expect(() =>
+      attestation.assertEqual(Poseidon.hash([Field(0x1)]))
+    ).toThrow();
   });
 });

@@ -198,4 +198,74 @@ describe('ProvableStatement', () => {
       expect(() => ps.assertValidCondition(privateData)).toThrow();
     });
   });
+
+  describe('ProvableStatement.isValidCondition(privateData)', () => {
+    it('true conditionType 1 "<"', () => {
+      const ps = ProvableStatement.from({
+        ...statement,
+        // "target < 1"
+        condition: { type: 1, targetValue: 1 },
+      });
+      expect(ps.isValidCondition(Field(0))).toEqual(Bool(true));
+      expect(ps.isValidCondition(Field(1))).toEqual(Bool(false));
+      expect(ps.isValidCondition(Field(2))).toEqual(Bool(false));
+    });
+    it('false conditionType 1 "<"', () => {
+      const ps = ProvableStatement.from({
+        ...statement,
+        condition: { type: 1, targetValue: 1 },
+      });
+      expect(ps.isValidCondition(Field(1))).toEqual(Bool(false));
+    });
+
+    it('true conditionType 2 ">"', () => {
+      const ps = ProvableStatement.from({
+        ...statement,
+        // "target > 1"
+        condition: { type: 2, targetValue: 1 },
+      });
+      expect(ps.isValidCondition(Field(2))).toEqual(Bool(true));
+      expect(ps.isValidCondition(Field(1))).toEqual(Bool(false));
+      expect(ps.isValidCondition(Field(0))).toEqual(Bool(false));
+    });
+    it('false conditionType 2 ">"', () => {
+      const ps = ProvableStatement.from({
+        ...statement,
+        condition: { type: 2, targetValue: 1 },
+      });
+      expect(() => ps.isValidCondition(Field(1))).toEqual(Bool(false));
+    });
+
+    it('true conditionType 3 "=="', () => {
+      const ps = provableStatement;
+      expect(ps.isValidCondition(privateData)).toEqual(Bool(true));
+      expect(ps.isValidCondition(Field(0))).toEqual(Bool(false));
+    });
+
+    it('true conditionType 4 "!="', () => {
+      const ps = ProvableStatement.from({
+        ...statement,
+        condition: { type: 4, targetValue: 1 },
+      });
+      expect(ps.isValidCondition(Field(0))).toEqual(Bool(true));
+      expect(ps.isValidCondition(privateData)).toEqual(Bool(false));
+    });
+
+    it('false conditionType 4 "!="', () => {
+      const ps = ProvableStatement.from({
+        ...statement,
+        condition: { type: 4, targetValue: 1 },
+      });
+      expect(ps.isValidCondition(privateData)).toEqual(Bool(false));
+    });
+
+    it('false if conditionType > 4', () => {
+      const ps = ProvableStatement.from({
+        ...statement,
+        // eslint-disable-next-line
+        condition: { type: 5 as any, targetValue: 1 },
+      });
+      expect(ps.isValidCondition(privateData)).toEqual(Bool(false));
+    });
+  });
 });
