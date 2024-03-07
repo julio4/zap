@@ -1,7 +1,6 @@
 import { Statement } from '@zap/types';
 import { ProvableStatement } from '../Statement';
 import { Verifier } from './Verifier';
-import { EventHandler } from '../handler_deprecated/EventHandler';
 
 import { Mina, PrivateKey, PublicKey, AccountUpdate, Field } from 'o1js';
 
@@ -14,10 +13,7 @@ describe('Verifier', () => {
     userKey: PrivateKey,
     zkAppAddress: PublicKey,
     zkAppPrivateKey: PrivateKey,
-    zkApp: Verifier,
-    handlerAddress: PublicKey,
-    handlerPrivateKey: PrivateKey,
-    handler: EventHandler;
+    zkApp: Verifier;
 
   const sourcePrivateKey = PrivateKey.random();
   const sourceKey = sourcePrivateKey.toPublicKey();
@@ -37,7 +33,6 @@ describe('Verifier', () => {
   beforeAll(async () => {
     if (proofsEnabled) {
       await Verifier.compile();
-      await EventHandler.compile();
     }
   });
 
@@ -50,10 +45,6 @@ describe('Verifier', () => {
     zkAppPrivateKey = PrivateKey.random();
     zkAppAddress = zkAppPrivateKey.toPublicKey();
     zkApp = new Verifier(zkAppAddress);
-
-    handlerPrivateKey = PrivateKey.random();
-    handlerAddress = handlerPrivateKey.toPublicKey();
-    handler = new EventHandler(handlerAddress);
   });
 
   async function localDeployVerifier() {
@@ -67,24 +58,12 @@ describe('Verifier', () => {
     await txn.sign([deployerKey, zkAppPrivateKey]).send();
   }
 
-  async function localDeployHandler() {
-    const txn = await Mina.transaction(deployerAccount, () => {
-      AccountUpdate.fundNewAccount(deployerAccount);
-      handler.deploy({
-        zkappKey: handlerPrivateKey,
-      });
-    });
-    await txn.prove();
-    await txn.sign([deployerKey, handlerPrivateKey]).send();
-  }
-
   it('deploys the `Verifier` smart contract', async () => {
     await localDeployVerifier();
   });
 
-  it('verifies a statement with emitEvent handler', async () => {
+  it('verifies a statement', async () => {
     await localDeployVerifier();
-    await localDeployHandler();
 
     const provableStatement = ProvableStatement.from(statement);
     const privateData = new Field(1);
@@ -114,7 +93,6 @@ describe('Verifier', () => {
 
   it("should throw an error if the statement's signature is invalid", async () => {
     await localDeployVerifier();
-    await localDeployHandler();
 
     const provableStatement = ProvableStatement.from(statement);
     const privateData = new Field(1);
@@ -134,7 +112,6 @@ describe('Verifier', () => {
 
   it('should throw an error if the statement condition is invalid', async () => {
     await localDeployVerifier();
-    await localDeployHandler();
 
     const provableStatement = ProvableStatement.from(statement);
     const privateData = new Field(0);
