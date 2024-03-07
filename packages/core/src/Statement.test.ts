@@ -1,5 +1,5 @@
 import { Statement } from '@zap/types';
-import { Encoding, Field, Poseidon, PrivateKey, Signature } from 'o1js';
+import { Bool, Encoding, Field, Poseidon, PrivateKey, Signature } from 'o1js';
 import { ProvableStatement } from './Statement';
 
 describe('ProvableStatement', () => {
@@ -95,6 +95,39 @@ describe('ProvableStatement', () => {
         ])
       )
     ).toThrow();
+  });
+
+  it('ProvableStatement.isValidSignature(privateData, signature)', () => {
+    expect(provableStatement.isValidSignature(privateData, signature)).toEqual(
+      Bool(true)
+    );
+    expect(provableStatement.isValidSignature(Field(0), signature)).toEqual(
+      Bool(false)
+    );
+    expect(
+      provableStatement.isValidSignature(
+        privateData,
+        Signature.create(PrivateKey.random(), [
+          privateData,
+          provableStatement.hashRoute,
+        ])
+      )
+    ).toEqual(Bool(false));
+    expect(
+      provableStatement.isValidSignature(
+        privateData,
+        Signature.create(sourcePrivateKey, [privateData, Field(0)])
+      )
+    ).toEqual(Bool(false));
+    expect(
+      provableStatement.isValidSignature(
+        privateData,
+        Signature.create(sourcePrivateKey, [
+          Field(0),
+          provableStatement.hashRoute,
+        ])
+      )
+    ).toEqual(Bool(false));
   });
 
   describe('ProvableStatement.assertValidCondition(privateData)', () => {
