@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function */
 
-import { Field, method, PublicKey, Signature, SmartContract } from 'o1js';
+import { Bool, Field, method, PublicKey, Signature, SmartContract } from 'o1js';
 import { ProvableStatement } from '../Statement.js';
+import { Verifier } from '../verifier/Verifier.js';
 
 interface ICaller {
   call(
@@ -18,5 +19,8 @@ export class Caller extends SmartContract implements ICaller {
     privateData: Field,
     signature: Signature,
     verifierAddress: PublicKey
-  ): void {}
+  ): void {
+    const verifier = new Verifier(verifierAddress);
+    const isVerified: Bool = verifier.verify(statement, privateData, signature);
+  }
 }
