@@ -1,11 +1,4 @@
-import {
-  Field,
-  MerkleMap,
-  MerkleMapWitness,
-  MerkleWitness,
-  Poseidon,
-  PublicKey,
-} from 'o1js';
+import { Field, MerkleMap, MerkleMapWitness, Poseidon, PublicKey } from 'o1js';
 
 import { Source } from './Source';
 
@@ -34,9 +27,9 @@ export class RegistryStorage {
     this.count += 1;
     return witness;
   };
-  
+
   getValue = (publicKey: PublicKey): Field => {
     const hashedPublicKey = Poseidon.hash(publicKey.toFields());
     return this.map.get(hashedPublicKey);
-  }
+  };
 }

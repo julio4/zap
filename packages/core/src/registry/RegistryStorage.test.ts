@@ -20,15 +20,36 @@ describe('RegistryStorage', () => {
     const publicKey = PrivateKey.random().toPublicKey();
     const newSource: Source = {
       publicKey,
-      urlApi: stringToFields("http://test.com")[0],
+      urlApi: stringToFields('http://test.com')[0],
       name: stringToFields('name')[0],
       description: stringToFields('description')[0],
     };
     const witness = registryStorage.insert(newSource);
     const hashedPublicKey = Poseidon.hash(publicKey.toFields());
-    expect(registryStorage.map.get(hashedPublicKey)).toEqual(stringToFields('name')[0]);
-    expect(registryStorage.map.get(hashedPublicKey)).not.toEqual(stringToFields('namee')[0]);
+    expect(registryStorage.map.get(hashedPublicKey)).toEqual(
+      stringToFields('name')[0]
+    );
+    expect(registryStorage.map.get(hashedPublicKey)).not.toEqual(
+      stringToFields('namee')[0]
+    );
     expect(registryStorage.count).toEqual(1);
     expect(registryStorage.map.getWitness(hashedPublicKey)).toEqual(witness);
+  });
+
+  it('getValue', async () => {
+    const publicKey = PrivateKey.random().toPublicKey();
+    const newSource: Source = {
+      publicKey,
+      urlApi: stringToFields('http://test.com')[0],
+      name: stringToFields('name')[0],
+      description: stringToFields('description')[0],
+    };
+    registryStorage.insert(newSource);
+    expect(registryStorage.getValue(publicKey)).toEqual(
+      stringToFields('name')[0]
+    );
+    expect(registryStorage.getValue(publicKey)).not.toEqual(
+      stringToFields('namee')[0]
+    );
   });
 });
