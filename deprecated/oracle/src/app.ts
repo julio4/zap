@@ -29,8 +29,7 @@ dotenv.config();
 
 const skipCertainMiddlewaresForListBalances = async (
   ctx: Koa.ParameterizedContext,
-  // tslint:disable-next-line: no-explicit-any
-  next: () => any
+  next: () => any // eslint-disable-line @typescript-eslint/no-explicit-any
 ) => {
   if (ctx.path === '/api/listBalances' || ctx.path === '/api/listNFTs') {
     const { address } = ctx.request.body;

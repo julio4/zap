@@ -8,7 +8,7 @@ interface AttestationState {
 
 export const useAttestationStore = create<AttestationState>()(
   persist(
-    (set, get) => ({
+    (set, get) => ({  // eslint-disable-line
       attestationNotes: [],
       addAttestationNote: (newNote: string) =>
         set({
