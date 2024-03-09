@@ -13,12 +13,13 @@ const fetchLogo = (token: TokenBalance) => {
   if (token.token.logo.small == null) {
     return "/assets/placeholder-question-mark.png";
   } else {
-    const externalImageUrl = token.token.logo.small;
-    const proxiedImageUrl = `/api/image-proxy?url=${encodeURIComponent(
-      externalImageUrl
-    )}`;
-    console.log("proxiedImageUrl", proxiedImageUrl);
-    return proxiedImageUrl;
+    // const externalImageUrl = token.token.logo.small;
+    // const proxiedImageUrl = `/api/image-proxy?url=${encodeURIComponent(
+    //   externalImageUrl
+    // )}`;
+    // console.log("proxiedImageUrl", proxiedImageUrl);
+    // return proxiedImageUrl;
+    return "/assets/placeholder-question-mark.png";
   }
 };
 
@@ -55,6 +56,8 @@ const TokenModal: React.FC<TokenModalProps> = ({
                           src={fetchLogo(token as any)}
                           alt=""
                           className="w-6 h-6 mr-2"
+                          width={24}
+                          height={24}
                         />
                       }
 
