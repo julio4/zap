@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import AttestationSidebar from "./attestationSidebar";
 import { AttestationNote, AttestationNoteDated } from "../../types";
 import { decodeAttestationNote } from "../../utils/base64Attestation";
-import { useAttestationStore } from "@zap/client";
+import { useAttestationStore } from "@/utils/attestationStore";
 interface AttestationHistoryProps { }
 
 const AttestationHistory: React.FC<AttestationHistoryProps> = () => {

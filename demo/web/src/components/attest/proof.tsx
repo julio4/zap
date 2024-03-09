@@ -4,7 +4,7 @@ import { AttestContext } from "../context/attestContext";
 import { ArgsHashAttestationCalculator, Condition } from "../../types";
 import { createAttestationNoteEncoded } from "../../utils/base64Attestation";
 import { calculateAttestationHash } from "../../utils/calculateAttestationHash";
-import { useAttestationStore } from "@zap/client";
+import { useAttestationStore } from "@/utils/attestationStore";
 
 let transactionFee = 0.1;
 
