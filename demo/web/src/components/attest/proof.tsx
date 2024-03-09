@@ -5,6 +5,7 @@ import { ArgsHashAttestationCalculator, Condition } from "../../types";
 import { createAttestationNoteEncoded } from "../../utils/base64Attestation";
 import { calculateAttestationHash } from "../../utils/calculateAttestationHash";
 import { useAttestationStore } from "@/utils/attestationStore";
+import { StatementCondition } from "@zap/types";
 
 let transactionFee = 0.1;
 
@@ -23,8 +24,8 @@ const ProofStep = () => {
 
   let ArgsToGenerateAttestation: {
     senderKey58: string;
-    conditionType: Condition;
-    targetValue: number;
+    sourceKey58: string;
+    statementCondition: StatementCondition;
     value: number;
     hashRoute: string;
     signature: string;
@@ -57,8 +58,8 @@ const ProofStep = () => {
 
     ArgsToGenerateAttestation = {
       senderKey58: attest.minaWallet.address,
-      conditionType: attest.statement.condition.type,
-      targetValue: attest.statement.condition.targetValue,
+      sourceKey58: attest.privateData.publicKey,
+      statementCondition: attest.statement.condition,
       value: attest.privateData.data.value,
       hashRoute: attest.privateData.data.hashRoute,
       signature: attest.privateData.signature,
@@ -90,7 +91,6 @@ const ProofStep = () => {
         attest.statement.condition.type,
         attest.statement.condition.targetValue,
         attest.privateData.data.value,
-        attest.statement.request,
         attest.privateData.data.hashRoute,
         hashAttestation,
         attest.minaWallet.address

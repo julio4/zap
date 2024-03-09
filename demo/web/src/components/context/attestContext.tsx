@@ -2,9 +2,10 @@ import { createContext, useState } from "react";
 import {
   MinaWallet,
   EthereumWallet,
-  Statement,
   PrivateData,
 } from "../../types";
+
+import { Statement } from "@zap/types";
 import ZkappWorkerClient from "../../pages/zkappWorkerClient";
 import { Field } from "o1js";
 

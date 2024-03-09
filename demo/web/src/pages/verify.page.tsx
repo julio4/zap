@@ -7,7 +7,7 @@ import { FoldingBg } from "../components/logo";
 import { Search } from "../components/Search";
 import { decodeAttestationNote } from "../utils/base64Attestation";
 import { ArgsHashAttestationCalculator, AttestationNote } from "../types";
-import { Zap } from "@zap/core";
+import { Verifier } from "@zap/core";
 import { Mina, Provable, ProvablePure, PublicKey, UInt32 } from "o1js";
 import { calculateAttestationHash } from "../utils/calculateAttestationHash";
 
@@ -58,7 +58,7 @@ export default function Home(): JSX.Element {
         });
         Mina.setActiveInstance(network);
 
-        const zkapp = new Zap(
+        const zkapp = new Verifier(
           PublicKey.fromBase58(
             "B62qnhBxxQr7h2AE9f912AyvzJwK1fhEJq7NMZXbzXbhoepUZ7z7237"
           )

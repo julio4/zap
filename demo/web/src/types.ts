@@ -30,15 +30,6 @@ export enum Condition {
   DIFFERENT = "!=",
 }
 
-export type StatementCondition = {
-  type: Condition;
-  targetValue: number;
-};
-
-export type Statement = {
-  request: OracleRequest;
-  condition: StatementCondition;
-};
 
 export type HTMLInputSchema =
   | {

@@ -147,6 +147,9 @@ importers:
       '@zap/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@zap/types':
+        specifier: workspace:*
+        version: link:../../packages/types
       axios:
         specifier: ^1.4.0
         version: 1.4.0

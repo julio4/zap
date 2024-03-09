@@ -1,14 +1,15 @@
-import { Condition, AttestationNote, OracleRequest } from "../types";
+import { AttestationNote, OracleRequest } from "../types";
+import { ConditionType } from "@zap/types";
 
-const getConditionString = (condition: Condition) => {
+const getConditionString = (condition: ConditionType) => {
   switch (condition) {
-    case Condition.LESS_THAN:
+    case ConditionType.LT:
       return "less than";
-    case Condition.GREATER_THAN:
+    case ConditionType.GT:
       return "greater than";
-    case Condition.EQUAL:
+    case ConditionType.EQ:
       return "equal to";
-    case Condition.DIFFERENT:
+    case ConditionType.NEQ:
       return "different from";
     default:
       return "unknown condition";
@@ -16,9 +17,8 @@ const getConditionString = (condition: Condition) => {
 };
 
 export const createAttestationNoteEncoded = (
-  conditionType: Condition,
+  conditionType: ConditionType,
   targetValue: number,
-  value: number,
   request: OracleRequest,
   hashRoute: string,
   hashAttestation: string,
@@ -33,7 +33,7 @@ export const createAttestationNoteEncoded = (
       request.route
     } with ${JSON.stringify(request.args)}.`,
     targetValue: targetValue,
-    conditionType: conditionType,
+    conditionType: operation,
     hashRoute: hashRoute,
     sender: sender,
   };

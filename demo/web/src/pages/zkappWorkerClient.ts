@@ -6,6 +6,7 @@ import type {
   WorkerFunctions,
 } from "./zkappWorker";
 import { Condition } from "../types";
+import { StatementCondition } from "@zap/types";
 
 export default class ZkappWorkerClient {
   // ---------------------------------------------------------------------------------------
@@ -46,23 +47,23 @@ export default class ZkappWorkerClient {
 
   async createGenerateAttestationTransaction({
     senderKey58,
-    conditionType,
-    targetValue,
+    sourceKey58,
+    statementCondition,
     value,
     hashRoute,
     signature,
   }: {
     senderKey58: string;
-    conditionType: Condition;
-    targetValue: number;
+    sourceKey58: string;
+    statementCondition: StatementCondition;
     value: number;
     hashRoute: string;
     signature: string;
   }) {
     await this._call("createGenerateAttestationTransaction", {
       senderKey58,
-      conditionType,
-      targetValue,
+      sourceKey58,
+      statementCondition,
       value,
       hashRoute,
       signature,
@@ -73,23 +74,6 @@ export default class ZkappWorkerClient {
     await this._call("proveGenerateAttestationTransaction", {});
   }
 
-  async getOraclePublicKey() {
-    const result = await this._call("getOraclePublicKey", {});
-    return result;
-  }
-
-  async setOraclePublicKey({
-    senderKey58,
-    newOraclePublicKey58,
-  }: {
-    senderKey58: string;
-    newOraclePublicKey58: string;
-  }) {
-    await this._call("setOraclePublicKey", {
-      senderKey58: senderKey58,
-      newOraclePublicKey58: newOraclePublicKey58,
-    });
-  }
   // ---------------------------------------------------------------------------------------
 
   worker: Worker;

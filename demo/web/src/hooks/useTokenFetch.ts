@@ -31,6 +31,8 @@ const useTokenFetch = ({
         signature: attest.ethereumWallet.signature,
       });
 
+      console.log("response", response);
+
       const tokenBalancesEthereum = response.data.value[0];
       const tokenBalancesPolygon = response.data.value[1];
       setTokenBalances(tokenBalancesEthereum, tokenBalancesPolygon);

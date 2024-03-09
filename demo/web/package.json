@@ -14,6 +14,7 @@
     "@types/react-dom": "18.2.7",
     "@zap/client": "workspace:*",
     "@zap/core": "workspace:*",
+    "@zap/types": "workspace:*",
     "axios": "^1.4.0",
     "coi-serviceworker": "^0.1.7",
     "ethers": "^6.6.3",

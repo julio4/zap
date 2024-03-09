@@ -6,11 +6,10 @@ import axios from "axios";
 import {
   StatementChoices,
   StatementChoice,
-  Condition,
   HTMLInputSchema,
-  Statement,
   SignResponse,
 } from "../../types";
+import { Statement, ConditionType } from "@zap/types";
 import { AttestContext } from "../context/attestContext";
 import { UserDataContext } from "../context/userDataContext";
 import { Encoding, Field, Poseidon, PublicKey, Signature } from "o1js";
@@ -38,7 +37,7 @@ const SelectStep = () => {
   >([]);
   const [isTokenModalOpen, setIsTokenModalOpen] = useState(false);
   const [isNftModalOpen, setIsNftModalOpen] = useState(false);
-  const [condition, setCondition] = useState<Condition>(Condition.GREATER_THAN);
+  const [condition, setCondition] = useState<ConditionType>(ConditionType.GT);
   const [targetValue, setTargetValue] = useState<number>(0);
   const [error, setError] = useState<string | null>(null);
   const [tokenFetchLoading, setTokenFetchLoading] = useState<boolean>(true);
@@ -52,7 +51,7 @@ const SelectStep = () => {
     setError(null);
     setArgs([]);
     setTargetValue(0);
-    setCondition(Condition.GREATER_THAN);
+    setCondition(ConditionType.GT);
   };
 
   const handleTokenSelect = (tokenAddress: string, tokenName: string) => {
@@ -125,21 +124,22 @@ const SelectStep = () => {
       return;
     }
 
+    const statementRequest = {
+      route: choice.route,
+      args: Object.fromEntries(
+        choice.args.map((arg) => {
+          const t_arg = args.find((a) => a.name === arg.name);
+          return [arg.name, t_arg?.value];
+        })
+      ),
+    };
     const statement: Statement = {
-      request: {
-        route: choice?.route,
-        // map args to a object with key value pairs of args.name: args.value
-        args: Object.fromEntries(
-          choice?.args.map((arg) => {
-            const t_arg = args.find((a) => a.name === arg.name);
-            return [arg.name, t_arg?.value];
-          })
-        ),
-      },
+      sourceKey: attest.ethereumWallet.address, // TODO: put sourcekey
       condition: {
         type: condition,
-        targetValue,
+        targetValue: targetValue,
       },
+      route: statementRequest
     };
 
     // Make request to oracle to get signed values
@@ -151,11 +151,11 @@ const SelectStep = () => {
     const request_data = {
       address: attest.ethereumWallet.address,
       signature: attest.ethereumWallet.signature,
-      args: statement.request.args,
+      args: statementRequest.args,
     };
     try {
       const response = await axios.post(
-        `${ORACLE_ENDPOINT}${statement.request.route}`,
+        `${ORACLE_ENDPOINT}${statementRequest.route}`,
         request_data
       );
 
