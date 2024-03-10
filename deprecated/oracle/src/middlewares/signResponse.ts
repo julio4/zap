@@ -30,7 +30,7 @@ export async function signResponse(ctx: ParameterizedContext, next: Next) {
   // Encode the JSON data as fields
   const { value, route } = ctx.body as body;
   const routeObj = {
-    route: route,
+    path: route,
     args: ctx.state.args,
   };
   const routeFields = Encoding.stringToFields(JSON.stringify(routeObj));

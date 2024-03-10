@@ -1,3 +1,4 @@
+import { ConditionType } from "@zap/types";
 import { JsonRpcSigner } from "ethers";
 
 declare global {
@@ -51,7 +52,7 @@ export type StatementChoice = {
   name: string;
   description: string;
   args: HTMLInputSchema[];
-  possibleConditions: Condition[];
+  possibleConditions: ConditionType[];
 };
 
 export enum OracleRoute {
@@ -90,9 +91,9 @@ export const StatementChoices: StatementChoice[] = [
       },
     ],
     possibleConditions: [
-      Condition.EQUAL,
-      Condition.LESS_THAN,
-      Condition.GREATER_THAN,
+      ConditionType.EQ,
+      ConditionType.LT,
+      ConditionType.GT,
     ],
   },
   {
@@ -114,9 +115,9 @@ export const StatementChoices: StatementChoice[] = [
       },
     ],
     possibleConditions: [
-      Condition.EQUAL,
-      Condition.LESS_THAN,
-      Condition.GREATER_THAN,
+      ConditionType.EQ,
+      ConditionType.LT,
+      ConditionType.GT,
     ],
   },
   {
@@ -131,14 +132,14 @@ export const StatementChoices: StatementChoice[] = [
         placeholder: "0x...",
       },
     ],
-    possibleConditions: [Condition.EQUAL],
+    possibleConditions: [ConditionType.EQ],
   },
   {
     route: OracleRoute.XMTP_ENABLED,
     name: "XMTP Enabled",
     description: "Check if the user has enabled XMTP",
     args: [],
-    possibleConditions: [Condition.EQUAL],
+    possibleConditions: [ConditionType.EQ],
   },
   {
     route: OracleRoute.ENS,
@@ -146,9 +147,9 @@ export const StatementChoices: StatementChoice[] = [
     description: "Check if the user got some ENS domains",
     args: [],
     possibleConditions: [
-      Condition.EQUAL,
-      Condition.LESS_THAN,
-      Condition.GREATER_THAN,
+      ConditionType.EQ,
+      ConditionType.LT,
+      ConditionType.GT,
     ],
   },
   {
@@ -156,14 +157,14 @@ export const StatementChoices: StatementChoice[] = [
     name: "Lens profile",
     description: "Check if the user got a Lens profile",
     args: [],
-    possibleConditions: [Condition.EQUAL],
+    possibleConditions: [ConditionType.EQ],
   },
   {
     route: OracleRoute.FARCASTER,
     name: "Farcaster profile",
     description: "Check if the user got a Farcaster profile",
     args: [],
-    possibleConditions: [Condition.EQUAL],
+    possibleConditions: [ConditionType.EQ],
   },
   {
     route: OracleRoute.TOTAL_NFT_VOLUME,
@@ -171,9 +172,9 @@ export const StatementChoices: StatementChoice[] = [
     description: "Check the total volume of NFTs sold by the user",
     args: [],
     possibleConditions: [
-      Condition.EQUAL,
-      Condition.LESS_THAN,
-      Condition.GREATER_THAN,
+      ConditionType.EQ,
+      ConditionType.LT,
+      ConditionType.GT,
     ],
   },
 ];

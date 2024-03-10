@@ -7,9 +7,9 @@ import {
   StatementChoices,
   StatementChoice,
   HTMLInputSchema,
-  SignResponse,
+  SignResponse
 } from "../../types";
-import { Statement, ConditionType } from "@zap/types";
+import { Statement, ConditionType, conditionToString } from "@zap/types";
 import { AttestContext } from "../context/attestContext";
 import { UserDataContext } from "../context/userDataContext";
 import { Encoding, Field, Poseidon, PublicKey, Signature } from "o1js";
@@ -73,6 +73,7 @@ const SelectStep = () => {
     ]);
   };
 
+
   const handleNftSelect = (
     nftAddress: string,
     tokenId: string,
@@ -125,7 +126,7 @@ const SelectStep = () => {
     }
 
     const statementRequest = {
-      route: choice.route,
+      path: choice.route,
       args: Object.fromEntries(
         choice.args.map((arg) => {
           const t_arg = args.find((a) => a.name === arg.name);
@@ -133,6 +134,7 @@ const SelectStep = () => {
         })
       ),
     };
+
     const statement: Statement = {
       sourceKey: attest.ethereumWallet.address, // TODO: put sourcekey
       condition: {
@@ -155,7 +157,7 @@ const SelectStep = () => {
     };
     try {
       const response = await axios.post(
-        `${ORACLE_ENDPOINT}${statementRequest.route}`,
+        `${ORACLE_ENDPOINT}${statementRequest.path}`,
         request_data
       );
 
@@ -164,9 +166,6 @@ const SelectStep = () => {
       const data = body.data.map((f) => Field.from(f));
       attest.setPrivateDataInput(data);
 
-      // signature verification
-      // TODO ASSERT(body.publicKey === node.process["ORACLE_PUBLIC_KEY"])
-      // -> will be asserted in the proof as well so ok to skip it here
       const signature = Signature.fromBase58(body.signature);
       const publicKey = PublicKey.fromBase58(body.publicKey);
 
@@ -180,7 +179,7 @@ const SelectStep = () => {
       }
 
       const localRouteFields = Encoding.stringToFields(
-        JSON.stringify(statement.request)
+        JSON.stringify(statement.route)
       );
       const localHashRoute = Poseidon.hash(localRouteFields).toString();
       if (decoded_hashRoute !== localHashRoute) {
@@ -262,6 +261,7 @@ const SelectStep = () => {
               className="cursor-pointer ring-slate-200 hover:ring-slate-300 bg-slate-800/75 hover:bg-slate-700/75 px-5 py-3 rounded-xl hover:scale-[1.02] duration-300 ease-in-out transition-all"
               onClick={() => {
                 setChoice(choice);
+
                 setCondition(choice.possibleConditions[0]);
               }}
             >
@@ -393,11 +393,11 @@ const SelectStep = () => {
               <select
                 value={condition}
                 className="border-2 border-slate-500 rounded-md bg-slate-600/50 text-slate-100"
-                onChange={(e) => setCondition(e.target.value as Condition)}
+                onChange={(e) => setCondition(e.target.value as unknown as ConditionType)}
               >
                 {choice.possibleConditions.map((condition) => (
                   <option key={condition} value={condition}>
-                    {condition}
+                    {conditionToString(condition)}
                   </option>
                 ))}
               </select>
@@ -433,7 +433,7 @@ const SelectStep = () => {
           /* if blockchain choice is ethereum, then use tokenBalancesEthereum, else use tokenBalancesPolygon. If undefined, use ethereum */
           tokens={
             args.find((a) => a.name === "blockchain")?.value === "ethereum" ||
-            args.find((a) => a.name === "blockchain")?.value === undefined
+              args.find((a) => a.name === "blockchain")?.value === undefined
               ? userData.tokenBalancesEthereum
               : userData.tokenBalancesPolygon
           }
@@ -450,7 +450,7 @@ const SelectStep = () => {
         <NFTModal
           nfts={
             args.find((a) => a.name === "blockchain")?.value === "ethereum" ||
-            args.find((a) => a.name === "blockchain")?.value === undefined
+              args.find((a) => a.name === "blockchain")?.value === undefined
               ? userData.NftBalancesEthereum
               : userData.NftBalancesPolygon
           }

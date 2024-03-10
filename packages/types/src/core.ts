@@ -10,6 +10,36 @@ export enum ConditionType {
 
 export type ConditionTypeString = "<" | ">" | "==" | "!=";
 
+const conditionTypeToStringMap: {
+  [key in ConditionType]: ConditionTypeString;
+} = {
+  [ConditionType.LT]: "<",
+  [ConditionType.GT]: ">",
+  [ConditionType.EQ]: "==",
+  [ConditionType.NEQ]: "!=",
+};
+
+const conditionStringToTypeMap: {
+  [key in ConditionTypeString]: ConditionType;
+} = {
+  "<": ConditionType.LT,
+  ">": ConditionType.GT,
+  "==": ConditionType.EQ,
+  "!=": ConditionType.NEQ,
+};
+
+export const conditionToString = (
+  condition: ConditionType
+): ConditionTypeString => {
+  return conditionTypeToStringMap[condition];
+};
+
+export const stringToCondition = (
+  condition: ConditionTypeString
+): ConditionType => {
+  return conditionStringToTypeMap[condition];
+};
+
 export type StatementCondition = {
   type: ConditionType;
   targetValue: number;
