@@ -1,7 +1,7 @@
 import request from "supertest";
 import app from "../src/app.js";
 import { PrivateKey } from "o1js";
-import { hashRoute } from "@zap/source";
+import { hashRoute } from "@zap/core";
 import { verifyResponseSignature } from "@zap/client";
 
 import {

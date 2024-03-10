@@ -38,6 +38,9 @@ importers:
       '@types/node':
         specifier: ^20.10.5
         version: 20.10.5
+      '@zap/core':
+        specifier: workspace:*
+        version: link:../../packages/core
       '@zap/shared':
         specifier: workspace:*
         version: link:../../packages/shared

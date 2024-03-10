@@ -20,6 +20,7 @@
     "@types/express": "^4.17.21",
     "@types/node": "^20.10.5",
     "@zap/source": "workspace:*",
+    "@zap/core": "workspace:*",
     "@zap/types": "workspace:*",
     "@zap/shared": "workspace:*",
     "dotenv": "^16.3.1",
