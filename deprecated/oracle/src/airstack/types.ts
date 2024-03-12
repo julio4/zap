@@ -172,3 +172,10 @@ export type AirstackResponse<T> = {
 };
 
 export type BlockchainName = 'ethereum' | 'polygon';
+
+export type Route = {
+  path: string;
+  args?: {
+      [key: string]: any;
+  };
+};
