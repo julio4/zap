@@ -1,4 +1,5 @@
-import { ERC20TokenBalance } from './airstack/types';
+import { ERC20TokenBalance, Route } from './airstack/types';
+import { Poseidon, Encoding, Field } from 'o1js';
 
 export function deduplicateTokens(tokens: ERC20TokenBalance[]) {
   const uniqueTokens: ERC20TokenBalance[] = [];
@@ -12,3 +13,9 @@ export function deduplicateTokens(tokens: ERC20TokenBalance[]) {
   });
   return uniqueTokens;
 }
+
+export const hashRoute = (route: Route): Field =>
+  Poseidon.hash([
+    ...Encoding.stringToFields(route.path),
+    ...Encoding.stringToFields(JSON.stringify(route.args)),
+  ]);

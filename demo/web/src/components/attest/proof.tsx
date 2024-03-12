@@ -5,7 +5,7 @@ import { ArgsHashAttestationCalculator, Condition } from "../../types";
 import { createAttestationNoteEncoded } from "../../utils/base64Attestation";
 import { calculateAttestationHash } from "../../utils/calculateAttestationHash";
 import { useAttestationStore } from "@/utils/attestationStore";
-import { StatementCondition } from "@zap/types";
+import { Route, StatementCondition } from "@zap/types";
 
 let transactionFee = 0.1;
 
@@ -27,7 +27,8 @@ const ProofStep = () => {
     sourceKey58: string;
     statementCondition: StatementCondition;
     value: number;
-    hashRoute: string;
+    route: Route;
+    hashRouteargs: string;
     signature: string;
   };
 
@@ -56,14 +57,21 @@ const ProofStep = () => {
       throw new Error("statement is not defined");
     }
 
+    console.log("attest.private data", attest.privateData);
+
     ArgsToGenerateAttestation = {
       senderKey58: attest.minaWallet.address,
-      sourceKey58: attest.privateData.publicKey,
+      sourceKey58: attest.statement.sourceKey,
       statementCondition: attest.statement.condition,
       value: attest.privateData.data.value,
-      hashRoute: attest.privateData.data.hashRoute,
+      route: attest.statement.route,
+      hashRouteargs: attest.privateData.data.hashRoute,
       signature: attest.privateData.signature,
     };
+
+
+
+    console.log("args to generate attestation", ArgsToGenerateAttestation);
 
     if (!attest.zkappWorkerClient) {
       throw new Error("zkappWorkerClient is not defined");
@@ -86,11 +94,15 @@ const ProofStep = () => {
     };
     const hashAttestation = calculateAttestationHash(argsToCalculateHash);
 
+    if (attest.oracleRequest === null) {
+      throw new Error("oracleRequest is not defined");
+    }
+
     setAttestationHashBase64(
       createAttestationNoteEncoded(
         attest.statement.condition.type,
         attest.statement.condition.targetValue,
-        attest.privateData.data.value,
+        attest.oracleRequest,
         attest.privateData.data.hashRoute,
         hashAttestation,
         attest.minaWallet.address

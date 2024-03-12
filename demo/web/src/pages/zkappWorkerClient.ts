@@ -5,8 +5,7 @@ import type {
   ZkappWorkerReponse,
   WorkerFunctions,
 } from "./zkappWorker";
-import { Condition } from "../types";
-import { StatementCondition } from "@zap/types";
+import { StatementCondition, Route } from "@zap/types";
 
 export default class ZkappWorkerClient {
   // ---------------------------------------------------------------------------------------
@@ -50,14 +49,16 @@ export default class ZkappWorkerClient {
     sourceKey58,
     statementCondition,
     value,
-    hashRoute,
+    route,
+    hashRouteargs,
     signature,
   }: {
     senderKey58: string;
     sourceKey58: string;
     statementCondition: StatementCondition;
     value: number;
-    hashRoute: string;
+    route: Route,
+    hashRouteargs: string;
     signature: string;
   }) {
     await this._call("createGenerateAttestationTransaction", {
@@ -65,7 +66,8 @@ export default class ZkappWorkerClient {
       sourceKey58,
       statementCondition,
       value,
-      hashRoute,
+      route,
+      hashRouteargs,
       signature,
     });
   }

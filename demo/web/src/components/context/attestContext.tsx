@@ -3,9 +3,10 @@ import {
   MinaWallet,
   EthereumWallet,
   PrivateData,
+  OracleRequest,
 } from "../../types";
 
-import { Statement } from "@zap/types";
+import { Route, Statement } from "@zap/types";
 import ZkappWorkerClient from "../../pages/zkappWorkerClient";
 import { Field } from "o1js";
 
@@ -19,6 +20,8 @@ export type AttestContextType = {
   setEthereumWallet: (ethereumWallet: EthereumWallet) => void;
   statement: Statement | null;
   setStatement: (statement: Statement) => void;
+  oracleRequest: OracleRequest | null;
+  setOracleRequest: (oracleRequest: Route) => void;
   privateData: PrivateData | null;
   setPrivateData: (privateData: PrivateData) => void;
   privateDataInput: Field[];
@@ -48,6 +51,8 @@ const defaultAttestContext: AttestContextType = {
   setEthereumWallet: () => {},
   statement: null,
   setStatement: () => {},
+  oracleRequest: null,
+  setOracleRequest: () => {},
   privateData: null,
   setPrivateData: () => {},
   privateDataInput: [],

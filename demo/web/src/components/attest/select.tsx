@@ -7,18 +7,24 @@ import {
   StatementChoices,
   StatementChoice,
   HTMLInputSchema,
-  SignResponse
+  SignResponse,
+  OracleRequest
 } from "../../types";
-import { Statement, ConditionType, conditionToString } from "@zap/types";
+import { Statement, ConditionType, conditionToString, Route } from "@zap/types";
 import { AttestContext } from "../context/attestContext";
 import { UserDataContext } from "../context/userDataContext";
-import { Encoding, Field, Poseidon, PublicKey, Signature } from "o1js";
+import { Encoding, Field, Poseidon, PrivateKey, PublicKey, Signature } from "o1js";
 import TokenModal from "./modal/tokenModal";
 import NFTModal from "./modal/NftModal";
 import useNftFetch from "../../hooks/useNftFetch";
 
 const ORACLE_ENDPOINT = process.env["ORACLE_ENDPOINT"];
 if (!ORACLE_ENDPOINT) throw new Error("ORACLE_ENDPOINT is not set");
+
+const AIRSTACK_SOURCE_PUBLIC_KEY = process.env["AIRSTACK_SOURCE_PUBLIC_KEY"];
+if (!AIRSTACK_SOURCE_PUBLIC_KEY)
+  throw new Error("AIRSTACK_SOURCE_PUBLIC_KEY is not set");
+
 
 // Select the attestation choice and sign
 const SelectStep = () => {
@@ -125,8 +131,8 @@ const SelectStep = () => {
       return;
     }
 
-    const statementRequest = {
-      path: choice.route,
+    const statementRequest: Route = {
+      path: choice.path,
       args: Object.fromEntries(
         choice.args.map((arg) => {
           const t_arg = args.find((a) => a.name === arg.name);
@@ -134,9 +140,10 @@ const SelectStep = () => {
         })
       ),
     };
+    attest.setOracleRequest(statementRequest);
 
     const statement: Statement = {
-      sourceKey: attest.ethereumWallet.address, // TODO: put sourcekey
+      sourceKey: AIRSTACK_SOURCE_PUBLIC_KEY,
       condition: {
         type: condition,
         targetValue: targetValue,
@@ -162,26 +169,38 @@ const SelectStep = () => {
       );
 
       const body = response.data as SignResponse;
+      
 
-      const data = body.data.map((f) => Field.from(f));
-      attest.setPrivateDataInput(data);
+      const dataRes = body.data.map((f) => Field.from(f));
+      const data_field_as_string = dataRes.map((field) => field.toString());      
 
       const signature = Signature.fromBase58(body.signature);
       const publicKey = PublicKey.fromBase58(body.publicKey);
+      const decoded_value = data_field_as_string[0]
+      const decoded_hashRoute = data_field_as_string[1];
 
-      const decoded_value = data[0].toString();
-      const decoded_hashRoute = data[1].toString();
+      const data = [
+        Math.round(Number(decoded_value)), // TODO: Need to work with decimal to avoid rounding errors
+        decoded_hashRoute,
+      ];
+      const data_fields = data.map((value) => Field.from(value));
 
       // We can verify here but really the most important is to verify within the proof
-      const verified = signature.verify(publicKey, data);
+      const verified = signature.verify(publicKey, data_fields);
       if (!verified.toBoolean()) {
         throw new Error("Signature verification failed");
       }
+      const hashRouteMethod = (route: Route): Field =>
+  Poseidon.hash([
+    ...Encoding.stringToFields(route.path),
+    ...Encoding.stringToFields(JSON.stringify(route.args)),
+  ]);
 
-      const localRouteFields = Encoding.stringToFields(
-        JSON.stringify(statement.route)
-      );
-      const localHashRoute = Poseidon.hash(localRouteFields).toString();
+      console.log("Signature verified", verified.toBoolean());
+
+      const localRouteFields = hashRouteMethod(statementRequest);
+      const localHashRoute = localRouteFields.toString();
+      console.log("Local hash route", localHashRoute);
       if (decoded_hashRoute !== localHashRoute) {
         throw new Error("Hash route verification failed");
       }

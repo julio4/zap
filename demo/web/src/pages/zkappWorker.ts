@@ -5,7 +5,7 @@ type Transaction = Awaited<ReturnType<typeof Mina.transaction>>;
 // ---------------------------------------------------------------------------------------
 
 import { ProvableStatement, Verifier } from "@zap/core";
-import { ConditionType, Statement, StatementCondition } from "@zap/types";
+import { ConditionType, Route, Statement, StatementCondition } from "@zap/types";
 
 const state = {
   Verifier: null as null | typeof Verifier,
@@ -56,7 +56,8 @@ const functions = {
     sourceKey58: string
     statementCondition: StatementCondition;
     value: number;
-    hashRoute: string;
+    route: Route;
+    hashRouteargs: string;
     signature: string;
   }) => {
     try {
@@ -65,7 +66,8 @@ const functions = {
         sourceKey58,
         statementCondition: { type, targetValue },
         value,
-        hashRoute,
+        route,
+        hashRouteargs,
         signature,
       } = args;
 
@@ -75,9 +77,7 @@ const functions = {
 
       const statement: Statement = {
         sourceKey: sourceKey58,
-        route: {
-          path: hashRoute,
-        },
+        route: route,
         condition: {
           type: type,
           targetValue,

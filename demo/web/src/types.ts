@@ -48,7 +48,7 @@ export type HTMLInputSchema =
     };
 
 export type StatementChoice = {
-  route: OracleRoute;
+  path: OracleRoute;
   name: string;
   description: string;
   args: HTMLInputSchema[];
@@ -67,13 +67,13 @@ export enum OracleRoute {
 }
 
 export type OracleRequest = {
-  route: OracleRoute;
+  path: OracleRoute;
   args: { [key: string]: any };
 };
 
 export const StatementChoices: StatementChoice[] = [
   {
-    route: OracleRoute.BALANCE,
+    path: OracleRoute.BALANCE,
     name: "Balance",
     description: "Statement on a target ERC20 token balance",
     args: [
@@ -97,7 +97,7 @@ export const StatementChoices: StatementChoice[] = [
     ],
   },
   {
-    route: OracleRoute.NFT,
+    path: OracleRoute.NFT,
     name: "NFT",
     description: "Statement on a target ERC721 token balance on Ethereum",
     args: [
@@ -121,7 +121,7 @@ export const StatementChoices: StatementChoice[] = [
     ],
   },
   {
-    route: OracleRoute.POAP,
+    path: OracleRoute.POAP,
     name: "POAP",
     description: "Statement on a target POAP event",
     args: [
@@ -135,14 +135,14 @@ export const StatementChoices: StatementChoice[] = [
     possibleConditions: [ConditionType.EQ],
   },
   {
-    route: OracleRoute.XMTP_ENABLED,
+    path: OracleRoute.XMTP_ENABLED,
     name: "XMTP Enabled",
     description: "Check if the user has enabled XMTP",
     args: [],
     possibleConditions: [ConditionType.EQ],
   },
   {
-    route: OracleRoute.ENS,
+    path: OracleRoute.ENS,
     name: "ENS domains",
     description: "Check if the user got some ENS domains",
     args: [],
@@ -153,21 +153,21 @@ export const StatementChoices: StatementChoice[] = [
     ],
   },
   {
-    route: OracleRoute.LENS,
+    path: OracleRoute.LENS,
     name: "Lens profile",
     description: "Check if the user got a Lens profile",
     args: [],
     possibleConditions: [ConditionType.EQ],
   },
   {
-    route: OracleRoute.FARCASTER,
+    path: OracleRoute.FARCASTER,
     name: "Farcaster profile",
     description: "Check if the user got a Farcaster profile",
     args: [],
     possibleConditions: [ConditionType.EQ],
   },
   {
-    route: OracleRoute.TOTAL_NFT_VOLUME,
+    path: OracleRoute.TOTAL_NFT_VOLUME,
     name: "Total NFT Volume",
     description: "Check the total volume of NFTs sold by the user",
     args: [],
@@ -180,7 +180,7 @@ export const StatementChoices: StatementChoice[] = [
 ];
 
 export type SignResponse = {
-  data: string[]; // data.map((field) => field.toString())
+  data: string[];
   signature: string; // Signature.toBase58()
   publicKey: string; // PublicKey.toBase58()
 };

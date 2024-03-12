@@ -1,5 +1,6 @@
 import { ParameterizedContext, Next } from 'koa';
-import { PrivateKey, Signature, Encoding, Field, Poseidon } from 'o1js';
+import { PrivateKey, Signature, Field } from 'o1js';
+import { hashRoute } from '../utils.js';
 
 type body = {
   value: number;
@@ -33,13 +34,12 @@ export async function signResponse(ctx: ParameterizedContext, next: Next) {
     path: route,
     args: ctx.state.args,
   };
-  const routeFields = Encoding.stringToFields(JSON.stringify(routeObj));
-  const hashRouteField = Poseidon.hash(routeFields);
-  const hashRoute = hashRouteField.toString();
+  const hashRouteField = hashRoute(routeObj)
+  const hashRouteString = hashRouteField.toString();
 
   const data = [
     Math.round(value), // TODO: Need to work with decimal to avoid rounding errors
-    hashRoute,
+    hashRouteString,
   ];
   const data_fields = data.map((value) => Field.from(value));
   const data_field_as_string = data_fields.map((field) => field.toString());
