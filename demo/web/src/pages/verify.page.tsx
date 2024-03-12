@@ -60,7 +60,7 @@ export default function Home(): JSX.Element {
 
         const zkapp = new Verifier(
           PublicKey.fromBase58(
-            "B62qnhBxxQr7h2AE9f912AyvzJwK1fhEJq7NMZXbzXbhoepUZ7z7237"
+            "B62qpAdGKr4UyC9eGi3astRV38oC95VAxn2PaS9r4Gj7oobNhqdSn8u"
           )
         );
         const minaEvents: MinaEvent[] = await zkapp.fetchEvents(UInt32.from(0));

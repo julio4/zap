@@ -7,7 +7,7 @@ import styles from "../styles/Home.module.css";
 import { ZapWorkerClient } from "@zap/client";
 
 let transactionFee = 0.1;
-const ZAP_ADDRESS = "B62qnhBxxQr7h2AE9f912AyvzJwK1fhEJq7NMZXbzXbhoepUZ7z7237";
+const ZAP_ADDRESS = "B62qpAdGKr4UyC9eGi3astRV38oC95VAxn2PaS9r4Gj7oobNhqdSn8u";
 
 type ZapState = {
   zapWorkerClient: null | ZapWorkerClient;
