@@ -37,7 +37,7 @@ const nextConfig = {
 
   env: {
     ORACLE_ENDPOINT: "https://zap-oracle.onrender.com/api",
-    AIRSTACK_SOURCE_PUBLIC_KEY: "B62qmN3EthPdRmnit65JWNSbdYdXSt9vt766rt2em2eLoAewf8o72V2",
+    AIRSTACK_SOURCE_PUBLIC_KEY: "B62qnhBxxQr7h2AE9f912AyvzJwK1fhEJq7NMZXbzXbhoepUZ7z7237",
     ZK_APP: "B62qpAdGKr4UyC9eGi3astRV38oC95VAxn2PaS9r4Gj7oobNhqdSn8u",
   },
 };
