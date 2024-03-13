@@ -29,6 +29,6 @@
     "ts-node": "^10.9.2"
   },
   "peerDependencies": {
-    "o1js": "0.15.*"
+    "o1js": "0.17.*"
   }
 }

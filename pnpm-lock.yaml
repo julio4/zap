@@ -359,8 +359,8 @@ importers:
         specifier: ^1.4.0
         version: 1.4.0
       o1js:
-        specifier: 0.15.*
-        version: 0.15.3
+        specifier: 0.17.*
+        version: 0.17.0
       react:
         specifier: 18.2.0
         version: 18.2.0
@@ -408,8 +408,8 @@ importers:
         specifier: ^5.7.2
         version: 5.7.2
       o1js:
-        specifier: 0.15.*
-        version: 0.15.3
+        specifier: 0.17.*
+        version: 0.17.0
     devDependencies:
       '@babel/preset-env':
         specifier: ^7.16.4
@@ -457,8 +457,8 @@ importers:
         specifier: ^1.4.0
         version: 1.4.0
       o1js:
-        specifier: 0.15.*
-        version: 0.15.3
+        specifier: 0.17.*
+        version: 0.17.0
       typescript:
         specifier: ^5.3.3
         version: 5.3.3
@@ -494,8 +494,8 @@ importers:
         specifier: ^1.4.0
         version: 1.4.0
       o1js:
-        specifier: 0.15.*
-        version: 0.15.3
+        specifier: 0.17.*
+        version: 0.17.0
       typescript:
         specifier: ^5.3.3
         version: 5.3.3
@@ -519,8 +519,8 @@ importers:
         specifier: ^20.10.5
         version: 20.11.8
       o1js:
-        specifier: 0.15.*
-        version: 0.15.3
+        specifier: 0.17.*
+        version: 0.17.0
       typescript:
         specifier: ^5.3.3
         version: 5.3.3
@@ -555,8 +555,8 @@ importers:
         specifier: ^0.13.0
         version: 0.13.0
       o1js:
-        specifier: 0.15.*
-        version: 0.15.3
+        specifier: 0.17.*
+        version: 0.17.0
       swagger-autogen:
         specifier: ^2.23.7
         version: 2.23.7
@@ -625,8 +625,8 @@ importers:
         specifier: 14.1.0
         version: 14.1.0(react-dom@18.2.0)(react@18.2.0)
       o1js:
-        specifier: 0.15.*
-        version: 0.15.3
+        specifier: 0.17.*
+        version: 0.17.0
       postcss:
         specifier: 8.4.33
         version: 8.4.33
@@ -5706,12 +5706,6 @@ packages:
     engines: {node: '>= 0.8', npm: 1.2.8000 || >= 1.4.16}
     dev: false
 
-  /detect-gpu@5.0.33:
-    resolution: {integrity: sha512-lSfFHJ0hKWPxAKMZqaDySwP9lRnO6KNIiowXEYG50DVpBlP8RoQHVyiju9cG+sD6iokQnQjFbVk3pF87JWhA2A==}
-    dependencies:
-      webgl-constants: 1.1.1
-    dev: false
-
   /detect-newline@3.1.0:
     resolution: {integrity: sha512-TLz+x/vEXm/Y7P7wn1EJFNLxYpUD4TgMosxY6fAVJUnJMbupHBOncxyWUG9OpTaH9EBD7uFI5LfEgmMOc54DsA==}
     engines: {node: '>=8'}
@@ -9875,22 +9869,6 @@ packages:
     resolution: {integrity: sha512-ub5E4+FBPKwAZx0UwIQOjYWGHTEq5sPqHQNRN8Z9e4A7u3Tj1weLJsL59yH9vmvqEtBHaOmT6cYQKIZOxp35FQ==}
     dev: true
 
-  /o1js@0.15.3:
-    resolution: {integrity: sha512-M2oLXAI9/xOE9qSpuE5hh1ZvuqVNI1nbxIITDbaHnxtJKb3UDQZFtmtVCT2PF/da4Pz9H49/+TTcTfy39yOmVw==}
-    engines: {node: '>=16.4.0'}
-    hasBin: true
-    dependencies:
-      blakejs: 1.2.1
-      cachedir: 2.4.0
-      detect-gpu: 5.0.33
-      isomorphic-fetch: 3.0.0
-      js-sha256: 0.9.0
-      reflect-metadata: 0.1.13
-      tslib: 2.6.0
-    transitivePeerDependencies:
-      - encoding
-    dev: false
-
   /o1js@0.17.0:
     resolution: {integrity: sha512-OPQc3jBG2X5z7yI2mcovzRVbd91Q2D/npep14+g0wBdGXpyyAFdaz59YjVlEsPcY1Gmh2L+LCFhVA2fQ+1ogIg==}
     engines: {node: '>=16.4.0'}
@@ -12164,10 +12142,6 @@ packages:
 
   /web-worker@1.2.0:
     resolution: {integrity: sha512-PgF341avzqyx60neE9DD+XS26MMNMoUQRz9NOZwW32nPQrF6p77f1htcnjBSEV8BGMKZ16choqUG4hyI0Hx7mA==}
-    dev: false
-
-  /webgl-constants@1.1.1:
-    resolution: {integrity: sha512-LkBXKjU5r9vAW7Gcu3T5u+5cvSvh5WwINdr0C+9jpzVB41cjQAP5ePArDtk/WHYdVj0GefCgM73BA7FlIiNtdg==}
     dev: false
 
   /webidl-conversions@3.0.1:
