@@ -14,12 +14,12 @@ describe('Registry', () => {
     zkApp: Registry,
     registryStorage: RegistryStorage;
 
-  let newSource: Source = {
-    publicKey: PrivateKey.random().toPublicKey(),
-    urlApi: stringToFields('http://test.com')[0],
-    name: stringToFields('name')[0],
-    description: stringToFields('description')[0],
-  };
+  let newSource: Source = Source.from(
+    PrivateKey.random().toPublicKey(),
+    stringToFields('http://test.com')[0],
+    stringToFields('name')[0],
+    stringToFields('description')[0],
+  );
 
   beforeAll(async () => {
     if (proofsEnabled) {

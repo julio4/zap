@@ -28,7 +28,7 @@ export class RegistryStorage {
 
   insert = (source: Source): MerkleMapWitness => {
     const hashedPublicKey = Poseidon.hash(source.publicKey.toFields());
-    this.map.set(hashedPublicKey, source.name.toFields()[0]); // TODO: store the entire struct
+    this.map.set(hashedPublicKey, source.hash());
     const witness = this.map.getWitness(hashedPublicKey);
     this.count += 1;
     return witness;
