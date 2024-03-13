@@ -7,8 +7,7 @@ import {
   StatementChoices,
   StatementChoice,
   HTMLInputSchema,
-  SignResponse,
-  OracleRequest
+  SignResponse
 } from "../../types";
 import { Statement, ConditionType, conditionToString, Route } from "@zap/types";
 import { AttestContext } from "../context/attestContext";
@@ -140,7 +139,6 @@ const SelectStep = () => {
         })
       ),
     };
-    attest.setOracleRequest(statementRequest);
 
     const statement: Statement = {
       sourceKey: AIRSTACK_SOURCE_PUBLIC_KEY,

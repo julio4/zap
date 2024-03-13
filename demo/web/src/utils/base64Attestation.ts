@@ -1,5 +1,5 @@
-import { AttestationNote, OracleRequest } from "../types";
-import { ConditionType } from "@zap/types";
+import { AttestationNote } from "../types";
+import { ConditionType, Route } from "@zap/types";
 
 const getConditionString = (condition: ConditionType) => {
   switch (condition) {
@@ -19,7 +19,7 @@ const getConditionString = (condition: ConditionType) => {
 export const createAttestationNoteEncoded = (
   conditionType: ConditionType,
   targetValue: number,
-  request: OracleRequest,
+  request: Route,
   hashRoute: string,
   hashAttestation: string,
   sender: string

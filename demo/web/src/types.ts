@@ -66,11 +66,6 @@ export enum OracleRoute {
   TOTAL_NFT_VOLUME = "/totalNftVolume",
 }
 
-export type OracleRequest = {
-  path: OracleRoute;
-  args: { [key: string]: any };
-};
-
 export const StatementChoices: StatementChoice[] = [
   {
     path: OracleRoute.BALANCE,
@@ -209,7 +204,7 @@ export type AttestationNoteDated = {
 };
 
 export type ArgsHashAttestationCalculator = {
-  conditionType: string | number;
+  conditionType: ConditionType;
   hashRoute: string;
   targetValue: number;
   sender: string;

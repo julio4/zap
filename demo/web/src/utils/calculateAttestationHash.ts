@@ -1,27 +1,15 @@
 import { Poseidon, Field, PublicKey } from "o1js";
 import { ArgsHashAttestationCalculator, Condition } from "../types";
+import { ConditionType } from "@zap/types";
 
 export const calculateAttestationHash = (
   argsAttestation: ArgsHashAttestationCalculator
 ) => {
-  let conditionTypeNumber: number;
-  switch (argsAttestation.conditionType) {
-    case Condition.LESS_THAN:
-      conditionTypeNumber = 1;
-      break;
-    case Condition.GREATER_THAN:
-      conditionTypeNumber = 2;
-      break;
-    case Condition.EQUAL:
-      conditionTypeNumber = 3;
-      break;
-    case Condition.DIFFERENT:
-      conditionTypeNumber = 4;
-      break;
-    default:
-      throw new Error("conditionType not supported");
+  let conditionTypeNumber = argsAttestation.conditionType;
+  console.log("conditionTypeNumber", conditionTypeNumber);
+  if (conditionTypeNumber > 4) {
+    throw new Error("conditionType not supported");
   }
-
   const hashAttestation = Poseidon.hash([
     Field.from(argsAttestation.hashRoute),
     Field.from(conditionTypeNumber),

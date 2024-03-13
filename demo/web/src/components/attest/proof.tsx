@@ -94,15 +94,15 @@ const ProofStep = () => {
     };
     const hashAttestation = calculateAttestationHash(argsToCalculateHash);
 
-    if (attest.oracleRequest === null) {
-      throw new Error("oracleRequest is not defined");
+    if (attest.statement.route === null) {
+      throw new Error("Route statement is not defined");
     }
 
     setAttestationHashBase64(
       createAttestationNoteEncoded(
         attest.statement.condition.type,
         attest.statement.condition.targetValue,
-        attest.oracleRequest,
+        attest.statement.route,
         attest.privateData.data.hashRoute,
         hashAttestation,
         attest.minaWallet.address
