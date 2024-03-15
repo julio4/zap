@@ -33,20 +33,26 @@ const Attest = () => {
         console.log("Done loading web worker");
 
         await zkappWorkerClient.setActiveInstanceToBerkeley();
-        await zkappWorkerClient.loadContract();
+        await zkappWorkerClient.loadContracts();
 
         console.log("Compiling zkApp...");
-        await zkappWorkerClient.compileContract();
+        await zkappWorkerClient.compileContracts();
         console.log("zkApp compiled");
 
-        const zkappAddress = process.env["ZK_APP"] || "";
+        const zkappAddress = process.env["EVENT_CALLER_PUBLIC_KEY"] || "";
         if (zkappAddress === "") {
           console.log("zkApp address not set");
           return;
         }
+        const verifierAddress = process.env["VERIFIER_PUBLIC_KEY"] || "";
+        if (zkappAddress === "") {
+          console.log("Verifier address not set");
+          return;
+        }
         console.log("zkAppAddress", zkappAddress);
         const zkappPublicKey = PublicKey.fromBase58(zkappAddress);
-        await zkappWorkerClient.initZkappInstance(zkappPublicKey);
+        const verifierPublicKey = PublicKey.fromBase58(verifierAddress);
+        await zkappWorkerClient.initZkappInstance(zkappPublicKey, verifierPublicKey);
 
         console.log("Getting zkApp state...");
         await zkappWorkerClient.fetchAccount({ publicKey: zkappPublicKey });

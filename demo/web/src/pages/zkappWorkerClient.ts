@@ -14,12 +14,12 @@ export default class ZkappWorkerClient {
     return this._call("setActiveInstanceToBerkeley", {});
   }
 
-  loadContract() {
-    return this._call("loadContract", {});
+  loadContracts() {
+    return this._call("loadContracts", {});
   }
 
-  compileContract() {
-    return this._call("compileContract", {});
+  compileContracts() {
+    return this._call("compileContracts", {});
   }
 
   fetchAccount({
@@ -33,9 +33,10 @@ export default class ZkappWorkerClient {
     return result as ReturnType<typeof fetchAccount>;
   }
 
-  initZkappInstance(publicKey: PublicKey) {
+  initZkappInstance(publicKeyEventCaller: PublicKey, publicKeyVerifier: PublicKey) {
     return this._call("initZkappInstance", {
-      publicKey58: publicKey.toBase58(),
+      EventCallerKey58: publicKeyEventCaller.toBase58(),
+      VerifierKey58: publicKeyVerifier.toBase58(),
     });
   }
 
