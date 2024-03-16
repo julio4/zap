@@ -1,7 +1,7 @@
-import { SelfProof, Field, ZkProgram, verify, Struct, Signature } from 'o1js';
+import { SelfProof, Field, ZkProgram, Signature } from 'o1js';
 import { ProvableStatement } from '../Statement';
 
-const AttestationProgram = ZkProgram({
+export const AttestationProgram = ZkProgram({
   name: 'AttestationAggregator',
 
   methods: {
