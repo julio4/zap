@@ -3,6 +3,9 @@ import { PublicKey } from "o1js";
 import { useEffect, useState } from "react";
 import GradientBG from "../components/GradientBG.js";
 import styles from "../styles/Home.module.css";
+import HeadComponent from "../components/Header";
+import WalletStatus from "../components/WalletStatus";
+import AccountStatus from "../components/AccountStatus";
 
 import { ZapWorkerClient } from "@zap/client";
 
@@ -193,44 +196,14 @@ export default function Home(): JSX.Element {
     setDisplayText('');
   };
 
-  // -------------------------------------------------------
-  // Create UI elements
-
-  let hasWallet;
-  if (zapState.hasWallet != null && !zapState.hasWallet) {
-    const auroLink = 'https://www.aurowallet.com/';
-    const auroLinkElem = (
-      <a href={auroLink} target="_blank" rel="noreferrer">
-        Install Auro wallet here
-      </a>
-    );
-    hasWallet = <div>Could not find a wallet. {auroLinkElem}</div>;
-  }
-
-  let accountDoesNotExist;
-  if (zapState.hasBeenSetup && !zapState.accountExists) {
-    const faucetLink =
-      'https://faucet.minaprotocol.com/?address=' + zapState.publicKey!.toBase58();
-    accountDoesNotExist = (
-      <div >
-        <span style={{paddingRight: '1rem'}}>Account does not exist.</span>
-        <a href={faucetLink} target="_blank" rel="noreferrer">
-          Visit the faucet to fund this fee payer account
-        </a>
-      </div>
-    );
-  }
-
   return (
     <>
-      <Head>
-        <title>Zap zkApp UI</title>
-        <meta name="description" content="built with o1js" />
-        <link rel="icon" href="/assets/favicon.ico" />
-      </Head>
+      <HeadComponent title="Zap zkApp UI" description="built with o1js" />
       <GradientBG>
         <main className={styles.main}>
           <p className={styles.start}>Minimal Next.js Mina Zap template</p>
+          <WalletStatus hasWallet={zapState.hasWallet} publicKey={zapState.publicKey?.toBase58() || ""} />
+          <AccountStatus accountExists={zapState.accountExists} publicKey={zapState.publicKey?.toBase58() || ""} />
         </main>
       </GradientBG>
     </>
