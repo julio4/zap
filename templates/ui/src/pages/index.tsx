@@ -1,6 +1,6 @@
-import Head from "next/head";
 import { PublicKey } from "o1js";
 import { useEffect, useState } from "react";
+import useZapStore from '../store/zapStore';
 import GradientBG from "../components/GradientBG.js";
 import styles from "../styles/Home.module.css";
 import HeadComponent from "../components/Header";
@@ -8,32 +8,19 @@ import WalletStatus from "../components/WalletStatus";
 import AccountStatus from "../components/AccountStatus";
 
 import { ZapWorkerClient } from "@zap/client";
+import { ZapState } from "../types";
 
 let transactionFee = 0.1;
 const ZAP_ADDRESS = "B62qpAdGKr4UyC9eGi3astRV38oC95VAxn2PaS9r4Gj7oobNhqdSn8u";
 
-type ZapState = {
-  zapWorkerClient: null | ZapWorkerClient;
-  hasWallet: null | boolean;
-  hasBeenSetup: boolean;
-  accountExists: boolean;
-  // currentNum: null | Field,
-  publicKey: null | PublicKey;
-  zapPublicKey: null | PublicKey;
-  creatingTransaction: boolean;
-};
 
 export default function Home(): JSX.Element {
-  const [zapState, setZapState] = useState<ZapState>({
-    zapWorkerClient: null,
-    hasWallet: null,
-    hasBeenSetup: false,
-    accountExists: false,
-    // currentNum: null,
-    publicKey: null,
-    zapPublicKey: null,
-    creatingTransaction: false,
-  });
+  const { zapState, setZapState } = useZapStore(state => ({
+    zapState: state.zapState,
+    setZapState: state.setZapState,
+  }));
+
+
   const [displayText, setDisplayText] = useState("");
   const [transactionlink, setTransactionLink] = useState("");
 
@@ -41,30 +28,19 @@ export default function Home(): JSX.Element {
   // Do Setup
 
   useEffect(() => {
-    async function timeout(seconds: number): Promise<void> {
-      return new Promise<void>((resolve) => {
-        setTimeout(() => {
-          resolve();
-        }, seconds * 1000);
-      });
-    }
-
-    (async () => {
+    async function setupZap() {
       if (!zapState.hasBeenSetup) {
-        setDisplayText("Loading web worker...");
         console.log("Loading web worker...");
         const zkappWorkerClient = new ZapWorkerClient();
-        await timeout(5);
 
-        setDisplayText("Done loading web worker");
+        await new Promise(resolve => setTimeout(resolve, 5000));
         console.log("Done loading web worker");
 
-        await zkappWorkerClient.setActiveInstanceToBerkeley();
+        zkappWorkerClient.setActiveInstanceToBerkeley();
 
         const mina = (window as any).mina;
-
         if (mina == null) {
-          setZapState({ ...zapState, hasWallet: false });
+          setZapState({ hasWallet: false });
           return;
         }
 
@@ -101,19 +77,22 @@ export default function Home(): JSX.Element {
         // console.log(`Current state in zkApp: ${currentNum.toString()}`);
         setDisplayText("");
 
+
         setZapState({
-          ...zapState,
-          zapWorkerClient: zkappWorkerClient,
+          zapWorkerClient: new ZapWorkerClient(),
           hasWallet: true,
           hasBeenSetup: true,
+          accountExists: accountExists,
           publicKey,
-          zapPublicKey: zkappPublicKey,
-          accountExists,
-          // currentNum
+          zapPublicKey: PublicKey.fromBase58(ZAP_ADDRESS),
+          creatingTransaction: false,
         });
       }
-    })();
-  }, []);
+    }
+
+    setupZap();
+  }, [setZapState, zapState]);
+
 
   // -------------------------------------------------------
   // Wait for account to exist, if it didn't
@@ -121,9 +100,9 @@ export default function Home(): JSX.Element {
   useEffect(() => {
     (async () => {
       if (zapState.hasBeenSetup && !zapState.accountExists) {
-        for (;;) {
+        for (; ;) {
           setDisplayText("Checking if fee payer account exists...");
-          console.log("Checking if fee payer account exists...");
+          console.log("Checking if fee payer account exists..."); // TODO: if aura wallet installed but not logged in, this will say doesn't exist (because publicKey is "undefined")
           const res = await zapState.zapWorkerClient!.fetchAccount({
             publicKey: zapState.publicKey!,
           });
@@ -136,7 +115,7 @@ export default function Home(): JSX.Element {
         setZapState({ ...zapState, accountExists: true });
       }
     })();
-  }, [zapState.hasBeenSetup]);
+  }, [zapState.hasBeenSetup, zapState, setZapState]);
 
   // -------------------------------------------------------
   // Send a transaction
@@ -202,8 +181,26 @@ export default function Home(): JSX.Element {
       <GradientBG>
         <main className={styles.main}>
           <p className={styles.start}>Minimal Next.js Mina Zap template</p>
-          <WalletStatus hasWallet={zapState.hasWallet} publicKey={zapState.publicKey?.toBase58() || ""} />
-          <AccountStatus accountExists={zapState.accountExists} publicKey={zapState.publicKey?.toBase58() || ""} />
+          <WalletStatus />
+          <AccountStatus />
+
+          <button
+            onClick={onSendTransaction}
+            disabled={!zapState.accountExists || zapState.creatingTransaction}
+          >
+            Send transaction
+          </button>
+
+          <button onClick={onRefresh}>Refresh</button>
+
+          <p>{displayText}</p>
+          <p>
+            {transactionlink && (
+              <a href={transactionlink} target="_blank" rel="noreferrer">
+                View transaction
+              </a>
+            )}
+          </p>
         </main>
       </GradientBG>
     </>
