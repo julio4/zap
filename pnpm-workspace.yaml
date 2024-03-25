@@ -5,3 +5,4 @@ packages:
   - "templates/*"
   - "new_docs/*"
   - "deprecated/*"
+  - "explorer/*"
