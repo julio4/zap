@@ -53,8 +53,6 @@ export class Registry extends SmartContract implements IRegistry {
     const [emptyRoot] = witness.computeRootAndKey(Field(0)); // New leaf starts with 0
     emptyRoot.assertEquals(previousRoot);
 
-    // Add the source to the tree by updating the root with the new leaf, TODO: add the entire struct with toFields method
-    // for the moment we only add the name
     const [newRoot] = witness.computeRootAndKey(source.hash());
 
     // Update the root

@@ -29,6 +29,7 @@ export default function Home(): JSX.Element {
 
   useEffect(() => {
     async function setupZap() {
+      console.log("Setting up...", zapState);
       if (!zapState.hasBeenSetup) {
         console.log("Loading web worker...");
         const zkappWorkerClient = new ZapWorkerClient();
@@ -40,6 +41,7 @@ export default function Home(): JSX.Element {
 
         const mina = (window as any).mina;
         if (mina == null) {
+          console.log("Mina not found");
           setZapState({ hasWallet: false });
           return;
         }
@@ -52,10 +54,11 @@ export default function Home(): JSX.Element {
 
         setDisplayText("Checking if fee payer account exists...");
         console.log("Checking if fee payer account exists...");
+        console.log("Fetching account...");
 
-        const res = await zkappWorkerClient.fetchAccount({
-          publicKey: publicKey!,
-        });
+        const res = await zkappWorkerClient.fetchAccount({ publicKey: publicKey! });
+        console.log("Fetched account response:", res);
+
         const accountExists = res.error == null;
 
         await zkappWorkerClient.loadContract();
@@ -91,31 +94,31 @@ export default function Home(): JSX.Element {
     }
 
     setupZap();
-  }, [setZapState, zapState]);
+  }, []);
 
 
   // -------------------------------------------------------
   // Wait for account to exist, if it didn't
 
-  useEffect(() => {
-    (async () => {
-      if (zapState.hasBeenSetup && !zapState.accountExists) {
-        for (; ;) {
-          setDisplayText("Checking if fee payer account exists...");
-          console.log("Checking if fee payer account exists..."); // TODO: if aura wallet installed but not logged in, this will say doesn't exist (because publicKey is "undefined")
-          const res = await zapState.zapWorkerClient!.fetchAccount({
-            publicKey: zapState.publicKey!,
-          });
-          const accountExists = res.error == null;
-          if (accountExists) {
-            break;
-          }
-          await new Promise((resolve) => setTimeout(resolve, 5000));
-        }
-        setZapState({ ...zapState, accountExists: true });
-      }
-    })();
-  }, [zapState.hasBeenSetup, zapState, setZapState]);
+  // useEffect(() => {
+  //   (async () => {
+  //     if (zapState.hasBeenSetup && !zapState.accountExists) {
+  //       for (; ;) {
+  //         setDisplayText("Checking if fee payer account exists...");
+  //         console.log("Checking if fee payer account exists..."); // TODO: if aura wallet installed but not logged in, this will say doesn't exist (because publicKey is "undefined")
+  //         const res = await zapState.zapWorkerClient!.fetchAccount({
+  //           publicKey: zapState.publicKey!,
+  //         });
+  //         const accountExists = res.error == null;
+  //         if (accountExists) {
+  //           break;
+  //         }
+  //         await new Promise((resolve) => setTimeout(resolve, 5000));
+  //       }
+  //       setZapState({ ...zapState, accountExists: true });
+  //     }
+  //   })();
+  // }, [zapState.hasBeenSetup, zapState, setZapState]);
 
   // -------------------------------------------------------
   // Send a transaction
