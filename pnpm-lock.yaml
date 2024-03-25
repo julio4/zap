@@ -338,22 +338,6 @@ importers:
         specifier: ^4.9.3
         version: 4.9.4
 
-  explorer:
-    dependencies:
-      express:
-        specifier: ^4.18.2
-        version: 4.18.2
-      typescript:
-        specifier: ^5.4.3
-        version: 5.4.3
-    devDependencies:
-      '@types/express':
-        specifier: ^4.17.21
-        version: 4.17.21
-      '@types/node':
-        specifier: ^20.12.2
-        version: 20.12.2
-
   packages/client:
     dependencies:
       '@tanstack/react-query':
@@ -11792,12 +11776,6 @@ packages:
     resolution: {integrity: sha512-pXWcraxM0uxAS+tN0AG/BF2TyqmHO014Z070UsJ+pFvYuRSq8KH8DmWpnbXe0pEPDHXZV3FcAbJkijJ5oNEnWw==}
     engines: {node: '>=14.17'}
     hasBin: true
-
-  /typescript@5.4.3:
-    resolution: {integrity: sha512-KrPd3PKaCLr78MalgiwJnA25Nm8HAmdwN3mYUYZgG/wizIo9EainNVQI9/yDavtVFRN2h3k8uf3GLHuhDMgEHg==}
-    engines: {node: '>=14.17'}
-    hasBin: true
-    dev: false
 
   /unbox-primitive@1.0.2:
     resolution: {integrity: sha512-61pPlCD9h51VoreyJ0BReideM3MDKMKnh6+V9L08331ipq6Q8OFXZYiqP6n/tbHx4s5I9uRhcye6BrbkizkBDw==}
