@@ -7,6 +7,7 @@ import {
   DeployArgs,
   Permissions,
   MerkleMapWitness,
+  PublicKey
 } from 'o1js';
 
 import { initialRoot, RegistryStorage } from './RegistryStorage.js';
@@ -27,12 +28,14 @@ export type IRegistry = {
  * => Potentially adds metadata later on.
  */
 export class Registry extends SmartContract implements IRegistry {
+  @state(PublicKey) storageServerPublicKey = State<PublicKey>();
   @state(Field) registryRoot = State<Field>();
   @state(Field) registryStorage = new RegistryStorage();
 
-  init() {
+  @method initState(storageServerPublicKey: PublicKey) {
     super.init();
     this.registryRoot.set(initialRoot);
+    this.storageServerPublicKey.set(storageServerPublicKey);
   }
 
   events = {

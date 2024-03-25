@@ -380,6 +380,9 @@ importers:
       typescript:
         specifier: ^4.7.2
         version: 4.9.4
+      xmlhttprequest-ts:
+        specifier: ^1.0.1
+        version: 1.0.1(@angular/common@17.3.2)(@angular/core@17.3.2)
 
   packages/client:
     dependencies:
