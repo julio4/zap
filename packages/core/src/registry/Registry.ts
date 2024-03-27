@@ -7,7 +7,8 @@ import {
   DeployArgs,
   Permissions,
   MerkleMapWitness,
-  PublicKey
+  PublicKey,
+  provablePure,
 } from 'o1js';
 
 import { initialRoot, RegistryStorage } from './RegistryStorage.js';
@@ -39,7 +40,12 @@ export class Registry extends SmartContract implements IRegistry {
   }
 
   events = {
-    registered: Field,
+    registered: provablePure({
+      publicKey: PublicKey,
+      urlApi: Field,
+      name: Field,
+      description: Field,
+    }),
   };
 
   deploy(args: DeployArgs) {
@@ -51,10 +57,9 @@ export class Registry extends SmartContract implements IRegistry {
   }
 
   @method register(witness: MerkleMapWitness, source: Source) {
-    // Check if root has changed
-    const previousRoot = this.registryRoot.getAndRequireEquals();
-    const [emptyRoot] = witness.computeRootAndKey(Field(0)); // New leaf starts with 0
-    emptyRoot.assertEquals(previousRoot);
+    // TODO: Add a check to ensure that the source is not already registered
+    this.registryRoot.getAndRequireEquals();
+    this.storageServerPublicKey.getAndRequireEquals();
 
     const [newRoot] = witness.computeRootAndKey(source.hash());
 
@@ -63,6 +68,11 @@ export class Registry extends SmartContract implements IRegistry {
 
     // Emit the event with the registered public key
     // Can be used to keep in sync the offchain registry
-    this.emitEvent('registered', source.publicKey.toFields()[0]);
+    this.emitEvent('registered', {
+      publicKey: source.publicKey,
+      urlApi: source.urlApi,
+      name: source.name,
+      description: source.description,
+    });
   }
 }

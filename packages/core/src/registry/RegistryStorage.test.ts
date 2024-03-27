@@ -7,7 +7,7 @@ describe('RegistryStorage', () => {
   const registryStorage = new RegistryStorage();
 
   it('should init with correct initial state', async () => {
-    expect(registryStorage.map.getRoot()).toEqual(initialRoot);
+    expect(registryStorage.storageMap.getRoot()).toEqual(initialRoot);
     expect(registryStorage.count).toEqual(0);
   });
 
@@ -26,14 +26,16 @@ describe('RegistryStorage', () => {
     );
     const witness = registryStorage.insert(newSource);
     const hashedPublicKey = Poseidon.hash(publicKey.toFields());
-    expect(registryStorage.map.get(hashedPublicKey)).toEqual(
+    expect(registryStorage.storageMap.get(hashedPublicKey)).toEqual(
       stringToFields('name')[0]
     );
-    expect(registryStorage.map.get(hashedPublicKey)).not.toEqual(
+    expect(registryStorage.storageMap.get(hashedPublicKey)).not.toEqual(
       stringToFields('namee')[0]
     );
     expect(registryStorage.count).toEqual(1);
-    expect(registryStorage.map.getWitness(hashedPublicKey)).toEqual(witness);
+    expect(registryStorage.storageMap.getWitness(hashedPublicKey)).toEqual(
+      witness
+    );
   });
 
   it('getValue', async () => {
