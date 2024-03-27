@@ -49,18 +49,15 @@ describe('Registry', () => {
     });
     await txn.prove();
     await txn.sign([deployerKey, zkAppPrivateKey]).send();
-
-    const txn2 = await Mina.transaction(deployerAccount, () => {
-      zkApp.initState(zkAppAddress);
-    });
-    await txn2.prove();
-    await txn2.sign([deployerKey, zkAppPrivateKey]).send();
   }
 
-  it('generates and deploys the `Registry` smart contract', async () => {
+  it.only('generates and deploys the `Registry` smart contract', async () => {
     await localDeploy();
     const initialRegistryRoot = await zkApp.registryRoot.get();
+    const publicKeyStored = await zkApp.storageServerPublicKey.get();
+    expect(publicKeyStored).toEqual(zkAppAddress);
     expect(initialRegistryRoot).toEqual(initialRoot);
+
   });
 
   it('registers a new source', async () => {

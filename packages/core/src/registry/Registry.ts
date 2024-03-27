@@ -33,10 +33,10 @@ export class Registry extends SmartContract implements IRegistry {
   @state(Field) registryRoot = State<Field>();
   @state(Field) registryStorage = new RegistryStorage();
 
-  @method initState(storageServerPublicKey: PublicKey) {
+  @method init() {
     super.init();
     this.registryRoot.set(initialRoot);
-    this.storageServerPublicKey.set(storageServerPublicKey);
+    this.storageServerPublicKey.set(this.self.publicKey);
   }
 
   events = {
