@@ -1,17 +1,23 @@
 [
-    {
-      "id": "1",
-      "publicKey": "publicKey1",
-      "urlApi": "https://api.example.com/1",
-      "name": "Source One",
-      "description": "Description for Source One."
-    },
-    {
-      "id": "2",
-      "publicKey": "publicKey2",
-      "urlApi": "https://api.example.com/2",
-      "name": "Source Two",
-      "description": "Description for Source Two."
-    }
-  ]
-  
+  {
+    "id": "1",
+    "publicKey": "publicKey1",
+    "urlApi": "https://api.example.com/1",
+    "name": "Source One",
+    "description": "Description for Source One."
+  },
+  {
+    "id": "2",
+    "publicKey": "publicKey2",
+    "urlApi": "https://api.example.com/2",
+    "name": "Source Two",
+    "description": "Description for Source Two."
+  },
+  {
+    "id": "3",
+    "publicKey": "publicKey3",
+    "urlApi": "https://api.example.com/3",
+    "name": "Source Three",
+    "description": "Description for Source Three."
+  }
+]
