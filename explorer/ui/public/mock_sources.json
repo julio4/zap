@@ -1,0 +1,17 @@
+[
+    {
+      "id": "1",
+      "publicKey": "publicKey1",
+      "urlApi": "https://api.example.com/1",
+      "name": "Source One",
+      "description": "Description for Source One."
+    },
+    {
+      "id": "2",
+      "publicKey": "publicKey2",
+      "urlApi": "https://api.example.com/2",
+      "name": "Source Two",
+      "description": "Description for Source Two."
+    }
+  ]
+  
