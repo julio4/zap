@@ -1,5 +1,7 @@
 "use client";
 import { useState } from "react";
+import Link from 'next/link';
+
 
 export default function Home() {
   const [source, setSource] = useState({
@@ -19,7 +21,7 @@ export default function Home() {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    console.log("NOT IMPLEMENTED. Submitting source:", source)
+    console.log("NOT IMPLEMENTED ONCHAIN, ONLY MOCK. Submitting source:", source)
   };
 
   return (
@@ -39,7 +41,7 @@ export default function Home() {
             required
             onChange={handleChange}
             className="mt-1 block w-full rounded-md border-2 border-gray-700 shadow-sm  sm:text-sm text-gray-700"
-            />
+          />
         </div>
         <div>
           <label htmlFor="urlApi" className="block text-sm font-medium text-gray-700">
@@ -87,6 +89,13 @@ export default function Home() {
           Register Source
         </button>
       </form>
+      <div className="my-4">
+        <Link href="/" passHref>
+          <button className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            Back to Home
+          </button>
+        </Link>
+      </div>
     </div>
   );
 }
