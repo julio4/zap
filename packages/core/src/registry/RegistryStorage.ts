@@ -1,10 +1,4 @@
-import {
-  Field,
-  MerkleMap,
-  MerkleMapWitness,
-  Poseidon,
-  PublicKey,
-} from 'o1js';
+import { Field, MerkleMap, MerkleMapWitness, Poseidon, PublicKey } from 'o1js';
 
 import { Source } from './Source';
 

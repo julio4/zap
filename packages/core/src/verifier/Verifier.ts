@@ -16,7 +16,7 @@ interface IVerifier {
     statement: ProvableStatement,
     // The value given to the statement variable used to verify the statement and emit the attestation
     privateData: Field,
-    signature: Signature,
+    signature: Signature
   ): void;
 }
 
@@ -39,7 +39,7 @@ export class Verifier extends SmartContract implements IVerifier {
   @method verify(
     statement: ProvableStatement,
     privateData: Field,
-    signature: Signature,
+    signature: Signature
   ): Bool {
     // STATEMENT/ATTESTATION VERIFICATION
     statement.assertValidSignature(privateData, signature);

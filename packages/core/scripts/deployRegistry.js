@@ -74,7 +74,7 @@ if (!isDeployed) {
     }
   );
   // if you want to inspect the transaction, you can print it out:
-  // console.log(transaction.toGraphqlQuery());
+  console.log(transaction.toGraphqlQuery());
 
   // send the transaction to the graphql endpoint
   console.log('Sending the transaction...');

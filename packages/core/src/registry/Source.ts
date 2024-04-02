@@ -6,18 +6,26 @@ export class Source extends Struct({
   name: Field,
   description: Field,
 }) {
-
-  static from(publicKey: PublicKey, urlApi: Field, name: Field, description: Field): Source {
+  static from(
+    publicKey: PublicKey,
+    urlApi: Field,
+    name: Field,
+    description: Field
+  ): Source {
     return new Source({
       publicKey,
       urlApi: urlApi,
       name: name,
       description: description,
     });
-  
   }
 
   hash() {
-    return Poseidon.hash([Poseidon.hash(this.publicKey.toFields()), this.urlApi, this.name, this.description]);
+    return Poseidon.hash([
+      Poseidon.hash(this.publicKey.toFields()),
+      this.urlApi,
+      this.name,
+      this.description,
+    ]);
   }
 }
