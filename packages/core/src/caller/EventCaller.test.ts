@@ -106,7 +106,7 @@ describe('EventCaller', () => {
       statement: provableStatement,
       address: eventCallerAddress,
     });
-    
+
     const expectedDataInEvent = attestation.hash();
     const eventsFetched = await eventCaller.fetchEvents();
 
@@ -127,9 +127,15 @@ describe('EventCaller', () => {
       sourcePrivateKey
     );
 
-    expect(Mina.transaction(userAccount, () => {
-      eventCaller.call(provableStatement, Field(2), signature, verifierAddress);
-    })).rejects.toThrow('Bool.assertTrue(): false != true');
-
+    expect(
+      Mina.transaction(userAccount, () => {
+        eventCaller.call(
+          provableStatement,
+          Field(2),
+          signature,
+          verifierAddress
+        );
+      })
+    ).rejects.toThrow('Bool.assertTrue(): false != true');
   });
 });

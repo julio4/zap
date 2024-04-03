@@ -51,13 +51,12 @@ describe('Registry', () => {
     await txn.sign([deployerKey, zkAppPrivateKey]).send();
   }
 
-  it.only('generates and deploys the `Registry` smart contract', async () => {
+  it('generates and deploys the `Registry` smart contract', async () => {
     await localDeploy();
     const initialRegistryRoot = await zkApp.registryRoot.get();
     const publicKeyStored = await zkApp.storageServerPublicKey.get();
     expect(publicKeyStored).toEqual(zkAppAddress);
     expect(initialRegistryRoot).toEqual(initialRoot);
-
   });
 
   it('registers a new source', async () => {
@@ -87,31 +86,6 @@ describe('Registry', () => {
     expect(registryStorage.count).toEqual(1);
   });
 
-  it.skip('throws an error when trying to register the same source twice', async () => {
-    await localDeploy();
-
-    registryStorage.insert(newSource);
-
-    let witness = registryStorage.storageMap.getWitness(
-      Poseidon.hash(newSource.publicKey.toFields())
-    );
-
-    const txn = await Mina.transaction(deployerAccount, () => {
-      zkApp.register(witness, newSource);
-    });
-    await txn.prove();
-    await txn.sign([deployerKey, zkAppPrivateKey]).send();
-
-    const updatedRegistryRoot = await zkApp.registryRoot.get();
-    expect(updatedRegistryRoot).not.toEqual(initialRoot);
-
-    await expect(
-      Mina.transaction(deployerAccount, () => {
-        zkApp.register(witness, newSource);
-      })
-    ).rejects.toThrow();
-  });
-
   it('emits a `registered` event when a source is registered', async () => {
     await localDeploy();
 
@@ -138,4 +112,30 @@ describe('Registry', () => {
     expect(eventsFetched[0].type).toEqual('registered');
     expect(dataInEventFetched).toEqual(expectedData);
   });
+
+  // This one need some modification of the RegistryStorage to be used as provable code
+  // it.skip('throws an error when trying to register the same source twice', async () => {
+  //   await localDeploy();
+
+  //   registryStorage.insert(newSource);
+
+  //   let witness = registryStorage.storageMap.getWitness(
+  //     Poseidon.hash(newSource.publicKey.toFields())
+  //   );
+
+  //   const txn = await Mina.transaction(deployerAccount, () => {
+  //     zkApp.register(witness, newSource);
+  //   });
+  //   await txn.prove();
+  //   await txn.sign([deployerKey, zkAppPrivateKey]).send();
+
+  //   const updatedRegistryRoot = await zkApp.registryRoot.get();
+  //   expect(updatedRegistryRoot).not.toEqual(initialRoot);
+
+  //   await expect(
+  //     Mina.transaction(deployerAccount, () => {
+  //       zkApp.register(witness, newSource);
+  //     })
+  //   ).rejects.toThrow();
+  // });
 });

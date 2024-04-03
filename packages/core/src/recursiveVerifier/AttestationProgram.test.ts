@@ -103,7 +103,6 @@ describe('AttestationProgram', () => {
 
     const verificationResult = await AttestationProgram.verify(baseProof);
     expect(verificationResult).toBeTruthy();
-
   });
 
   it("shouldn't verify a proof if the condition is not met", async () => {

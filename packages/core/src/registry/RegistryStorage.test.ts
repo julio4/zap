@@ -27,7 +27,7 @@ describe('RegistryStorage', () => {
     const witness = registryStorage.insert(newSource);
     const hashedPublicKey = Poseidon.hash(publicKey.toFields());
     expect(registryStorage.storageMap.get(hashedPublicKey)).toEqual(
-      stringToFields('name')[0]
+      newSource.hash()
     );
     expect(registryStorage.storageMap.get(hashedPublicKey)).not.toEqual(
       stringToFields('namee')[0]
@@ -48,9 +48,7 @@ describe('RegistryStorage', () => {
       stringToFields('description')[0]
     );
     registryStorage.insert(newSource);
-    expect(registryStorage.getValue(publicKey)).toEqual(
-      stringToFields('name')[0]
-    );
+    expect(registryStorage.getValue(publicKey)).toEqual(newSource.hash());
     expect(registryStorage.getValue(publicKey)).not.toEqual(
       stringToFields('namee')[0]
     );
