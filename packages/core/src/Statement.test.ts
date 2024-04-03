@@ -11,7 +11,6 @@ describe('ProvableStatement', () => {
       path: '/route',
       args: {},
     },
-    // "target == 1"
     condition: {
       type: 3,
       targetValue: 1,

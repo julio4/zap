@@ -17,8 +17,8 @@ type SourceResponseBody<T> = {
   route: Route;
 };
 // Supported response types
-export type SupportedValue = number;
-export type ZapResponse = SourceResponseBody<SupportedValue>;
+export type SupportedTargetValue = number;
+export type ZapResponse = SourceResponseBody<SupportedTargetValue>;
 
 // The response body with hashed route
 // @see helpers#hashResponse

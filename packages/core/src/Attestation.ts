@@ -20,7 +20,4 @@ export class Attestation extends Struct({
   assertEqual(hash: Field) {
     this.hash().assertEquals(hash, 'Attestation hash does not match.');
   }
-
-  // Todo later
-  // assertValid(at_timestamp
 }

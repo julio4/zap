@@ -16,15 +16,6 @@ describe("Source server", () => {
     route,
   };
 
-  // TODO to move to @core
-  // it("hashRoute", () => {
-  //   const routeAsJson = JSON.stringify(route);
-  //   const routeJsonAsFields = Encoding.stringToFields(routeAsJson);
-  //   const hashedRoute = Poseidon.hash(routeJsonAsFields);
-
-  //   expect(hashRoute(route)).toStrictEqual(hashedRoute);
-  // });
-
   it("hashResponse", () => {
     expect(hashResponse(res)).toStrictEqual({
       value,

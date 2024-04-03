@@ -4,7 +4,7 @@ import { PrivateKey } from "o1js";
 
 import { signResponse } from "@zap/source";
 import {
-  SupportedValue,
+  SupportedTargetValue,
   ZapResponse,
   ZapSignedResponse,
 } from "@zap/types";
@@ -20,7 +20,7 @@ export const zapMiddleware = (
   const originalJson = res.json.bind(res);
 
   // Override the json method
-  res.json = (body: SupportedValue): Response<ZapSignedResponse> => {
+  res.json = (body: SupportedTargetValue): Response<ZapSignedResponse> => {
     const requestPath = req.baseUrl + req.path;
 
     if (!body) {

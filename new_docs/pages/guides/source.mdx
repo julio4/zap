@@ -64,7 +64,7 @@ Controllers are used to handle the requests, get the data from the services, opt
 
 The `exampleController.ts` file is an example of a controller that handles the `/api/example/*` routes and uses the `RandomService` to return the requested data.
 
-Controllers functions **must** return a `Promise<SupportedValue>` with `res.json(value)`.
+Controllers functions **must** return a `Promise<SupportedTargetValue>` with `res.json(value)`.
 Without the `res.json` call, the response will not be signed and the request will fail.
 
 ### Services
@@ -146,7 +146,7 @@ Verify the tests with `npm run test`.
 - Define the `path` and required `args`. This constitute the endpoint route.
 - Register the endpoint: Either create a new endpoints file or add the endpoint to an existing one in the `endpoints` folder. (register the endpoint in the `endpoints/index.ts` file if you create a new endpoints file)
 - Add the parameters validation middlewares from `middlewares/paramsValidations.ts` to the route and end the route with the `validateParams` middleware.
-- Create the controller function in the `controllers` folder. Be sure to return a `Promise<SupportedValue>` with `res.json(value)`.
+- Create the controller function in the `controllers` folder. Be sure to return a `Promise<SupportedTargetValue>` with `res.json(value)`.
 - Optionnaly create a service in the `services` folder to get the data from an external source. The service is called from the controller.
 - Add tests for the endpoint in the `tests/endpoints` folder.
 

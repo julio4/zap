@@ -3,11 +3,11 @@ import {
   body,
   validationResult,
 } from 'express-validator'
-import { type SupportedValue, type ZapRequestParams } from '@zap/types'
+import { type SupportedTargetValue, type ZapRequestParams } from '@zap/types'
 
 export const validateParams = (
   req: Request<ZapRequestParams>,
-  res: Response<SupportedValue>,
+  res: Response<SupportedTargetValue>,
   next: NextFunction
 ) => {
   const errors = validationResult(req)

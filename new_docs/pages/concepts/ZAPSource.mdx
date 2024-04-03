@@ -48,7 +48,7 @@ export type Route = {
 };
 ```
 
-The returned value must be of type `SupportedValue` (currently, only `number` is supported), which is the data returned by the endpoint and that will be used inside the attestation and verified in the ZAP contract.
+The returned value must be of type `SupportedTargetValue` (currently, only `number` is supported), which is the data returned by the endpoint and that will be used inside the attestation and verified in the ZAP contract.
 But this value must be wrapped in an object of type `ZapSignedResponse` with a signature of the response data with the source private key and the `hashRoute`.
 
 That way, for a given Route, value and signature, we can verify that the value comes from the oracle of public key `P` by computing `hash(Route.path, Route.args)` and checking that `signature == sign({value, hash(Route.path, Route.args)}, P)`.
@@ -66,4 +66,4 @@ type ZapSignedResponse = {
 }
 ```
 
-The express.js `zapMiddleware` of the source template can be used to automatically wrap `SupportedValue` responses in a `ZapSignedResponse` object. Follow the [ZAP Source Guide](../guides/source) for more information.
+The express.js `zapMiddleware` of the source template can be used to automatically wrap `SupportedTargetValue` responses in a `ZapSignedResponse` object. Follow the [ZAP Source Guide](../guides/source) for more information.

@@ -1,10 +1,10 @@
 import { type Request, type Response } from 'express'
 import AirstackService from '../services/airstackService.js'
-import { type SupportedValue, type ZapRequestParams } from '@zap/types'
+import { type SupportedTargetValue, type ZapRequestParams } from '@zap/types'
 
 export const getUserBalance = async (
   req: Request<ZapRequestParams>,
-  res: Response<SupportedValue>
+  res: Response<SupportedTargetValue>
 ) => {
   const { address, token, blockchain } = req.body.args
   const balance = await AirstackService.getBalance(address, token, blockchain)
@@ -13,7 +13,7 @@ export const getUserBalance = async (
 
 export const getUserNftVolumeSales = async (
   req: Request<ZapRequestParams>,
-  res: Response<SupportedValue>
+  res: Response<SupportedTargetValue>
 ) => {
   const { address } = req.body.args
   const volume = await AirstackService.getNftSaleVolume(address)
@@ -22,7 +22,7 @@ export const getUserNftVolumeSales = async (
 
 export const verifyEnsHolder = async (
   req: Request<ZapRequestParams>,
-  res: Response<SupportedValue>
+  res: Response<SupportedTargetValue>
 ) => {
   const { address } = req.body.args
   const ens = await AirstackService.isEnsHolder(address)
@@ -31,7 +31,7 @@ export const verifyEnsHolder = async (
 
 export const verifyFarcasterHolder = async (
   req: Request<ZapRequestParams>,
-  res: Response<SupportedValue>
+  res: Response<SupportedTargetValue>
 ) => {
   const { address } = req.body.args
   const farcaster = await AirstackService.isFarcasterHolder(address)
@@ -40,7 +40,7 @@ export const verifyFarcasterHolder = async (
 
 export const verifyLensHolder = async (
   req: Request<ZapRequestParams>,
-  res: Response<SupportedValue>
+  res: Response<SupportedTargetValue>
 ) => {
   const { address } = req.body.args
   const lens = await AirstackService.isLensHolder(address)
@@ -49,7 +49,7 @@ export const verifyLensHolder = async (
 
 export const verifyNftHolder = async (
   req: Request<ZapRequestParams>,
-  res: Response<SupportedValue>
+  res: Response<SupportedTargetValue>
 ) => {
   const { address, nftAddress, blockchain } = req.body.args
   const nft = await AirstackService.isNftHolder(
@@ -62,7 +62,7 @@ export const verifyNftHolder = async (
 
 export const verifyPoapHolder = async (
   req: Request<ZapRequestParams>,
-  res: Response<SupportedValue>
+  res: Response<SupportedTargetValue>
 ) => {
   const { address, poapId } = req.body.args
   const poap = await AirstackService.isPoapHolder(address, poapId)
@@ -71,7 +71,7 @@ export const verifyPoapHolder = async (
 
 export const verifyXMTPenabled = async (
   req: Request<ZapRequestParams>,
-  res: Response<SupportedValue>
+  res: Response<SupportedTargetValue>
 ) => {
   const { address } = req.body.args
   const xmtp = await AirstackService.isXMTPenabled(address)
