@@ -17,12 +17,20 @@ export const hashRoute = (route: Route): Field =>
     ...Encoding.stringToFields(JSON.stringify(route.args)),
   ]);
 
-export class ProvableStatement extends Struct({
-  conditionType: Field,
-  targetValue: Field,
-  hashRoute: Field,
-  source: PublicKey,
-}) {
+interface IProvableStatement {
+  isValidCondition(privateData: Field): Bool;
+  assertValidCondition(privateData: Field): void;
+}
+
+export class ProvableStatement
+  extends Struct({
+    conditionType: Field,
+    targetValue: Field,
+    hashRoute: Field,
+    source: PublicKey,
+  })
+  implements IProvableStatement
+{
   static from(statement: Statement): ProvableStatement {
     return new ProvableStatement({
       conditionType: Field(statement.condition.type),
@@ -32,6 +40,7 @@ export class ProvableStatement extends Struct({
     });
   }
 
+  // Generate a signature that the privateData was emitted by the given keys for this statement
   static sign(
     statement: Statement,
     privateData: Field,
@@ -41,14 +50,6 @@ export class ProvableStatement extends Struct({
       privateData,
       hashRoute(statement.route),
     ]);
-  }
-
-  isValidSignature(privateData: Field, signature: Signature): Bool {
-    return signature.verify(this.source, [privateData, this.hashRoute]);
-  }
-
-  assertValidSignature(privateData: Field, signature: Signature) {
-    this.isValidSignature(privateData, signature).assertTrue();
   }
 
   isValidCondition(privateData: Field): Bool {
