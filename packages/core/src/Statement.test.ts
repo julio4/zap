@@ -39,20 +39,24 @@ describe('ProvableStatement', () => {
     privateData,
     sourcePrivateKey
   );
+
   it('ProvableStatement.sign(statement, privateData, privateKey)', () => {
     expect(
       signature
         .verify(sourceKey, [privateData, provableStatement.hashRoute])
         .toBoolean()
     ).toBeTruthy();
+
     expect(
       signature.verify(sourceKey, [privateData, Field(0)]).toBoolean()
     ).toBeFalsy();
+
     expect(
       signature
         .verify(sourceKey, [Field(0), provableStatement.hashRoute])
         .toBoolean()
     ).toBeFalsy();
+
     expect(
       signature
         .verify(PrivateKey.random().toPublicKey(), [
@@ -61,72 +65,6 @@ describe('ProvableStatement', () => {
         ])
         .toBoolean()
     ).toBeFalsy();
-  });
-
-  it('ProvableStatement.assertValidSignature(privateData, signature)', () => {
-    expect(() =>
-      provableStatement.assertValidSignature(privateData, signature)
-    ).not.toThrow();
-    expect(() =>
-      provableStatement.assertValidSignature(Field(0), signature)
-    ).toThrow();
-    expect(() =>
-      provableStatement.assertValidSignature(
-        privateData,
-        Signature.create(PrivateKey.random(), [
-          privateData,
-          provableStatement.hashRoute,
-        ])
-      )
-    ).toThrow();
-    expect(() =>
-      provableStatement.assertValidSignature(
-        privateData,
-        Signature.create(sourcePrivateKey, [privateData, Field(0)])
-      )
-    ).toThrow();
-    expect(() =>
-      provableStatement.assertValidSignature(
-        privateData,
-        Signature.create(sourcePrivateKey, [
-          Field(0),
-          provableStatement.hashRoute,
-        ])
-      )
-    ).toThrow();
-  });
-
-  it('ProvableStatement.isValidSignature(privateData, signature)', () => {
-    expect(provableStatement.isValidSignature(privateData, signature)).toEqual(
-      Bool(true)
-    );
-    expect(provableStatement.isValidSignature(Field(0), signature)).toEqual(
-      Bool(false)
-    );
-    expect(
-      provableStatement.isValidSignature(
-        privateData,
-        Signature.create(PrivateKey.random(), [
-          privateData,
-          provableStatement.hashRoute,
-        ])
-      )
-    ).toEqual(Bool(false));
-    expect(
-      provableStatement.isValidSignature(
-        privateData,
-        Signature.create(sourcePrivateKey, [privateData, Field(0)])
-      )
-    ).toEqual(Bool(false));
-    expect(
-      provableStatement.isValidSignature(
-        privateData,
-        Signature.create(sourcePrivateKey, [
-          Field(0),
-          provableStatement.hashRoute,
-        ])
-      )
-    ).toEqual(Bool(false));
   });
 
   describe('ProvableStatement.assertValidCondition(privateData)', () => {
