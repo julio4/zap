@@ -96,16 +96,18 @@ describe('EventCaller', () => {
       sourcePrivateKey
     );
 
+    const attestation = new Attestation({
+      statement: provableStatement,
+      privateData,
+      signature,
+      address: userAccount,
+    });
+
     const txn = await Mina.transaction(userAccount, () => {
-      eventCaller.call(provableStatement, Field(1), signature, verifierAddress);
+      eventCaller.call(attestation, verifierAddress);
     });
     await txn.prove();
     await txn.sign([userKey]).send();
-
-    const attestation = new Attestation({
-      statement: provableStatement,
-      address: eventCallerAddress,
-    });
 
     const expectedDataInEvent = attestation.hash();
     const eventsFetched = await eventCaller.fetchEvents();
@@ -120,21 +122,22 @@ describe('EventCaller', () => {
     await localDeployEventCaller();
 
     const provableStatement = ProvableStatement.from(statement);
-    const privateData = new Field(1);
+    const privateData = new Field(5);
     const signature = ProvableStatement.sign(
       statement,
       privateData,
       sourcePrivateKey
     );
+    const invalidAttestation = new Attestation({
+      statement: provableStatement,
+      privateData,
+      signature,
+      address: userAccount,
+    });
 
     expect(
       Mina.transaction(userAccount, () => {
-        eventCaller.call(
-          provableStatement,
-          Field(2),
-          signature,
-          verifierAddress
-        );
+        eventCaller.call(invalidAttestation, verifierAddress);
       })
     ).rejects.toThrow('Bool.assertTrue(): false != true');
   });

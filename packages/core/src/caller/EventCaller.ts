@@ -1,7 +1,6 @@
-import { Bool, Field, PublicKey, Signature, SmartContract, method } from 'o1js';
+import { Bool, Field, PublicKey, SmartContract, method } from 'o1js';
 import { Caller } from './Caller';
 import { Verifier } from '../verifier/Verifier.js';
-import { ProvableStatement } from '../Statement.js';
 import { Attestation } from '../Attestation.js';
 
 // Example caller that just emit an event
@@ -10,20 +9,10 @@ export class EventCaller extends SmartContract implements Caller {
     verified: Field,
   };
 
-  @method call(
-    statement: ProvableStatement,
-    privateData: Field,
-    signature: Signature,
-    verifierAddress: PublicKey
-  ) {
+  @method call(attestation: Attestation, verifierAddress: PublicKey) {
     const verifier = new Verifier(verifierAddress);
-    const isVerified: Bool = verifier.verify(statement, privateData, signature);
-    isVerified.assertTrue('Statement is not verified.');
-
-    const attestation = new Attestation({
-      statement: statement,
-      address: this.address,
-    });
+    const isVerified: Bool = verifier.verify(attestation);
+    isVerified.assertTrue('Attestation is not verified.');
 
     this.emitEvent('verified', attestation.hash());
   }
