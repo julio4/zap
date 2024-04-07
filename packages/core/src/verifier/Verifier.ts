@@ -1,23 +1,15 @@
 import {
-  Field,
   SmartContract,
   method,
   DeployArgs,
   Permissions,
-  Signature,
   AccountUpdate,
   Bool,
 } from 'o1js';
-import { ProvableStatement } from '../Statement.js';
+import { Attestation } from '../Attestation.js';
 
 interface IVerifier {
-  verify(
-    // The statement
-    statement: ProvableStatement,
-    // The value given to the statement variable used to verify the statement and emit the attestation
-    privateData: Field,
-    signature: Signature
-  ): void;
+  verify(attestation: Attestation): void;
 }
 
 /**
@@ -36,20 +28,7 @@ export class Verifier extends SmartContract implements IVerifier {
     });
   }
 
-  @method verify(
-    statement: ProvableStatement,
-    privateData: Field,
-    signature: Signature
-  ): Bool {
-    // STATEMENT/ATTESTATION VERIFICATION
-    statement.assertValidSignature(privateData, signature);
-    statement.assertValidCondition(privateData);
-
-    // ATTESTATION GENERATION
-    const sender = this.sender;
-    AccountUpdate.createSigned(sender);
-
-    // ATTESTATION HANDLING
-    return Bool(true);
+  @method verify(attestation: Attestation): Bool {
+    return attestation.isValid();
   }
 }

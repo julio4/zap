@@ -1,6 +1,7 @@
-import { Statement } from '@zap/types';
+import { Statement, ConditionType } from '@zap/types';
 import { ProvableStatement } from '../Statement';
 import { Verifier } from './Verifier';
+import { Attestation } from '../Attestation';
 
 import { Mina, PrivateKey, PublicKey, AccountUpdate, Field } from 'o1js';
 
@@ -11,9 +12,9 @@ describe('Verifier', () => {
     deployerKey: PrivateKey,
     userAccount: PublicKey,
     userKey: PrivateKey,
-    zkAppAddress: PublicKey,
-    zkAppPrivateKey: PrivateKey,
-    zkApp: Verifier;
+    verifierAddress: PublicKey,
+    verifierPrivateKey: PrivateKey,
+    verifier: Verifier;
 
   const sourcePrivateKey = PrivateKey.random();
   const sourceKey = sourcePrivateKey.toPublicKey();
@@ -24,7 +25,7 @@ describe('Verifier', () => {
       args: {},
     },
     condition: {
-      type: 3,
+      type: ConditionType.EQ,
       targetValue: 1,
     },
   };
@@ -41,27 +42,27 @@ describe('Verifier', () => {
     ({ privateKey: deployerKey, publicKey: deployerAccount } =
       Local.testAccounts[0]);
     ({ privateKey: userKey, publicKey: userAccount } = Local.testAccounts[1]);
-    zkAppPrivateKey = PrivateKey.random();
-    zkAppAddress = zkAppPrivateKey.toPublicKey();
-    zkApp = new Verifier(zkAppAddress);
+    verifierPrivateKey = PrivateKey.random();
+    verifierAddress = verifierPrivateKey.toPublicKey();
+    verifier = new Verifier(verifierAddress);
   });
 
   async function localDeployVerifier() {
     const txn = await Mina.transaction(deployerAccount, () => {
       AccountUpdate.fundNewAccount(deployerAccount);
-      zkApp.deploy({
-        zkappKey: zkAppPrivateKey,
+      verifier.deploy({
+        zkappKey: verifierPrivateKey,
       });
     });
     await txn.prove();
-    await txn.sign([deployerKey, zkAppPrivateKey]).send();
+    await txn.sign([deployerKey, verifierPrivateKey]).send();
   }
 
   it('deploys the `Verifier` smart contract', async () => {
     await localDeployVerifier();
   });
 
-  it('verifies a statement', async () => {
+  it('verify an attestation', async () => {
     await localDeployVerifier();
 
     const provableStatement = ProvableStatement.from(statement);
@@ -71,13 +72,15 @@ describe('Verifier', () => {
       privateData,
       sourcePrivateKey
     );
-
-    const txn = await Mina.transaction(userAccount, () => {
-      zkApp.verify(provableStatement, privateData, signature);
+    const attestation = new Attestation({
+      statement: provableStatement,
+      privateData,
+      signature,
+      address: userAccount,
     });
 
-    await txn.prove();
-    await txn.sign([userKey]).send();
+    const isVerified = verifier.verify(attestation);
+    expect(isVerified.toBoolean()).toBeTruthy();
 
     // const attestation = new Attestation({
     //   statement: provableStatement,
@@ -102,11 +105,15 @@ describe('Verifier', () => {
     );
     signature.r = Field.random();
 
-    await expect(
-      Mina.transaction(userAccount, () => {
-        zkApp.verify(provableStatement, privateData, signature);
-      })
-    ).rejects.toThrow();
+    const attestation = new Attestation({
+      statement: provableStatement,
+      privateData,
+      signature,
+      address: userAccount,
+    });
+
+    const isVerified = verifier.verify(attestation);
+    expect(isVerified.toBoolean()).toBeFalsy();
   });
 
   it('should throw an error if the statement condition is invalid', async () => {
@@ -119,11 +126,14 @@ describe('Verifier', () => {
       privateData,
       sourcePrivateKey
     );
+    const attestation = new Attestation({
+      statement: provableStatement,
+      privateData,
+      signature,
+      address: userAccount,
+    });
 
-    await expect(
-      Mina.transaction(userAccount, () => {
-        zkApp.verify(provableStatement, privateData, signature);
-      })
-    ).rejects.toThrow();
+    const isVerified = verifier.verify(attestation);
+    expect(isVerified.toBoolean()).toBeFalsy();
   });
 });
