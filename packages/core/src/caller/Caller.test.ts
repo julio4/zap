@@ -2,6 +2,7 @@ import { Mina, PrivateKey, PublicKey, AccountUpdate, Field } from 'o1js';
 import { Caller } from './Caller';
 import { Verifier } from '../verifier/Verifier';
 import { ProvableStatement } from '../Statement';
+import { Attestation } from '../Attestation';
 import { Statement } from '@zap/types';
 
 let proofsEnabled = false;
@@ -78,17 +79,23 @@ describe('Caller', () => {
         targetValue: 1,
       },
     };
-    const provableStatement = ProvableStatement.from(statement);
 
+    const provableStatement = ProvableStatement.from(statement);
     const privateData = Field(1);
     const signature = ProvableStatement.sign(
       statement,
       privateData,
       sourcePrivateKey
     );
+    const attestation = new Attestation({
+      statement: provableStatement,
+      privateData,
+      signature,
+      address: userAccount,
+    });
 
     const txn = await Mina.transaction(userAccount, () => {
-      zkApp.call(provableStatement, privateData, signature, verifierAddress);
+      zkApp.call(attestation, verifierAddress);
     });
     await txn.prove();
     await txn.sign([userKey]).send();
