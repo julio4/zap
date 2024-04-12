@@ -1,5 +1,6 @@
 import { PrivateKey, Field, Signature } from 'o1js';
 import { ProvableStatement } from '../Statement';
+import { Attestation } from '../Attestation';
 import { Route, StatementCondition, Statement } from '@zap/types';
 import { AttestationProgram } from './AttestationProgram';
 
@@ -16,89 +17,90 @@ const createProvableStatement = (
 };
 
 describe('AttestationProgram', () => {
-  let sourcePrivateKey: PrivateKey,
-    sourceKey58: string,
-    statement: Statement,
-    provableStatement: ProvableStatement,
-    signature: Signature;
+  const sourcePrivateKey = PrivateKey.random();
+  const sourceKey58 = sourcePrivateKey.toPublicKey().toBase58();
+  const statement = {
+    sourceKey: sourceKey58,
+    route: { path: '/test', args: {} },
+    // Condition is: "value == 1"
+    condition: { type: 3, targetValue: 1 },
+  };
+  const provableStatement = ProvableStatement.from(statement);
+  const privateData = new Field(1);
+  const signature = ProvableStatement.sign(
+    statement,
+    privateData,
+    sourcePrivateKey
+  );
+  const attestation = new Attestation({
+    statement: provableStatement,
+    privateData,
+    signature,
+    address: sourcePrivateKey.toPublicKey(),
+  });
 
   beforeAll(async () => {
     await AttestationProgram.compile();
-    sourcePrivateKey = PrivateKey.random();
-    sourceKey58 = sourcePrivateKey.toPublicKey().toBase58();
-  });
-
-  beforeEach(() => {
-    statement = {
-      sourceKey: sourceKey58,
-      route: { path: '/test', args: {} },
-      // Condition is: "value == 1"
-      condition: { type: 3, targetValue: 1 },
-    };
-
-    provableStatement = ProvableStatement.from(statement);
-    const privateData = new Field(1);
-    signature = ProvableStatement.sign(
-      statement,
-      privateData,
-      sourcePrivateKey
-    );
   });
 
   it('verifies the base case correctly', async () => {
-    const privateData = new Field(1);
-    const proof = await AttestationProgram.baseCase(
-      provableStatement,
-      privateData,
-      signature
-    );
+    const proof = await AttestationProgram.baseCase(attestation);
     const verificationResult = await AttestationProgram.verify(proof);
     expect(verificationResult).toBeTruthy();
   });
 
   it('handles the recursive step correctly (combine 2 proofs)', async () => {
-    const privateData = new Field(1);
-    const baseProof = await AttestationProgram.baseCase(
-      provableStatement,
-      privateData,
-      signature
-    );
+    const baseProof = await AttestationProgram.baseCase(attestation);
 
-    const secondProvableStatement = createProvableStatement(
-      sourceKey58,
-      { path: '/test2', args: {} },
-      { type: 3, targetValue: 2 } // Condition is: "value == 2"
-    );
+    const secondStatement = {
+      sourceKey: sourceKey58,
+      route: { path: '/test2', args: {} },
+      // Condition is: "value == 2"
+      condition: { type: 3, targetValue: 2 },
+    };
+    const secondProvableStatement = ProvableStatement.from(secondStatement);
+    const secondAttestation = new Attestation({
+      statement: secondProvableStatement,
+      privateData: new Field(2),
+      signature: ProvableStatement.sign(
+        secondStatement,
+        Field(2),
+        sourcePrivateKey
+      ),
+      address: sourcePrivateKey.toPublicKey(),
+    });
+
     const stepProof = await AttestationProgram.step(
-      secondProvableStatement,
-      Field(2),
-      signature,
+      secondAttestation,
       baseProof
     );
+
     const verificationResult = await AttestationProgram.verify(stepProof);
     expect(verificationResult).toBeTruthy();
   });
 
   it('handles the recursive step correctly, combining 10 proofs', async () => {
-    const privateData = new Field(1);
-    let baseProof = await AttestationProgram.baseCase(
-      provableStatement,
-      privateData,
-      signature
-    );
+    let baseProof = await AttestationProgram.baseCase(attestation);
 
     for (let i = 2; i <= 10; i++) {
-      const provableStatement = createProvableStatement(
-        sourceKey58,
-        { path: '/test', args: {} },
-        { type: 3, targetValue: i }
-      );
-      baseProof = await AttestationProgram.step(
-        provableStatement,
-        Field(i),
-        signature,
-        baseProof
-      );
+      const statement: Statement = {
+        sourceKey: sourceKey58,
+        route: { path: '/test', args: {} },
+        condition: { type: 3, targetValue: i },
+      };
+      const provableStatement = ProvableStatement.from(statement);
+      const newAttestation = new Attestation({
+        statement: provableStatement,
+        privateData: Field(i),
+        signature: ProvableStatement.sign(
+          statement,
+          Field(i),
+          sourcePrivateKey
+        ),
+        address: sourcePrivateKey.toPublicKey(),
+      });
+
+      baseProof = await AttestationProgram.step(newAttestation, baseProof);
     }
 
     const verificationResult = await AttestationProgram.verify(baseProof);
@@ -108,9 +110,12 @@ describe('AttestationProgram', () => {
   it("shouldn't verify a proof if the condition is not met", async () => {
     await expect(
       AttestationProgram.baseCase(
-        provableStatement,
-        Field(2), // Should be Field(1) to pass
-        signature
+        new Attestation({
+          statement: provableStatement,
+          privateData: Field(2),
+          signature,
+          address: sourcePrivateKey.toPublicKey(),
+        })
       )
     ).rejects.toThrowError();
   });
@@ -122,14 +127,28 @@ describe('AttestationProgram', () => {
       PrivateKey.random()
     );
     await expect(
-      AttestationProgram.baseCase(provableStatement, Field(1), invalidSignature)
+      AttestationProgram.baseCase(
+        new Attestation({
+          statement: provableStatement,
+          privateData: Field(1),
+          signature: invalidSignature,
+          address: sourcePrivateKey.toPublicKey(),
+        })
+      )
     ).rejects.toThrowError();
   });
 
   it("shouldn't verify a proof if random signature is used", async () => {
     const invalidSignature = Signature.create(PrivateKey.random(), [Field(1)]);
     await expect(
-      AttestationProgram.baseCase(provableStatement, Field(1), invalidSignature)
+      AttestationProgram.baseCase(
+        new Attestation({
+          statement: provableStatement,
+          privateData: Field(1),
+          signature: invalidSignature,
+          address: sourcePrivateKey.toPublicKey(),
+        })
+      )
     ).rejects.toThrowError();
   });
 });

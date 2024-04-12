@@ -1,33 +1,27 @@
 import { SelfProof, Field, ZkProgram, Signature } from 'o1js';
 import { ProvableStatement } from '../Statement';
+import { Attestation } from '../Attestation';
 
 export const AttestationProgram = ZkProgram({
   name: 'AttestationAggregator',
 
   methods: {
     baseCase: {
-      privateInputs: [ProvableStatement, Field, Signature],
+      privateInputs: [Attestation],
 
-      method(
-        statement: ProvableStatement,
-        privateData: Field,
-        signature: Signature
-      ) {
-        statement.assertValidSignature(privateData, signature);
-        statement.assertValidCondition(privateData);
+      method(attestation: Attestation) {
+        attestation.assertValid();
       },
     },
 
     step: {
-      privateInputs: [ProvableStatement, Field, Signature, SelfProof],
+      privateInputs: [Attestation, SelfProof],
       method(
-        statement: ProvableStatement,
-        privateData: Field,
-        signature: Signature,
+        attestation: Attestation,
         earlierProof: SelfProof<[ProvableStatement, Field, Signature], void>
       ) {
         earlierProof.verify();
-        statement.assertValidCondition(privateData);
+        attestation.assertValid();
       },
     },
   },
