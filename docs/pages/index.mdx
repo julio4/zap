@@ -139,36 +139,43 @@ With ZAP, the developer can focus on the logic of the statement and let ZAP hand
 The developer can create a new statement in a few lines of code (simplified):
 
 ```ts
-// Define statement
+// Necessary values
+const sourceKey: PublicKey = ...; // Price Oracle ZAP Source
+const minaWallet: PublicKey = ...; // user's Mina wallet
+
+// Define statement to verify
+// "The price of ETH is greater than 3000 USD based on the Price Oracle"
 let statement: Statement = {
-  request: {
-    route: "/credit-score";
+  sourceKey: sourceKey.toBase58(),
+  route: {
+    path: "/api/v1/price",
     args: {
-      "user": 1
-    };
-  }
+      symbol: "ETH",
+      currency: "USD",
+    },
+  },
   condition: {
-    type: GREATER_THAN;
-    targetValue: 700;
-  }
+    type: ConditionType.GT,
+    targetValue: 3000,
+  },
 };
 
-// Create attestation by calling the oracle
+// Fetch the response of the source for the specific route
 const private_response = await post(
-  `${ORACLE_ENDPOINT}${statement.request.route}`,
-  request_data
+  `${ORACLE_ENDPOINT}${statement.route.path}`,
+  statement.route.args
 ).data as SignResponse;
 
-let attestation: Attestation = {
-  statement: statement,
-  privateData: private_response
-};
+let attestation: Attestation = new Attestation({
+  statement,
+  address: minaWallet
+});
 
-// Verify the attestation in the browser
+// Generate the proof in the browser
 await attest.zapWorkerClient.createGenerateAttestationTransaction(attestation);
 await attest.zapWorkerClient.proveGenerateAttestationTransaction();
 
-// Send transaction to the ZAP Core contract
+// Send transaction to the ZAP Verifier contract
 const transaction = await attest.zapWorkerClient.getTransactionJSON();
 const { hash } = await window.mina.sendTransaction(transaction);
 
