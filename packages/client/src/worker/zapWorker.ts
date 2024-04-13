@@ -1,5 +1,11 @@
-import { Mina, PublicKey, fetchAccount, Signature, Field, PrivateKey } from "o1js";
-import { Verifier, ProvableStatement } from "@zap/core";
+import {
+  Mina,
+  PublicKey,
+  fetchAccount,
+  Signature,
+  Field,
+} from "o1js";
+import { Verifier, ProvableStatement, Attestation } from "@zap/core";
 import { Statement } from "@zap/types";
 
 type Transaction = Awaited<ReturnType<typeof Mina.transaction>>;
@@ -18,17 +24,21 @@ const functions: Record<string, (...args: any[]) => any> = {
     console.log("Berkeley Instance Created");
     Mina.setActiveInstance(Berkeley);
   },
+
   loadContract: async (args: {}) => {
     const { Verifier } = await import("@zap/core");
     state.Verifier = Verifier;
   },
+
   compileContract: async (args: {}) => {
     await state.Verifier!.compile();
   },
+
   fetchAccount: async (args: { publicKey58: string }) => {
     const publicKey = PublicKey.fromBase58(args.publicKey58);
     return await fetchAccount({ publicKey });
   },
+
   initZapInstance: async (args: { publicKey58: string }) => {
     const publicKey = PublicKey.fromBase58(args.publicKey58);
     state.verifier = new state.Verifier!(publicKey);
@@ -38,13 +48,20 @@ const functions: Record<string, (...args: any[]) => any> = {
     statement: Statement;
     privateData: string;
     signature: string;
+    address: string;
   }) => {
     const provableStatement = ProvableStatement.from(args.statement);
+    // TODO should we create the attestation object here?
+    const attestation = Attestation.fromJSON({
+      statement: provableStatement,
+      privateData: Field.fromJSON(JSON.parse(args.privateData)),
+      signature: Signature.fromJSON(JSON.parse(args.signature)),
+      address: PublicKey.fromBase58(args.address),
+    });
+
     const transaction = await Mina.transaction(() => {
       state.verifier!.verify(
-        provableStatement,
-        Field.fromJSON(JSON.parse(args.privateData)),
-        Signature.fromJSON(JSON.parse(args.signature))
+        attestation
       );
     });
     state.tx = transaction;
