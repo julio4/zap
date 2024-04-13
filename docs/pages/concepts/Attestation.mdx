@@ -5,6 +5,8 @@ For example, the statement "Over 18 years old" is true if the assigned value of 
 
 ## Formalisation
 
+> Jump to [Implementation](#implementation) if you are only looking for the code.
+
 Please refer to [Statement](./Statement) for the formalisation of a statement before reading this section.
 
 We note $a_{(s,v)}$ the attestation of a statement $s$ with the given values $v$. \
@@ -87,3 +89,26 @@ In other words, with $a_1, a_2$ the attestations of $s_1, s_2$ respectively, and
 When only parts of the variables are given a value, then we call it a **partial attestation**.
 If the statement is "Over 18 years old and living in France", then the assigned value `22` to the variable `age` is not enough to determine the truth value of the statement, we also need to know the value of the variable `country` (or `isLivingInFrance`).
 However, this gives us the partial attestation "living in France" knowing that the person is "age 22".
+
+## Implementation
+
+As explained in the [Statement](./Statement) part, the attestation is the proof that corresponds to verifying the truth value of a statement.
+The attestation is then represented as a o1js's struct object.
+
+```typescript
+interface IAttestation {
+  // Return the attestation Poseidon hash
+  hash(): Field;
+  // Assert that the given hash is equal to the attestation hash
+  assertEqual(hash: Field): void;
+}
+
+export class Attestation extends Struct({
+  statement: ProvableStatement,
+  address: PublicKey
+}) implements IAttestation {
+  // ...
+}
+```
+
+The `Attestation` struct contains the `statement` field as a [ProvableStatement](./Statement#provablestatement) and the `address` field as a `PublicKey` of the mina account that attests the statement.
