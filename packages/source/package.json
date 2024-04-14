@@ -15,7 +15,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@zap/core": "workspace:*",
     "@zap/shared": "workspace:*",
     "@zap/types": "workspace:*",
     "@types/node": "^20.10.5",

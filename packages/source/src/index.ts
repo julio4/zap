@@ -1,13 +1,6 @@
 import { PrivateKey, Signature } from "o1js";
-
-import {
-  ZapResponse,
-  ZapHashedResponse,
-  ZapSignedResponse,
-} from "@zap/types";
-
-import { encodeResAsFields } from "@zap/shared";
-import { hashRoute } from "@zap/core";
+import { ZapResponse, ZapHashedResponse, ZapSignedResponse } from "@zap/types";
+import { encodeResAsFields, hashRoute } from "@zap/shared";
 
 export const hashResponse = (res: ZapResponse): ZapHashedResponse => ({
   value: res.value,

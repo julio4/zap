@@ -5,17 +5,10 @@ import {
   Signature,
   Struct,
   Bool,
-  Poseidon,
-  Encoding,
   PrivateKey,
 } from 'o1js';
-import { Route, Statement } from '@zap/types';
-
-export const hashRoute = (route: Route): Field =>
-  Poseidon.hash([
-    ...Encoding.stringToFields(route.path),
-    ...Encoding.stringToFields(JSON.stringify(route.args)),
-  ]);
+import { Statement } from '@zap/types';
+import { hashRoute } from '@zap/shared';
 
 interface IProvableStatement {
   isValidCondition(privateData: Field): Bool;

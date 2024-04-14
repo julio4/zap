@@ -1,7 +1,7 @@
 import { hashResponse, signResponse } from "../src/index.js";
-import { Encoding, Field, Poseidon, PrivateKey, Signature } from "o1js";
+import { Field, PrivateKey, Signature } from "o1js";
 import { ZapResponse, Route } from "@zap/types";
-import { hashRoute } from "@zap/core";
+import { hashRoute } from "@zap/shared";
 
 describe("Source server", () => {
   const route: Route = {

@@ -1,5 +1,5 @@
-import { Field, Poseidon, PublicKey } from "o1js";
-import { ZapHashedResponse, ConditionType } from "@zap/types";
+import { Encoding, Field, Poseidon, PublicKey } from "o1js";
+import { ZapHashedResponse, ConditionType, Route } from "@zap/types";
 
 export const encodeResAsFields = (res: ZapHashedResponse): Field[] => {
   const data = [res.value, res.hashRoute];
@@ -38,7 +38,6 @@ export const getConditionString = (condition: ConditionType) => {
   }
 };
 
-
 export const calculateAttestationHash = (
   conditionType: ConditionType,
   hashRoute: string,
@@ -56,3 +55,9 @@ export const calculateAttestationHash = (
 
   return attestationHash;
 };
+
+export const hashRoute = (route: Route): Field =>
+  Poseidon.hash([
+    ...Encoding.stringToFields(route.path),
+    ...Encoding.stringToFields(JSON.stringify(route.args)),
+  ]);
