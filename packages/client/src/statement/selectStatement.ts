@@ -1,7 +1,7 @@
 import { PublicKey } from "o1js";
 import { useContext } from "react";
 import { ZapSignedResponse, Statement } from "@zap/types";
-import { hashRoute } from "@zap/core";
+import { hashRoute } from "@zap/shared";
 
 import { verifyResponseSignature } from "../source.js";
 import { AttestContext } from "../provider/attest.js";

@@ -1,6 +1,6 @@
 import { PublicKey } from "o1js";
 import { useEffect, useState } from "react";
-import useZapStore from '../store/zapStore';
+import useZapStore from "../store/zapStore";
 import GradientBG from "../components/GradientBG.js";
 import styles from "../styles/Home.module.css";
 import HeadComponent from "../components/Header";
@@ -15,7 +15,7 @@ const ZAP_ADDRESS = "B62qpAdGKr4UyC9eGi3astRV38oC95VAxn2PaS9r4Gj7oobNhqdSn8u";
 
 
 export default function Home(): JSX.Element {
-  const { zapState, setZapState } = useZapStore(state => ({
+  const { zapState, setZapState } = useZapStore((state) => ({
     zapState: state.zapState,
     setZapState: state.setZapState,
   }));
@@ -34,7 +34,7 @@ export default function Home(): JSX.Element {
         console.log("Loading web worker...");
         const zkappWorkerClient = new ZapWorkerClient();
 
-        await new Promise(resolve => setTimeout(resolve, 5000));
+        await new Promise((resolve) => setTimeout(resolve, 5000));
         console.log("Done loading web worker");
 
         zkappWorkerClient.setActiveInstanceToBerkeley();
@@ -56,7 +56,9 @@ export default function Home(): JSX.Element {
         console.log("Checking if fee payer account exists...");
         console.log("Fetching account...");
 
-        const res = await zkappWorkerClient.fetchAccount({ publicKey: publicKey! });
+        const res = await zkappWorkerClient.fetchAccount({
+          publicKey: publicKey!,
+        });
         console.log("Fetched account response:", res);
 
         const accountExists = res.error == null;
@@ -126,25 +128,25 @@ export default function Home(): JSX.Element {
   const onSendTransaction = async () => {
     setZapState({ ...zapState, creatingTransaction: true });
 
-    setDisplayText('Creating a transaction...');
-    console.log('Creating a transaction...');
+    setDisplayText("Creating a transaction...");
+    console.log("Creating a transaction...");
 
     await zapState.zapWorkerClient!.fetchAccount({
-      publicKey: zapState.publicKey!
+      publicKey: zapState.publicKey!,
     });
 
     // await zapState.zkappWorkerClient!.createUpdateTransaction();
 
-    setDisplayText('Creating proof...');
-    console.log('Creating proof...');
+    setDisplayText("Creating proof...");
+    console.log("Creating proof...");
     // await zapState.zkappWorkerClient!.proveUpdateTransaction();
 
-    console.log('Requesting send transaction...');
-    setDisplayText('Requesting send transaction...');
+    console.log("Requesting send transaction...");
+    setDisplayText("Requesting send transaction...");
     // const transactionJSON = await zapState.zkappWorkerClient!.getTransactionJSON();
 
-    setDisplayText('Getting transaction JSON...');
-    console.log('Getting transaction JSON...');
+    setDisplayText("Getting transaction JSON...");
+    console.log("Getting transaction JSON...");
     // const { hash } = await (window as any).mina.sendTransaction({
     //   transaction: transactionJSON,
     //   feePayer: {
@@ -166,16 +168,16 @@ export default function Home(): JSX.Element {
   // Refresh the current state
 
   const onRefresh = async () => {
-    console.log('Getting zkApp state...');
-    setDisplayText('Getting zkApp state...');
+    console.log("Getting zkApp state...");
+    setDisplayText("Getting zkApp state...");
 
     await zapState.zapWorkerClient!.fetchAccount({
-      publicKey: zapState.zapPublicKey!
+      publicKey: zapState.zapPublicKey!,
     });
     // const currentNum = await zapState.zkappWorkerClient!.getNum();
     // setZapState({ ...zapState, currentNum });
     // console.log(`Current state in zkApp: ${currentNum.toString()}`);
-    setDisplayText('');
+    setDisplayText("");
   };
 
   return (
