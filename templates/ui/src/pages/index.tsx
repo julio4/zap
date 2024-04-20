@@ -8,18 +8,16 @@ import WalletStatus from "../components/WalletStatus";
 import AccountStatus from "../components/AccountStatus";
 
 import { ZapWorkerClient } from "@zap/client";
-import { ZapState } from "../types";
+import AttestButton from "@/components/AttestButton";
 
 let transactionFee = 0.1;
 const ZAP_ADDRESS = "B62qpAdGKr4UyC9eGi3astRV38oC95VAxn2PaS9r4Gj7oobNhqdSn8u";
-
 
 export default function Home(): JSX.Element {
   const { zapState, setZapState } = useZapStore((state) => ({
     zapState: state.zapState,
     setZapState: state.setZapState,
   }));
-
 
   const [displayText, setDisplayText] = useState("");
   const [transactionlink, setTransactionLink] = useState("");
@@ -82,7 +80,6 @@ export default function Home(): JSX.Element {
         // console.log(`Current state in zkApp: ${currentNum.toString()}`);
         setDisplayText("");
 
-
         setZapState({
           zapWorkerClient: new ZapWorkerClient(),
           hasWallet: true,
@@ -97,7 +94,6 @@ export default function Home(): JSX.Element {
 
     setupZap();
   }, []);
-
 
   // -------------------------------------------------------
   // Wait for account to exist, if it didn't
@@ -206,6 +202,8 @@ export default function Home(): JSX.Element {
               </a>
             )}
           </p>
+
+          <AttestButton />
         </main>
       </GradientBG>
     </>
