@@ -24,14 +24,15 @@ const defaultStatement: Statement = {
 // ~~
 
 const AttestButton = () => {
-  const [showStatementModal, setShowStatementModal] = useState(true);
+  const [showStatementModal, setShowStatementModal] = useState(false);
   const [statement, setStatement] = useState<Statement>(defaultStatement);
 
   return (
     <>
       {showStatementModal && (
         <Modal
-          close={() => setShowStatementModal(false)}
+          isOpen={showStatementModal}
+          setIsOpen={setShowStatementModal}
           body={
             <ProveStatement statement={statement} setStatement={setStatement} />
           }
@@ -39,7 +40,7 @@ const AttestButton = () => {
       )}
       <button
         type="button"
-        className="md:w-[30%] sm:w-fit ml-auto mt-auto bg-slate-700 hover:bg-slate-800 text-white py-2 rounded"
+        className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         onClick={() => {
           setShowStatementModal(true);
         }}

@@ -1,18 +1,23 @@
 import React from "react";
 
 interface ModalProps {
-  close: () => void;
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
   body: React.JSX.Element;
 }
 
 const Modal = (props: ModalProps) => {
   return (
-    <div className="z-10 justify-center items-center">
+    <div
+      className={`fixed inset-0 z-[999] grid h-screen w-screen place-items-center bg-black
+      bg-opacity-60 backdrop-blur-sm transition-opacity duration-300`}
+      style={{ opacity: props.isOpen ? 1 : 0 }}
+      onClick={() => props.setIsOpen(false)}
+    >
       <div
-        className="fixed top-0 left-0 w-screen h-screen z-40 bg-neutral-800 opacity-50"
-        onClick={props.close}
-      />
-      <div className="fixed z-50 top-[20%] left-[20%] max-h-[500px] overflow-y-scroll">
+        className="relative m-4 w-1/2 min-w-[50%] max-w-[50%] rounded-lg bg-transparent font-sans text-base font-light leading-relaxed antialiased shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
         {props.body}
       </div>
     </div>

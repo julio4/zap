@@ -4,7 +4,7 @@ import {
   decodeBase64Attestation,
 } from "../src/index.js";
 import { Route } from "@zap/types";
-import { hashRoute } from "@zap/core";
+import { hashRoute } from "@zap/shared";
 
 describe("Encoding", () => {
   describe("Base64 Attestation note", () => {
