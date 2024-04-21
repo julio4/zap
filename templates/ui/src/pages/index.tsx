@@ -185,7 +185,7 @@ export default function Home(): JSX.Element {
           <WalletStatus />
           <AccountStatus />
 
-          <button
+          {/* <button
             onClick={onSendTransaction}
             disabled={!zapState.accountExists || zapState.creatingTransaction}
           >
@@ -201,9 +201,32 @@ export default function Home(): JSX.Element {
                 View transaction
               </a>
             )}
-          </p>
+          </p> */}
 
-          <AttestButton />
+          <div className="flex flex-col items-center justify-center">
+            {/* Code block */}
+            <pre className="text-sm text-white bg-gray-800 p-4 rounded-lg">
+              <code>
+                {`Statement = {
+  sourceKey: "EKFcCkoWNfp9mc5cyxXFAQ8NUCdYQvdVQc4ciRcUHDDVZ7nPVofQ",
+  route: {
+    path: "/api/example/nb",
+    args: {
+      id: 7,
+    },
+  },
+  condition: {
+    type: ConditionType.GT,
+    targetValue: Infinity,
+  },
+};`}
+              </code>
+            </pre>
+          </div>
+
+          <div className="flex flex-col items-center justify-center">
+            <AttestButton />
+          </div>
         </main>
       </GradientBG>
     </>
