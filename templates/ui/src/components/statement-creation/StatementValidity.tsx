@@ -31,6 +31,7 @@ const StatementValidity = (props: StatementValidityProps) => {
           statement={props.statement}
           disable
           setStatement={() => {}}
+          privateData={props.attestation?.privateData.toString()}
         />
       </div>
       <div className="flex flex-col self-center">
@@ -38,6 +39,14 @@ const StatementValidity = (props: StatementValidityProps) => {
           The actual private data {props.attestation?.privateData.toString()}{" "}
           makes the statement {props.isAttestValid ? "true" : "untrue"}.{" "}
         </span>
+
+        {!props.isAttestValid && (
+          <span className="text-sm text-slate-400">
+            If you think this is incorrect, please double check the source
+            public key or contact the source operator.{" "}
+          </span>
+        )}
+
         <span className="text-sm text-slate-400">
           {" "}
           Even though you private data is displayed here, it will not be

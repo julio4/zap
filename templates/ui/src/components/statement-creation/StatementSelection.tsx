@@ -5,6 +5,7 @@ interface StatementSelectionProps {
   statement: Statement;
   setStatement: React.Dispatch<React.SetStateAction<Statement>>;
   disable?: boolean;
+  privateData?: string;
 }
 
 const StatementSelection = (props: StatementSelectionProps) => {
@@ -29,16 +30,24 @@ const StatementSelection = (props: StatementSelectionProps) => {
 
   return (
     <div className="flex gap-4 self-center justify-center space-x-8 w-fit">
-      <div className="flex flex-col max-w-[300px]">
-        <h3 className="text-xl bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text font-display tracking-tight text-transparent">
-          {props.statement.route.path}
-        </h3>
-        {Object.entries(props.statement.route.args ?? []).map(
-          ([key, value]) => (
-            <span key={key} className="self-center text-sm text-slate-400">
-              {key} : {value}
-            </span>
-          )
+      <div className="flex flex-col justify-center max-w-[300px]">
+        {props.privateData ? (
+          <span className="ml-2 text-2xl text-white px-2 py-1 min-w-[20px] min-h-[20px] rounded-full bg-blue-500">
+            {props.privateData}
+          </span>
+        ) : (
+          <div>
+            <h3 className="text-xl bg-gradient-to-r from-indigo-200 via-sky-400 to-indigo-200 bg-clip-text font-display tracking-tight text-transparent">
+              {props.statement.route.path}
+            </h3>
+            {Object.entries(props.statement.route.args ?? []).map(
+              ([key, value]) => (
+                <span key={key} className="self-center text-sm text-slate-400">
+                  {key} : {value}
+                </span>
+              )
+            )}
+          </div>
         )}
       </div>
 

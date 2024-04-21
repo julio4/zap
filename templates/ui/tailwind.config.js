@@ -11,4 +11,5 @@ module.exports = {
     },
   },
   plugins: [],
+  transitionProperty: ["responsive", "motion-safe", "motion-reduce"],
 };

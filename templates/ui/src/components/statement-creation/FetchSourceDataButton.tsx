@@ -37,21 +37,35 @@ interface FetchSourceDataButtonProps {
     unknown
   >;
   isPending: boolean;
+  isError: boolean;
+  fakeCall?: boolean;
+  fakeData?: ZapSignedResponse;
 }
 
 const FetchSourceDataButton = (props: FetchSourceDataButtonProps) => {
   const fetchPrivateData = useCallback(async () => {
-    const res: ZapSignedResponse = await props.fetchSourceData(props.statement);
-    console.log("reqRes----");
-    console.log(res);
+    if (props.fakeCall) {
+      props.onClick(props.fakeData as ZapSignedResponse);
+      return;
+    }
 
-    props.onClick(res);
+    try {
+      const res: ZapSignedResponse = await props.fetchSourceData(
+        props.statement
+      );
+      console.log("reqRes----");
+      console.log(res);
+
+      props.onClick(res);
+    } catch (e) {
+      console.error(e);
+    }
   }, [props]);
 
   return (
     <button
       type="button"
-      className={`min-w-fit w-[30%] p-2 mt-auto bg-slate-700 text-white py-2 rounded
+      className={`m-auto min-w-fit w-[30%] p-2 mt-auto bg-slate-700 text-white py-2 rounded
         ${
           props.statement.condition.targetValue == Infinity
             ? "opacity-60"
@@ -62,7 +76,13 @@ const FetchSourceDataButton = (props: FetchSourceDataButtonProps) => {
         props.statement.condition.targetValue == Infinity || props.isPending
       }
     >
-      {props.isPending ? "Loading..." : "Fetch private data"}
+      {props.isError ? (
+        <p className="text-red-500">Error fetching data</p>
+      ) : props.isPending ? (
+        "Loading..."
+      ) : (
+        "Fetch private data"
+      )}
     </button>
   );
 };
