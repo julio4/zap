@@ -1,3 +1,6 @@
 {
-  "ZapContract": "ZAP Contract"
+  "Statement": "Statement",
+  "Attestation": "Attestation",
+  "ZapVerifierContract": "Verifier Contract",
+  "Callers": "Callers Contracts"
 }

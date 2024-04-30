@@ -3,7 +3,6 @@ import {
   method,
   DeployArgs,
   Permissions,
-  AccountUpdate,
   Bool,
 } from 'o1js';
 import { Attestation } from '../Attestation.js';

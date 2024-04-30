@@ -7,7 +7,7 @@ Statement can often be expressed in natural language, for example "Over 18 years
 
 ## Formalisation
 
-> Jump to [Implementation](#implementation) if you are only looking for the code.
+> Jump to [Implementation](/reference/Statement) if you are only looking for the code.
 
 Let consider $s$ a statement as a function defined on $n$ real variables:
 
@@ -60,86 +60,3 @@ Example: We can rewrite the previous statement as
 $$
 n = 1, V_{private} = \{\text{age}\}, V_{public} = \emptyset, \cal R = \{r_1\} \text{ with } r_1 = "\text{age} > 18"
 $$
-
-## Implementation
-
-```typescript
-type Statement = {
-  sourceKey: string; // base58 of a PublicKey
-  route: Route;
-  condition: StatementCondition;
-};
-```
-
-Each statement is linked to a [ZAP Source](./ZAPSource) by its public key `sourceKey` and is associated with a [Route](./Route).
-
-```typescript
-type Route = {
-  path: string;
-  args?: {
-    [key: string]: any;
-  };
-};
-
-// Example
-let route = {
-  path: "/api/v1/price",
-  args: {
-    symbol: "ETH",
-    currency: "USD",
-  },
-};
-```
-
-The `condition` is of type `StatementCondition`, and represents a rule of $\cal R$.
-
-```typescript
-type StatementCondition = {
-  type: ConditionType;
-  targetValue: number;
-};
-
-enum ConditionType {
-  LT = 1,
-  GT = 2,
-  EQ = 3,
-  NEQ = 4,
-}
-
-// Example
-let condition = {
-  type: ConditionType.GT,
-  targetValue: 3000,
-};
-```
-
-With the above example, the statement is equivalent to the following:
-
-```typescript
-let statement = {
-  sourceKey: "base58PublicKey", // base58 of the public key of the Price Oracle ZAP Source
-  route: {
-    path: "/api/v1/price",
-    args: {
-      symbol: "ETH",
-      currency: "USD",
-    },
-  },
-  condition: {
-    type: ConditionType.GT,
-    targetValue: 3000,
-  },
-};
-```
-
-> Note: With this implementation, only statement with $n = 1, \operatorname{card}(V) = \operatorname{card}(\cal R) = 1$ can be represented.
-> We plan to use recursion and '[Combining statements](./Attestation#combining-attestations-and-statements-together-for-modularity-and-scalability)' to be able to represent any statement after the initial release.
-
-### ProvableStatement
-
-Under the hood, the client will convert this statement object to a `ProvableStatement` o1js's struct object, and the condition will be verified inside a proof (the 'Attestation proof').
-This can be easily done with the following code:
-
-```typescript
-let provableStatement = ProvableStatement.from(statement);
-```

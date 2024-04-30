@@ -1,0 +1,29 @@
+# ZAP Verifier Contract
+
+The generation of the attestation is computed off-chain in a private way in the client web-browser.
+In order to make it available on-chain, the attestation need to also be verified on-chain in a transaction.
+
+The ZAP Verifier contract is the contract that can be used for this purpose.
+For further details on how exactly the attestation is verified, see the [Attestation](/concepts/Attestation#implementation) page.
+
+## State
+
+No state currently
+
+## Events
+
+No events currently
+
+## Entrypoints
+
+### `verify`
+
+```ts
+  @method verify(attestation: Attestation): Bool {
+    return attestation.isValid();
+  }
+```
+
+This entrypoint is used to verify an attestation on-chain.
+It return a `Bool` that is `True` if the attestation is valid, `False` otherwise.
+It can be used by any contract that needs to verify an attestation on-chain (see [Callers](./Callers)).

@@ -1,0 +1,88 @@
+# Attestation
+
+As explained in the [Concepts - Attestation](/concepts/Attestation) part, the attestation is the proof that corresponds to verifying the truth value of a statement.
+The attestation is then represented as a o1js's struct object.
+
+```typescript
+interface IAttestation {
+  // Return the attestation Poseidon hash
+  hash(): Field;
+  // Assert that the given hash is equal to the attestation hash
+  assertEqual(hash: Field): void;
+  // Check if the signature is valid
+  isValidSignature(): Bool;
+  // Assert that the signature is valid
+  assertValidSignature(): void;
+  // Check if the condition is valid
+  isValidCondition: () => Bool;
+  // Assert that the condition is valid
+  assertValidCondition: () => void;
+  // Check if the attestation is valid (signature and condition)
+  isValid(): Bool;
+  // Assert that the attestation is valid (signature and condition)
+  assertValid(): void;
+}
+
+export class Attestation
+  extends Struct({
+    statement: ProvableStatement,
+    privateData: Field,
+    signature: Signature,
+    address: PublicKey,
+  })
+  implements IAttestation {
+  // ...
+}
+```
+
+The `Attestation` struct contains:
+
+- the `statement` field as a [ProvableStatement](./Statement#provablestatement)
+- the `address` field as a `PublicKey` of the mina account that attests the statement
+- the `privateData` field as a `Field` that contains the private data of the attestation
+- the `signature` field as a `Signature` that is the signature of the privateData by the source (`statement.source`)
+
+Here's an example of how to create an attestation:
+
+```typescript
+let sourceKey = "base58PublicKey"; // base58 of the public key of the Price Oracle ZAP Source
+let statement = {
+  sourceKey,
+  route: {
+    path: "/api/v1/price",
+    args: {
+      symbol: "ETH",
+      currency: "USD",
+    },
+  },
+  condition: {
+    type: ConditionType.GT,
+    targetValue: 3000,
+  },
+};
+
+// This should be returned by the Price Oracle ZAP Source
+let { signature, privateData } = {
+  signature: Signature.create(sourcePrivateKey, Field(3500)),
+  privateData: 3500,
+};
+
+let attestation = new Attestation({
+  statement,
+  privateData,
+  signature,
+  address: "base58PublicKey", // base58 of the public key of the attester
+});
+```
+
+For an attestation to be valid, there's two steps to verify:
+
+- The signature of the private data comes from the designated source (`isValidSignature`)
+- All the rules of the statement are validated (`isValidCondition`)
+
+We can use the `isValid` method to check if the attestation is valid.
+Each methods of `Attestation` are fully o1js circuits, so attestation can be used in smart contracts as well!
+
+```typescript
+console.log(attestation.isValid()); // true
+```

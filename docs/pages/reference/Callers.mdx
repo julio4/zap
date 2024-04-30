@@ -1,0 +1,46 @@
+# Callers contracts
+
+Callers contracts are contracts already available that can be used to verify attestations on-chain.
+Each callers will use the [Verifier Contract](./Verifier) to verify the given attestation and handle the result.
+
+The interface `ICaller` provide the `call` entrypoint that can be used to verify an attestation on-chain:
+
+```ts
+interface ICaller {
+  call(attestation: Attestation, verifierAddress: PublicKey): void;
+}
+```
+
+## Implementation
+
+A main `Caller` contract is provided and can be extended as needed:
+
+```typescript
+export class Caller extends SmartContract implements ICaller {
+  @method call(attestation: Attestation, verifierAddress: PublicKey): void {
+    const verifier = new Verifier(verifierAddress);
+    const isVerified: Bool = verifier.verify(attestation);
+    isVerified.assertTrue();
+  }
+}
+```
+
+## EventCaller
+
+This caller will emit a `verifier` event when the attestation is verified:
+
+```typescript
+export class EventCaller extends SmartContract implements Caller {
+  events = {
+    verified: Field,
+  };
+
+  @method call(attestation: Attestation, verifierAddress: PublicKey) {
+    const verifier = new Verifier(verifierAddress);
+    const isVerified: Bool = verifier.verify(attestation);
+    isVerified.assertTrue("Attestation is not verified.");
+
+    this.emitEvent("verified", attestation.hash());
+  }
+}
+```
