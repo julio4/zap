@@ -4,5 +4,4 @@ packages:
   - "demo/*"
   - "templates/*"
   - "new_docs/*"
-  - "deprecated/*"
   - "explorer/*"
