@@ -9,9 +9,9 @@ export class EventCaller extends SmartContract implements Caller {
     verified: Field,
   };
 
-  @method call(attestation: Attestation, verifierAddress: PublicKey) {
+  @method async call(attestation: Attestation, verifierAddress: PublicKey) {
     const verifier = new Verifier(verifierAddress);
-    const isVerified: Bool = verifier.verify(attestation);
+    const isVerified: Bool = await verifier.verify(attestation);
     isVerified.assertTrue('Attestation is not verified.');
 
     this.emitEvent('verified', attestation.hash());

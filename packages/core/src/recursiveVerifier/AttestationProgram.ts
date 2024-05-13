@@ -9,14 +9,14 @@ export const AttestationProgram = ZkProgram({
     baseCase: {
       privateInputs: [Attestation],
 
-      method(attestation: Attestation) {
+      async method(attestation: Attestation) {
         attestation.assertValid();
       },
     },
 
     step: {
       privateInputs: [Attestation, SelfProof],
-      method(
+      async method(
         attestation: Attestation,
         earlierProof: SelfProof<[ProvableStatement, Field, Signature], void>
       ) {

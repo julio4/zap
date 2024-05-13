@@ -1,7 +1,7 @@
 import { Statement, ConditionType } from '@zap/types';
 import { Attestation } from './Attestation';
 import { ProvableStatement } from './Statement';
-import { Bool, Field, Poseidon, PrivateKey, Sign, Signature } from 'o1js';
+import { Bool, Field, Poseidon, PrivateKey, Signature } from 'o1js';
 
 describe('Attestation', () => {
   const sourcePrivateKey = PrivateKey.random();

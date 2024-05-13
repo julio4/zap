@@ -5,14 +5,13 @@ import { Verifier } from '../verifier/Verifier';
 
 import { Mina, PrivateKey, PublicKey, AccountUpdate, Field } from 'o1js';
 import { Attestation } from '../Attestation';
+import { TestPublicKey } from 'o1js/dist/node/lib/mina/local-blockchain';
 
 let proofsEnabled = false;
 
 describe('EventCaller', () => {
-  let deployerAccount: PublicKey,
-    deployerKey: PrivateKey,
-    userAccount: PublicKey,
-    userKey: PrivateKey,
+  let deployer: TestPublicKey,
+    user: TestPublicKey,
     eventCallerAddress: PublicKey,
     eventCallerPrivateKey: PrivateKey,
     eventCaller: EventCaller,
@@ -43,12 +42,11 @@ describe('EventCaller', () => {
     }
   });
 
-  beforeEach(() => {
-    const Local = Mina.LocalBlockchain({ proofsEnabled });
+  beforeEach(async () => {
+    const Local = await Mina.LocalBlockchain({ proofsEnabled });
     Mina.setActiveInstance(Local);
-    ({ privateKey: deployerKey, publicKey: deployerAccount } =
-      Local.testAccounts[0]);
-    ({ privateKey: userKey, publicKey: userAccount } = Local.testAccounts[1]);
+    deployer = Local.testAccounts[0];
+    user = Local.testAccounts[1];
     eventCallerPrivateKey = PrivateKey.random();
     eventCallerAddress = eventCallerPrivateKey.toPublicKey();
     eventCaller = new EventCaller(eventCallerAddress);
@@ -59,25 +57,21 @@ describe('EventCaller', () => {
   });
 
   async function localDeployEventCaller() {
-    const txn = await Mina.transaction(deployerAccount, () => {
-      AccountUpdate.fundNewAccount(deployerAccount);
-      eventCaller.deploy({
-        zkappKey: eventCallerPrivateKey,
-      });
+    const txn = await Mina.transaction(deployer, async () => {
+      AccountUpdate.fundNewAccount(deployer);
+      eventCaller.deploy();
     });
     await txn.prove();
-    await txn.sign([deployerKey, eventCallerPrivateKey]).send();
+    await txn.sign([deployer.key, eventCallerPrivateKey]).send();
   }
 
   async function localDeployVerifier() {
-    const txn = await Mina.transaction(deployerAccount, () => {
-      AccountUpdate.fundNewAccount(deployerAccount);
-      verifier.deploy({
-        zkappKey: verifierPrivateKey,
-      });
+    const txn = await Mina.transaction(deployer, async () => {
+      AccountUpdate.fundNewAccount(deployer);
+      verifier.deploy();
     });
     await txn.prove();
-    await txn.sign([deployerKey, verifierPrivateKey]).send();
+    await txn.sign([deployer.key, verifierPrivateKey]).send();
   }
 
   it('deploys the `EventCaller` smart contract', async () => {
@@ -100,14 +94,14 @@ describe('EventCaller', () => {
       statement: provableStatement,
       privateData,
       signature,
-      address: userAccount,
+      address: user,
     });
 
-    const txn = await Mina.transaction(userAccount, () => {
+    const txn = await Mina.transaction(user, async () => {
       eventCaller.call(attestation, verifierAddress);
     });
     await txn.prove();
-    await txn.sign([userKey]).send();
+    await txn.sign([user.key]).send();
 
     const expectedDataInEvent = attestation.hash();
     const eventsFetched = await eventCaller.fetchEvents();
@@ -132,11 +126,11 @@ describe('EventCaller', () => {
       statement: provableStatement,
       privateData,
       signature,
-      address: userAccount,
+      address: user,
     });
 
     expect(
-      Mina.transaction(userAccount, () => {
+      Mina.transaction(user, async () => {
         eventCaller.call(invalidAttestation, verifierAddress);
       })
     ).rejects.toThrow('Bool.assertTrue(): false != true');

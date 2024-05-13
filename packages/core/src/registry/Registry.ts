@@ -4,7 +4,6 @@ import {
   state,
   State,
   method,
-  DeployArgs,
   Permissions,
   MerkleMapWitness,
   PublicKey,
@@ -33,10 +32,14 @@ export class Registry extends SmartContract implements IRegistry {
   @state(Field) registryRoot = State<Field>();
   @state(Field) registryStorage = new RegistryStorage();
 
-  @method init() {
+  init() {
     super.init();
     this.registryRoot.set(initialRoot);
     this.storageServerPublicKey.set(this.self.publicKey);
+    this.account.permissions.set({
+      ...Permissions.default(),
+      editState: Permissions.proofOrSignature(),
+    });
   }
 
   events = {
@@ -48,15 +51,7 @@ export class Registry extends SmartContract implements IRegistry {
     }),
   };
 
-  deploy(args: DeployArgs) {
-    super.deploy(args);
-    this.account.permissions.set({
-      ...Permissions.default(),
-      editState: Permissions.proofOrSignature(),
-    });
-  }
-
-  @method register(witness: MerkleMapWitness, source: Source) {
+  @method async register(witness: MerkleMapWitness, source: Source) {
     // TODO: Add a check to ensure that the source is not already registered
     this.registryRoot.getAndRequireEquals();
     this.storageServerPublicKey.getAndRequireEquals();

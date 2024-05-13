@@ -4,14 +4,13 @@ import { Verifier } from '../verifier/Verifier';
 import { ProvableStatement } from '../Statement';
 import { Attestation } from '../Attestation';
 import { Statement } from '@zap/types';
+import { TestPublicKey } from 'o1js/dist/node/lib/mina/local-blockchain';
 
 let proofsEnabled = false;
 
 describe('Caller', () => {
-  let deployerAccount: PublicKey,
-    deployerKey: PrivateKey,
-    userAccount: PublicKey,
-    userKey: PrivateKey,
+  let deployer: TestPublicKey,
+    user: TestPublicKey,
     zkAppAddress: PublicKey,
     zkAppPrivateKey: PrivateKey,
     zkApp: Caller;
@@ -22,26 +21,23 @@ describe('Caller', () => {
     }
   });
 
-  beforeEach(() => {
-    const Local = Mina.LocalBlockchain({ proofsEnabled });
+  beforeEach(async () => {
+    const Local = await Mina.LocalBlockchain({ proofsEnabled });
     Mina.setActiveInstance(Local);
-    ({ privateKey: deployerKey, publicKey: deployerAccount } =
-      Local.testAccounts[0]);
-    ({ privateKey: userKey, publicKey: userAccount } = Local.testAccounts[1]);
+    deployer = Local.testAccounts[0];
+    user = Local.testAccounts[1];
     zkAppPrivateKey = PrivateKey.random();
     zkAppAddress = zkAppPrivateKey.toPublicKey();
     zkApp = new Caller(zkAppAddress);
   });
 
   async function localDeployCaller() {
-    const txn = await Mina.transaction(deployerAccount, () => {
-      AccountUpdate.fundNewAccount(deployerAccount);
-      zkApp.deploy({
-        zkappKey: zkAppPrivateKey,
-      });
+    const txn = await Mina.transaction(deployer, async () => {
+      AccountUpdate.fundNewAccount(deployer);
+      await zkApp.deploy();
     });
     await txn.prove();
-    await txn.sign([deployerKey, zkAppPrivateKey]).send();
+    await txn.sign([deployer.key, zkAppPrivateKey]).send();
   }
 
   it('deploys the `Caller` smart contract', async () => {
@@ -58,14 +54,12 @@ describe('Caller', () => {
     const verifierPrivateKey = PrivateKey.random();
     const verifierAddress = verifierPrivateKey.toPublicKey();
     const verifier = new Verifier(verifierAddress);
-    const deployVerifierTxn = await Mina.transaction(deployerAccount, () => {
-      AccountUpdate.fundNewAccount(deployerAccount);
-      verifier.deploy({
-        zkappKey: verifierPrivateKey,
-      });
+    const deployVerifierTxn = await Mina.transaction(deployer, async () => {
+      AccountUpdate.fundNewAccount(deployer);
+      await verifier.deploy();
     });
     await deployVerifierTxn.prove();
-    await deployVerifierTxn.sign([deployerKey, verifierPrivateKey]).send();
+    await deployVerifierTxn.sign([deployer.key, verifierPrivateKey]).send();
 
     const statement: Statement = {
       sourceKey: sourceKey.toBase58(),
@@ -91,13 +85,13 @@ describe('Caller', () => {
       statement: provableStatement,
       privateData,
       signature,
-      address: userAccount,
+      address: user,
     });
 
-    const txn = await Mina.transaction(userAccount, () => {
+    const txn = await Mina.transaction(user, async () => {
       zkApp.call(attestation, verifierAddress);
     });
     await txn.prove();
-    await txn.sign([userKey]).send();
+    await txn.sign([user.key]).send();
   });
 });

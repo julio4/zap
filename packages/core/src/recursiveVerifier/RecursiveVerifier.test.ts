@@ -4,6 +4,7 @@ import { Attestation } from '../Attestation';
 import { Route, StatementCondition, Statement } from '@zap/types';
 import { AttestationProgram } from './AttestationProgram';
 import { RecursiveVerifier } from './RecursiveVerifier';
+import { TestPublicKey } from 'o1js/dist/node/lib/mina/local-blockchain';
 
 let proofsEnabled = false;
 
@@ -20,10 +21,8 @@ const createProvableStatement = (
 };
 
 describe('AttestationProgram', () => {
-  let deployerAccount: PublicKey,
-    deployerKey: PrivateKey,
-    userAccount: PublicKey,
-    userKey: PrivateKey,
+  let deployer: TestPublicKey,
+    user: TestPublicKey,
     zkAppAddress: PublicKey,
     zkAppPrivateKey: PrivateKey,
     zkApp: RecursiveVerifier;
@@ -54,12 +53,11 @@ describe('AttestationProgram', () => {
     await AttestationProgram.compile();
   });
 
-  beforeEach(() => {
-    const Local = Mina.LocalBlockchain({ proofsEnabled });
+  beforeEach(async () => {
+    const Local = await Mina.LocalBlockchain({ proofsEnabled });
     Mina.setActiveInstance(Local);
-    ({ privateKey: deployerKey, publicKey: deployerAccount } =
-      Local.testAccounts[0]);
-    ({ privateKey: userKey, publicKey: userAccount } = Local.testAccounts[1]);
+    deployer = Local.testAccounts[0];
+    user = Local.testAccounts[1];
     zkAppPrivateKey = PrivateKey.random();
     zkAppAddress = zkAppPrivateKey.toPublicKey();
     zkApp = new RecursiveVerifier(zkAppAddress);
@@ -68,19 +66,17 @@ describe('AttestationProgram', () => {
       statement: provableStatement,
       privateData,
       signature,
-      address: userAccount,
+      address: user,
     });
   });
 
   async function localDeployRecursiveVerifier() {
-    const txn = await Mina.transaction(deployerAccount, () => {
-      AccountUpdate.fundNewAccount(deployerAccount);
-      zkApp.deploy({
-        zkappKey: zkAppPrivateKey,
-      });
+    const txn = await Mina.transaction(deployer, async () => {
+      AccountUpdate.fundNewAccount(deployer);
+      zkApp.deploy();
     });
     await txn.prove();
-    await txn.sign([deployerKey, zkAppPrivateKey]).send();
+    await txn.sign([deployer.key, zkAppPrivateKey]).send();
   }
 
   it('verifies the base case correctly', async () => {
@@ -89,11 +85,11 @@ describe('AttestationProgram', () => {
     const verificationResult = await AttestationProgram.verify(proof);
     expect(verificationResult).toBeTruthy();
 
-    const txn = await Mina.transaction(userAccount, () => {
+    const txn = await Mina.transaction(user, async () => {
       zkApp.verifyProofs(proof);
     });
     await txn.prove();
-    await txn.sign([userKey]).send();
+    await txn.sign([user.key]).send();
   });
 
   it('verifies a combination of 2 proofs', async () => {
@@ -116,7 +112,7 @@ describe('AttestationProgram', () => {
         Field(2),
         sourcePrivateKey
       ),
-      address: userAccount,
+      address: user,
     });
 
     const stepProof = await AttestationProgram.step(
@@ -127,10 +123,10 @@ describe('AttestationProgram', () => {
     const verificationResult = await AttestationProgram.verify(stepProof);
     expect(verificationResult).toBeTruthy();
 
-    const txn = await Mina.transaction(userAccount, () => {
+    const txn = await Mina.transaction(user, async () => {
       zkApp.verifyProofs(stepProof);
     });
     await txn.prove();
-    await txn.sign([userKey]).send();
+    await txn.sign([user.key]).send();
   });
 });

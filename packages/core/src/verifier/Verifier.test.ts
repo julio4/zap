@@ -4,14 +4,13 @@ import { Verifier } from './Verifier';
 import { Attestation } from '../Attestation';
 
 import { Mina, PrivateKey, PublicKey, AccountUpdate, Field } from 'o1js';
+import { TestPublicKey } from 'o1js/dist/node/lib/mina/local-blockchain';
 
 let proofsEnabled = false;
 
 describe('Verifier', () => {
-  let deployerAccount: PublicKey,
-    deployerKey: PrivateKey,
-    userAccount: PublicKey,
-    userKey: PrivateKey,
+  let deployer: TestPublicKey,
+    user: TestPublicKey,
     verifierAddress: PublicKey,
     verifierPrivateKey: PrivateKey,
     verifier: Verifier;
@@ -36,26 +35,23 @@ describe('Verifier', () => {
     }
   });
 
-  beforeEach(() => {
-    const Local = Mina.LocalBlockchain({ proofsEnabled });
+  beforeEach(async () => {
+    const Local = await Mina.LocalBlockchain({ proofsEnabled });
     Mina.setActiveInstance(Local);
-    ({ privateKey: deployerKey, publicKey: deployerAccount } =
-      Local.testAccounts[0]);
-    ({ privateKey: userKey, publicKey: userAccount } = Local.testAccounts[1]);
+    deployer = Local.testAccounts[0];
+    user = Local.testAccounts[1];
     verifierPrivateKey = PrivateKey.random();
     verifierAddress = verifierPrivateKey.toPublicKey();
     verifier = new Verifier(verifierAddress);
   });
 
   async function localDeployVerifier() {
-    const txn = await Mina.transaction(deployerAccount, () => {
-      AccountUpdate.fundNewAccount(deployerAccount);
-      verifier.deploy({
-        zkappKey: verifierPrivateKey,
-      });
+    const txn = await Mina.transaction(deployer, async () => {
+      AccountUpdate.fundNewAccount(deployer);
+      verifier.deploy();
     });
     await txn.prove();
-    await txn.sign([deployerKey, verifierPrivateKey]).send();
+    await txn.sign([deployer.key, verifierPrivateKey]).send();
   }
 
   it('deploys the `Verifier` smart contract', async () => {
@@ -76,10 +72,10 @@ describe('Verifier', () => {
       statement: provableStatement,
       privateData,
       signature,
-      address: userAccount,
+      address: user,
     });
 
-    const isVerified = verifier.verify(attestation);
+    const isVerified = await verifier.verify(attestation);
     expect(isVerified.toBoolean()).toBeTruthy();
 
     // const attestation = new Attestation({
@@ -109,10 +105,10 @@ describe('Verifier', () => {
       statement: provableStatement,
       privateData,
       signature,
-      address: userAccount,
+      address: user,
     });
 
-    const isVerified = verifier.verify(attestation);
+    const isVerified = await verifier.verify(attestation);
     expect(isVerified.toBoolean()).toBeFalsy();
   });
 
@@ -130,10 +126,10 @@ describe('Verifier', () => {
       statement: provableStatement,
       privateData,
       signature,
-      address: userAccount,
+      address: user,
     });
 
-    const isVerified = verifier.verify(attestation);
+    const isVerified = await verifier.verify(attestation);
     expect(isVerified.toBoolean()).toBeFalsy();
   });
 });

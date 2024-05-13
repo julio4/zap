@@ -6,7 +6,7 @@ export class RecursiveVerifier extends SmartContract {
     super.init();
   }
 
-  @method verifyProofs(attestationProgramProof: AttestationProgramProof) {
+  @method async verifyProofs(attestationProgramProof: AttestationProgramProof) {
     attestationProgramProof.verify();
   }
 }

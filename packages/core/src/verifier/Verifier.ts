@@ -1,14 +1,8 @@
-import {
-  SmartContract,
-  method,
-  DeployArgs,
-  Permissions,
-  Bool,
-} from 'o1js';
+import { SmartContract, method, Permissions, Bool } from 'o1js';
 import { Attestation } from '../Attestation.js';
 
 interface IVerifier {
-  verify(attestation: Attestation): void;
+  verify(attestation: Attestation): Promise<Bool>;
 }
 
 /**
@@ -19,15 +13,16 @@ interface IVerifier {
  * The contract emits an event containing the verified statement id -> it's an attestation.
  */
 export class Verifier extends SmartContract implements IVerifier {
-  deploy(args: DeployArgs) {
-    super.deploy(args);
+  init() {
+    super.init();
     this.account.permissions.set({
       ...Permissions.default(),
       editState: Permissions.proofOrSignature(),
     });
   }
 
-  @method verify(attestation: Attestation): Bool {
+  @method.returns(Bool)
+  async verify(attestation: Attestation): Promise<Bool> {
     return attestation.isValid();
   }
 }

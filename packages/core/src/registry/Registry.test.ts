@@ -3,12 +3,12 @@ import { RegistryStorage, initialRoot } from './RegistryStorage';
 import { Mina, PrivateKey, PublicKey, AccountUpdate, Poseidon } from 'o1js';
 import { Source } from './Source';
 import { stringToFields } from 'o1js/dist/node/bindings/lib/encoding';
+import { TestPublicKey } from 'o1js/dist/node/lib/mina/local-blockchain';
 
 let proofsEnabled = false;
 
 describe('Registry', () => {
-  let deployerAccount: PublicKey,
-    deployerKey: PrivateKey,
+  let deployer: TestPublicKey,
     zkAppAddress: PublicKey,
     zkAppPrivateKey: PrivateKey,
     zkApp: Registry,
@@ -27,13 +27,10 @@ describe('Registry', () => {
     }
   });
 
-  beforeEach(() => {
-    const Local = Mina.LocalBlockchain({ proofsEnabled });
+  beforeEach(async () => {
+    const Local = await Mina.LocalBlockchain({ proofsEnabled });
     Mina.setActiveInstance(Local);
-    ({ privateKey: deployerKey, publicKey: deployerAccount } =
-      Local.testAccounts[0]);
-    // ({ privateKey: senderKey, publicKey: senderAccount } =
-    //   Local.testAccounts[1]);
+    deployer = Local.testAccounts[0];
     zkAppPrivateKey = PrivateKey.random();
     zkAppAddress = zkAppPrivateKey.toPublicKey();
     zkApp = new Registry(zkAppAddress);
@@ -41,14 +38,12 @@ describe('Registry', () => {
   });
 
   async function localDeploy() {
-    const txn = await Mina.transaction(deployerAccount, () => {
-      AccountUpdate.fundNewAccount(deployerAccount);
-      zkApp.deploy({
-        zkappKey: zkAppPrivateKey,
-      });
+    const txn = await Mina.transaction(deployer, async () => {
+      AccountUpdate.fundNewAccount(deployer);
+      zkApp.deploy();
     });
     await txn.prove();
-    await txn.sign([deployerKey, zkAppPrivateKey]).send();
+    await txn.sign([deployer.key, zkAppPrivateKey]).send();
   }
 
   it('generates and deploys the `Registry` smart contract', async () => {
@@ -67,11 +62,11 @@ describe('Registry', () => {
       Poseidon.hash(newSource.publicKey.toFields())
     );
 
-    const txn = await Mina.transaction(deployerAccount, () => {
+    const txn = await Mina.transaction(deployer, async () => {
       zkApp.register(witness, newSource);
     });
     await txn.prove();
-    await txn.sign([deployerKey, zkAppPrivateKey]).send();
+    await txn.sign([deployer.key, zkAppPrivateKey]).send();
 
     const updatedRegistryRoot = await zkApp.registryRoot.get();
     expect(updatedRegistryRoot).not.toEqual(initialRoot);
@@ -95,11 +90,11 @@ describe('Registry', () => {
       Poseidon.hash(newSource.publicKey.toFields())
     );
 
-    const txn = await Mina.transaction(deployerAccount, () => {
+    const txn = await Mina.transaction(deployer, async () => {
       zkApp.register(witness, newSource);
     });
     await txn.prove();
-    await txn.sign([deployerKey, zkAppPrivateKey]).send();
+    await txn.sign([deployer.key, zkAppPrivateKey]).send();
 
     const eventsFetched = await zkApp.fetchEvents();
     const dataInEventFetched = eventsFetched[0].event.data;
@@ -123,17 +118,17 @@ describe('Registry', () => {
   //     Poseidon.hash(newSource.publicKey.toFields())
   //   );
 
-  //   const txn = await Mina.transaction(deployerAccount, () => {
+  //   const txn = await Mina.transaction(deployer, () => {
   //     zkApp.register(witness, newSource);
   //   });
   //   await txn.prove();
-  //   await txn.sign([deployerKey, zkAppPrivateKey]).send();
+  //   await txn.sign([deployer.key, zkAppPrivateKey]).send();
 
   //   const updatedRegistryRoot = await zkApp.registryRoot.get();
   //   expect(updatedRegistryRoot).not.toEqual(initialRoot);
 
   //   await expect(
-  //     Mina.transaction(deployerAccount, () => {
+  //     Mina.transaction(deployer, () => {
   //       zkApp.register(witness, newSource);
   //     })
   //   ).rejects.toThrow();

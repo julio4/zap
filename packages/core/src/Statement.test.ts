@@ -1,5 +1,5 @@
 import { Statement } from '@zap/types';
-import { Bool, Encoding, Field, Poseidon, PrivateKey, Signature } from 'o1js';
+import { Bool, Encoding, Field, Poseidon, PrivateKey } from 'o1js';
 import { ProvableStatement } from './Statement';
 
 describe('ProvableStatement', () => {

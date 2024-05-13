@@ -8,9 +8,9 @@ interface ICaller {
 }
 
 export class Caller extends SmartContract implements ICaller {
-  @method call(attestation: Attestation, verifierAddress: PublicKey): void {
+  @method async call(attestation: Attestation, verifierAddress: PublicKey) {
     const verifier = new Verifier(verifierAddress);
-    const isVerified: Bool = verifier.verify(attestation);
+    const isVerified: Bool = await verifier.verify(attestation);
     isVerified.assertTrue();
   }
 }
