@@ -46,7 +46,7 @@ export class Verifier extends SmartContract implements IVerifier {
     statement.assertValidCondition(privateData);
 
     // ATTESTATION GENERATION
-    const sender = this.sender;
+    const sender = this.sender.getAndRequireSignature();
     AccountUpdate.createSigned(sender);
 
     // ATTESTATION HANDLING

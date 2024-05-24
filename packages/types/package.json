@@ -15,9 +15,9 @@
   "license": "ISC",
   "dependencies": {
     "@types/node": "^20.10.5",
-    "typescript": "^5.3.3"
+    "typescript": "^5.4.3"
   },
   "peerDependencies": {
-    "o1js": "0.17.*"
+    "o1js": "1.1.*"
   }
 }

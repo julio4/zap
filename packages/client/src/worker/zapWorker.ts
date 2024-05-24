@@ -52,14 +52,14 @@ const functions: Record<string, (...args: any[]) => any> = {
   }) => {
     const provableStatement = ProvableStatement.from(args.statement);
     // TODO should we create the attestation object here?
-    const attestation = Attestation.fromJSON({
+    const attestation = new Attestation({
       statement: provableStatement,
       privateData: Field.fromJSON(JSON.parse(args.privateData)),
       signature: Signature.fromJSON(JSON.parse(args.signature)),
       address: PublicKey.fromBase58(args.address),
     });
 
-    const transaction = await Mina.transaction(() => {
+    const transaction = await Mina.transaction(async () => {
       state.verifier!.verify(
         attestation
       );

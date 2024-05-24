@@ -19,7 +19,7 @@
     "@zap/types": "workspace:*",
     "@types/node": "^20.10.5",
     "axios": "^1.4.0",
-    "typescript": "^5.3.3"
+    "typescript": "^5.4.3"
   },
   "devDependencies": {
     "@types/jest": "^27.0.3",
@@ -28,6 +28,6 @@
     "ts-node": "^10.9.2"
   },
   "peerDependencies": {
-    "o1js": "0.17.*"
+    "o1js": "1.1.*"
   }
 }

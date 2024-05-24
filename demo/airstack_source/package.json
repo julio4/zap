@@ -30,7 +30,7 @@
     "graphql": "^16.7.1",
     "graphql-request": "^6.1.0",
     "install": "^0.13.0",
-    "o1js": "0.17.0",
+    "o1js": "1.1.*",
     "swagger-autogen": "^2.23.7",
     "swagger-ui-express": "^5.0.0"
   },
@@ -51,6 +51,6 @@
     "supertest": "^6.3.3",
     "ts-jest": "^29.1.1",
     "tsx": "^4.7.0",
-    "typescript": "^5.3.3"
+    "typescript": "^5.4.3"
   }
 }
